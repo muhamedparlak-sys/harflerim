@@ -137,15 +137,18 @@ window.CIZIMLER = (() => {
         <path d="M84 36 Q92 14 100 34 Q108 16 112 38" fill="none" stroke="#F2A900" stroke-width="5" stroke-linecap="round"/>`,
     },
     'Ç': {
-      /* kulplu çay bardağı: C kulp olur, çengel tabak olur */
+      /* çengel: C açılıp çengelin gövdesi ve kıvrımı olur, altındaki çengel (virgül) ucundaki diken olur;
+         zincirle tepeden sarkar ve sallanır */
       cizgiler: [C_YOL, CENGEL],
-      bicim: { 0: 'M90 72 Q76 62 62 70 Q38 84 38 110 Q38 138 62 150 Q76 158 90 148', 1: 'M50 216 Q125 238 200 216 Q125 226 50 216' },
-      renkler: ['#9DB4CC', '#E63946'], kalinliklar: [12, 12], bosta: 'cay-salla', ses: 'cay',
-      arka: `<path d="M82 40 L168 40 Q150 92 154 118 Q170 168 158 208 L92 208 Q80 168 96 118 Q100 92 82 40Z" fill="#EAF6FF" opacity=".85"/>
-        <path d="M90 62 L160 62 Q146 94 150 120 Q164 168 154 204 L96 204 Q86 168 100 120 Q104 94 90 62Z" fill="#C0392B"/>`,
-      on: `<path d="M82 40 L168 40 Q150 92 154 118 Q170 168 158 208 L92 208 Q80 168 96 118 Q100 92 82 40Z" fill="none" stroke="#9DB4CC" stroke-width="4" stroke-linejoin="round"/>
-        <path d="M150 52 Q138 90 146 116" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".8"/>
-        <g><g class="buhar"><path d="M108 28 Q98 14 108 0 Q118 -14 108 -28 M142 28 Q132 14 142 0 Q152 -14 142 -28" fill="none" stroke="#CED4DA" stroke-width="5" stroke-linecap="round"/></g></g>`,
+      bicim: {
+        0: 'M120 14 Q120 60 120 110 Q120 150 120 160 Q120 214 88 214 Q56 214 56 170',
+        1: 'M56 170 Q62 186 76 186 Q64 180 56 170',
+      },
+      renkler: ['#5E6472', '#5E6472'], kalinliklar: [16, 10], bosta: 'sarkac', ses: 'zincir',
+      arka: `<path d="M120 -60 L120 -4" stroke="#8D99AE" stroke-width="6" stroke-dasharray="10 6" stroke-linecap="round"/>
+        <circle cx="120" cy="2" r="13" fill="none" stroke="#5E6472" stroke-width="7"/>`,
+      on: `<path d="M126 40 L126 140" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".5"/>
+        <path d="M58 168 L52 154 L66 162Z" fill="#5E6472"/>`,
     },
     D: {
       /* bir dilim domates: D yan döner, yarım dilim olur */

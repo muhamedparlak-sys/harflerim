@@ -454,3 +454,7 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
 .canavar.sivazla .cv-sivaz { opacity: 1; transform-box: view-box; animation: c-sivaz .5s ease-in-out infinite; }
 .canavar.sivazla .cv-sag-kol { opacity: 0; }
 @keyframes c-sivaz { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(-10px, 5px); } 50% { transform: translate(-18px, 0); } 75% { transform: translate(-10px, -5px); } }
+
+/* Çengel (Ç): zincirin tepesinden sarkaç gibi sallanır */
+.cizim.canli.sarkac { transform-origin: 60% -25%; animation: c-sarkac 2.4s ease-in-out infinite; }
+@keyframes c-sarkac { 0%, 100% { transform: rotate(7deg); } 50% { transform: rotate(-7deg); } }

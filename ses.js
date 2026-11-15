@@ -239,6 +239,11 @@ window.Efekt = (() => {
     hu: () => { ton(400, 0.32, { guc: 0.14, kayma: 0.9 }); ton(380, 0.5, { guc: 0.14, gecikme: 0.45, kayma: 0.85 }); },
     cik: () => tekrar(4, 0.16, (g) => ton(2600, 0.07, { gecikme: g, guc: 0.08, kayma: 1.35 })),
     cay: () => { ton(3200, 0.5, { guc: 0.05, tur: 'triangle' }); ton(3200, 0.5, { guc: 0.05, tur: 'triangle', gecikme: 0.3 }); gurultu(0.8, { frekans: 5000, tur: 'highpass', guc: 0.03, gecikme: 0.4 }); },
+    // Çengel: zincir şıngırtısı + gıcırdayan sallanma
+    zincir: () => {
+      tekrar(6, 0.09, (g, i) => { ton(i % 2 ? 3100 : 2400, 0.12, { gecikme: g, guc: 0.05, tur: 'triangle' }); gurultu(0.03, { frekans: 6000, guc: 0.05, gecikme: g }); });
+      ton(500, 0.5, { tur: 'sawtooth', guc: 0.025, kayma: 1.3, gecikme: 0.7 });
+    },
     // Ejderha: hırıltılı kükreme + ateş üfleme
     kukre: () => {
       vizilti(0.7, { f0: 70, formant: [[400, 3, 1], [900, 5, 0.5]], guc: 0.2, titresim: 22 });
