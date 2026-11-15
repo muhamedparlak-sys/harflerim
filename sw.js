@@ -1,5 +1,5 @@
 /* Çevrimdışı çalışma: önbellekten hemen aç, arkada yenisini indir (bir sonraki açılışta güncel). */
-const ONBELLEK = 'harflerim-v4';
+const ONBELLEK = 'harflerim-v5';
 const DOSYALAR = [
   './', 'index.html', 'stil.css', 'harfler.js', 'depo.js', 'ses.js', 'gorsel.js', 'cizimler.js', 'oyunlar.js', 'app.js',
   'manifest.webmanifest', 'simgeler/simge-192.png', 'simgeler/simge-512.png', 'simgeler/apple-touch-icon.png',

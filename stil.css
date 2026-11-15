@@ -435,3 +435,10 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
 }
 .canavar.igren .cv-agiz { transform: scale(1.1, .6) rotate(-8deg); }
 .canavar.igren .cv-goz { transform-box: fill-box; transform-origin: center; transform: scaleY(.35); }
+
+/* Canavar her kurabiyede şişer, turun sonunda patlar */
+.canavar { transition: scale .6s var(--yay); transform-origin: 50% 80%; }
+.canavar.dolgun svg { animation: c-dolgun .5s ease-in-out infinite alternate; }
+.canavar.patliyor svg { animation: c-titre .07s linear infinite; }
+@keyframes c-dolgun { to { transform: scale(1.04, .97); } }
+@keyframes c-titre { 0% { transform: translate(-3px, 0) scale(1.06); } 50% { transform: translate(3px, -2px) scale(1.1); } 100% { transform: translate(-2px, 2px) scale(1.08); } }

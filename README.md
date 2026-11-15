@@ -15,8 +15,8 @@ Kurulum gerektirmez: düz HTML + CSS + JavaScript, kütüphane yok, internetsiz 
 - **Harf sesleri**: sessizler adıyla değil sesiyle, sonuna ünlü eklenmeden çalınır ("me" değil "m").
   Cihaz sesi kısa hece okur ("mı", "kı"); klon sesle kayıt varsa o çalar (en iyisi bu).
   Ünlüsüz tarayıcı sentezi (`ses.js` → `FONEM`) hoparlörde kısık kaldığı için kapalı (`SENTEZLE = false`).
-- Oyunlar: Harf Avı (sesi dinle, balonu patlat), Canavar (harfli kurabiyeleri yer, istemediğini tükürür),
-  Bilmece (tersten: resimlerin ilk seslerinden ismi bul), Çıkartma Albümü.
+- Oyunlar: Harf Avı (sesi dinle, balonu patlat), Canavar (harfli kurabiyeleri yer, istemediğini tükürür; her lokmada şişer, turun sonunda patlar),
+  Bilmece (tersten: resimlerin ilk seslerinden kelimeyi ya da aile adını bul), Çıkartma Albümü.
 - **Karakter sesleri ve hareketleri**: her karakterin kendi hareketi ve sesi var (jet uğultusu, zürafanın nal sesi, örümceğin tıkırtısı …).
 - **Yardım geri sayımı**: süre dolmaya yakın doğru taş zıplar; dolunca karakterine dönüşüp ekranda kaçar.
 - **HARFLER kartı**: "Yeni harfler" (aile adlarında olmayanlar) ve "Ailemizin harfleri".

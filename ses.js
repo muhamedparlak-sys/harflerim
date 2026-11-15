@@ -255,6 +255,13 @@ window.Efekt = (() => {
       gurultu(0.08, { frekans: 2600, q: 0.7, guc: 0.32 });
       vizilti(0.4, { f0: 140, formant: [[500, 5, 1], [1500, 7, 0.4]], guc: 0.12, titresim: 18, gecikme: 0.1 });
     },
+    // Canavar şişerken yükselen "fıııı", patlarken "PAT!"
+    sisir: () => ton(180, 0.9, { tur: 'triangle', guc: 0.1, kayma: 3 }),
+    patla: () => {
+      gurultu(0.35, { frekans: 900, q: 0.5, guc: 0.45, kayma: 0.3 });
+      ton(120, 0.3, { guc: 0.3, kayma: 0.4 });
+      tekrar(5, 0.07, (g, i) => ton(900 + i * 260, 0.08, { gecikme: 0.25 + g, guc: 0.06, tur: 'triangle' }));
+    },
     cop: () => { ton(220, 0.18, { kayma: 0.4, guc: 0.2 }); gurultu(0.12, { frekans: 600, guc: 0.08 }); },
     aii: () => { ton(620, 0.35, { tur: 'sawtooth', guc: 0.06, kayma: 0.6 }); ton(360, 0.4, { tur: 'sawtooth', guc: 0.06, kayma: 1.6, gecikme: 0.38 }); },
     fis: () => tekrar(4, 0.2, (g) => gurultu(0.14, { frekans: 3500, guc: 0.08, gecikme: g })),

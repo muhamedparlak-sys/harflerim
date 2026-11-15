@@ -4,8 +4,8 @@
  *   Canavarı Besle — canavarın düşünce balonunda istediği şeyin resmi var (ör. martı) ve ses
  *                    "mmm… martı" der; çocuk o kelimenin ilk harfini ağzına sürükler. Beslendikçe büyür
  *                    ve değişir (Feed the Monster'daki büyüyen evcil canavar fikri). Büyüme cihazda kalır.
- *   Resim Bilmecesi — tersten: ismin harfleri yerine resimler dizilir (ANNE → ağ, nota, nota, eşek);
- *                    çocuk ilk sesleri bulup harfleri altlarına koyar, sonunda kişinin fotoğrafı açılır.
+ *   Resim Bilmecesi — tersten: kelimenin (ya da aile adının) harfleri yerine resimler dizilir (ANNE → ağ, nota, nota, eşek);
+ *                    çocuk ilk sesleri bulup harfleri altlarına koyar, sonunda kelimenin resmi ya da kişinin fotoğrafı açılır.
  *   Çıkartma Albümü — bir harfi kendi başına 3 kez bulunca o harfin karakteri albüme yapışır.
  * Sorulan harfler uyarlanır: aile adlarındaki harfler önce; çok yanılınan harf daha sık, iyi bilinen daha seyrek.
  */
@@ -197,6 +197,7 @@ window.Oyunlar = (() => {
     mod = m;
     $('#mod-bitti').hidden = true;
     H().ekranAc('besle');
+    sisir($('#canavar'), 0);
     canavarCiz();
     $('#besle-tekrar').onclick = () => { if (canli(m) && m.hedef) besleSor(m); };
     besleSoru(m);
@@ -366,6 +367,7 @@ window.Oyunlar = (() => {
     await H().bekle(1300);
     cv.classList.remove('cigne');
     if (!canli(m)) return;
+    sisir(cv, m.soru + 1);
     canavarCiz();
     if (evre(canavar.yem) > eskiEvre) {
       window.Efekt.tac();
@@ -378,18 +380,62 @@ window.Oyunlar = (() => {
     await H().donustur(h, cv);
     if (!canli(m)) return;
     m.soru += 1;
-    if (m.soru >= SORU_SAYISI) { noktalar($('#besle-ilerleme'), m); modBitti(m, besleBasla); return; }
+    if (m.soru >= SORU_SAYISI) {
+      noktalar($('#besle-ilerleme'), m);
+      await patlat(cv);
+      if (canli(m)) modBitti(m, besleBasla);
+      return;
+    }
     besleSoru(m);
   }
 
+  /* Her kurabiyede canavar biraz şişer; turun son kurabiyesinde "PAT!" diye patlar, küçücük geri gelir. */
+  const SISME_ADIMI = 0.09;
+
+  function sisir(cv, kac) {
+    cv.style.scale = String(1 + kac * SISME_ADIMI);
+    cv.classList.toggle('dolgun', kac >= SORU_SAYISI - 2);
+  }
+
+  async function patlat(cv) {
+    cv.classList.add('patliyor');
+    window.Efekt.karakter('sisir');
+    await H().bekle(900);
+    window.Efekt.karakter('patla');
+    window.Gorsel.konfeti();
+    window.Gorsel.kalpler(cv, 12);
+    window.Konus.sustur();
+    window.Konus.soyle('Pat! Canavar patladı!');
+    await cv.animate([{ opacity: 1, filter: 'none' }, { opacity: 0, filter: 'blur(6px)', scale: '2.4' }], { duration: 260, easing: 'ease-out', fill: 'forwards' }).finished;
+    cv.classList.remove('patliyor', 'dolgun');
+    cv.style.transition = 'none';
+    cv.style.scale = '0.3';
+    await H().bekle(700);
+    cv.getAnimations().forEach((a) => a.cancel());
+    cv.style.transition = '';
+    cv.style.scale = '1';
+    await H().bekle(600);
+  }
+
   /* ---------- Resim Bilmecesi (tersten): resimlerin ilk seslerinden ismi bul ---------- */
-  const YEDEK_SOZCUKLER = ['ANNE', 'BABA', 'DEDE', 'NİNE', 'ABLA'];
+  // Kısa, çocuğun bildiği sözcükler (çözülünce yanında resmi açılır). Aile adları da araya karışır.
+  const BILMECE_SOZCUKLERI = [
+    ['ELMA', '🍎'], ['ARI', '🐝'], ['AT', '🐴'], ['KEDİ', '🐱'], ['TOP', '⚽'], ['SU', '💧'], ['AY', '🌙'],
+    ['EV', '🏠'], ['KUŞ', '🐦'], ['BALIK', '🐟'], ['ÇAY', '🍵'], ['GÖZ', '👀'], ['ÜZÜM', '🍇'],
+    ['KAR', '❄️'], ['YOL', '🛣️'], ['DENİZ', '🌊'], ['SİMİT', '🥯'], ['MASA', '🪑'], ['OKUL', '🏫'],
+    ['İNEK', '🐄'], ['ÖRDEK', '🦆'], ['TAVUK', '🐔'], ['KÖPEK', '🐶'], ['ÇİÇEK', '🌸'], ['GÜNEŞ', '☀️'],
+    ['BEBEK', '👶'], ['PASTA', '🎂'], ['LİMON', '🍋'], ['MUZ', '🍌'], ['SÜT', '🥛'], ['FİL', '🐘'],
+    ['AYI', '🐻'], ['TREN', '🚂'], ['UÇAK', '✈️'], ['GEMİ', '🚢'], ['BULUT', '☁️'], ['YILDIZ', '⭐'],
+  ];
   const EN_UZUN_BILMECE = 9;
+  let bilmeceAnlatildi = false;
+  const AILE_ORANI = 0.3;
   const kelimeOf = (h) => window.HARF_BUL.get(h).kelime.toLocaleLowerCase('tr-TR');
 
   function bilmeceKisisi(oncekiId) {
     const aile = H().aile().filter((k) => k.name.replace(/ /g, '').length <= EN_UZUN_BILMECE);
-    const adaylar = aile.length ? aile : YEDEK_SOZCUKLER.map((ad) => ({ id: ad, name: ad, rol: '' }));
+    const sozcukler = BILMECE_SOZCUKLERI.map(([ad, resim]) => ({ id: ad, name: ad, rol: '', resim }));
+    const adaylar = aile.length && Math.random() < AILE_ORANI ? aile : sozcukler;
     const liste = adaylar.length > 1 ? adaylar.filter((k) => k.id !== oncekiId) : adaylar;
     return liste[Math.floor(Math.random() * liste.length)];
   }
@@ -435,7 +481,7 @@ window.Oyunlar = (() => {
       return t;
     }));
     window.Konus.sustur();
-    window.Konus.soyle('Resimlerin ilk seslerini bul. Burada kim yazıyor?');
+    if (!bilmeceAnlatildi) { bilmeceAnlatildi = true; window.Konus.soyle('Resimlerin ilk seslerini bul. Burada ne yazıyor?'); } else window.Konus.soyle('Burada ne yazıyor?');
   }
 
   /** Parmağa ya da taşın ortasına en yakın boş kutu (yeterince yakınsa). */
@@ -490,7 +536,7 @@ window.Oyunlar = (() => {
     const k = m.kisi;
     const cevap = $('#bilmece-cevap');
     const aileden = H().aile().includes(k);
-    const yuz = aileden ? H().yuz(k, 'bilmece-yuz') : H().el('span', { className: 'bilmece-yuz yuz-emoji', textContent: '🎉' });
+    const yuz = aileden ? H().yuz(k, 'bilmece-yuz') : H().el('span', { className: 'bilmece-yuz yuz-emoji', textContent: k.resim || '🎉' });
     cevap.replaceChildren(yuz, H().el('span', { className: 'bilmece-ad' }, H().renkliAd(k.name)));
     cevap.hidden = false;
     window.Efekt.tikSesi();
@@ -560,7 +606,7 @@ window.Oyunlar = (() => {
     return [
       kart('HARF AVI', yuz('🎈'), 'Sesi dinle, balonu bul', avBasla, 0),
       kart('CANAVAR', canavarYuz, `🍎 ${canavar.yem}`, besleBasla, 1),
-      kart('BİLMECE', yuz('🧩'), 'Resimlerden ismi bul', bilmeceBasla, 2),
+      kart('BİLMECE', yuz('🧩'), 'Resimlerden kelimeyi bul', bilmeceBasla, 2),
       kart('ALBÜM', yuz('📒'), `${acik} / ${window.HARFLER.length}`, albumAc, 3),
     ];
   }
