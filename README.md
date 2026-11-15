@@ -12,7 +12,7 @@ Kurulum gerektirmez: düz HTML + CSS + JavaScript, kütüphane yok, internetsiz 
 - **Taşa dokunmak**: o harfin sesi ve karakteri gösterilir.
 - **Harf biçimli dönüşüm**: her harf önce yazılış sırasıyla çizilir, sonra kendi biçimini koruyarak o sesle başlayan
   nesneye dönüşür ve hareket eder (B yan dönüp baykuş gözü olur, M martı olup uçar, Ö örümcek olup kaçar …).
-- **Harf sesleri**: sessizler adıyla değil sesiyle, sonuna ünlü eklenmeden çalınır ("me" değil "m").
+- **Harf sesleri**: sessizler adıyla değil sesiyle çalınır ("me" değil "mı"; tek sefer, tekrar yok).
   Cihaz sesi kısa hece okur ("mı", "kı"); klon sesle kayıt varsa o çalar (en iyisi bu).
   Ünlüsüz tarayıcı sentezi (`ses.js` → `FONEM`) hoparlörde kısık kaldığı için kapalı (`SENTEZLE = false`).
 - Oyunlar: Harf Avı (sesi dinle, balonu patlat), Canavar (harfli kurabiyeleri yer, istemediğini tükürür; her lokmada şişer, turun sonunda patlar),
