@@ -1,0 +1,16 @@
+{
+  "name": "Harflerim",
+  "short_name": "Harflerim",
+  "description": "Montessori renkleriyle harf tanıma ve aile isimlerini yazma oyunu.",
+  "lang": "tr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#FFF4EA",
+  "theme_color": "#FFF4EA",
+  "icons": [
+    { "src": "simgeler/simge-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "simgeler/simge-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

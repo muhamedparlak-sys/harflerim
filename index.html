@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Harflerim">
+  <meta name="theme-color" content="#FFF4EA">
+  <meta name="description" content="Montessori renkleriyle harf tanıma ve aile isimlerini yazma oyunu.">
+  <title>Harflerim</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="simgeler/apple-touch-icon.png">
+  <link rel="icon" href="simgeler/simge-192.png">
+  <link rel="stylesheet" href="stil.css">
+</head>
+<body>
+  <main>
+    <section id="ana" class="ekran">
+      <header class="ust">
+        <h1 class="logo" aria-label="Harflerim">
+          <span class="sessiz">H</span><span class="sesli">a</span><span class="sessiz">r</span><span class="sessiz">f</span><span class="sessiz">l</span><span class="sesli">e</span><span class="sessiz">r</span><span class="sesli">i</span><span class="sessiz">m</span>
+        </h1>
+        <button id="disli" class="disli" type="button" aria-label="Ebeveyn ayarları (basılı tut)">
+          <svg viewBox="0 0 60 60" aria-hidden="true"><circle class="halka" cx="30" cy="30" r="27"/></svg>
+          <span>⚙️</span>
+        </button>
+      </header>
+      <div id="kartlar" class="kartlar"></div>
+    </section>
+
+    <section id="oyun" class="ekran" hidden>
+      <div class="cubuk">
+        <button class="geri" type="button" data-geri aria-label="Ana sayfa">🏠</button>
+      </div>
+      <div class="oyun-izgara">
+        <div class="portre-kap">
+          <figure id="portre" class="portre"></figure>
+          <span id="tac" class="tac" hidden>👑</span>
+        </div>
+        <div class="tahta">
+          <div id="insa" class="insa bos" aria-live="polite"></div>
+          <div id="kutular" class="kutular"></div>
+          <div id="sayac" class="sayac" aria-hidden="true"><i></i></div>
+        </div>
+      </div>
+      <div id="tepsi" class="tepsi"></div>
+      <div id="bitti" class="bitti" hidden>
+        <div class="bitti-yazi"><span class="bitti-emoji">🎉</span><span id="bitti-ad" class="bitti-ad"></span></div>
+        <button id="tekrar" class="buyuk-dugme" type="button">🔁 Tekrar</button>
+        <button class="buyuk-dugme ikinci" type="button" data-geri>🏠 Başka isim</button>
+      </div>
+    </section>
+
+    <section id="harfler" class="ekran" hidden>
+      <div class="cubuk">
+        <button class="geri" type="button" data-geri aria-label="Ana sayfa">🏠</button>
+      </div>
+      <h2 id="yeni-baslik" class="bolum-baslik">✨ Yeni harfler <small>ailemizin adlarında yok</small></h2>
+      <div id="yeni-harfler" class="harf-izgara"></div>
+      <h2 class="bolum-baslik">💛 Ailemizin harfleri</h2>
+      <div id="aile-harfleri" class="harf-izgara"></div>
+    </section>
+  </main>
+
+  <div id="sahne" class="sahne" aria-hidden="true"></div>
+  <canvas id="konfeti" class="konfeti" hidden></canvas>
+  <div id="bildirim" class="bildirim" role="status" hidden></div>
+
+  <dialog id="ayarlar" class="ayarlar">
+    <form method="dialog" class="ayar-ust">
+      <h2>Ebeveyn ayarları</h2>
+      <button class="simge-dugme" aria-label="Kapat">✕</button>
+    </form>
+    <p class="not">Fotoğraflar yalnızca bu cihazda saklanır, internete yüklenmez. Yuvarlağa dokunup fotoğraf seç.</p>
+    <h3>Aile</h3>
+    <ul id="kisi-listesi" class="kisi-listesi"></ul>
+    <div class="kisi-satir ekle-satir">
+      <span id="yeni-foto"></span>
+      <div class="kisi-adlar">
+        <input id="yeni-ad" class="ad-girdi" type="text" maxlength="24" placeholder="YENİ İSİM" autocapitalize="characters" autocomplete="off" spellcheck="false">
+        <input id="yeni-rol" class="rol-girdi" type="text" maxlength="16" placeholder="Yakınlık (ör. Teyze)">
+      </div>
+      <button id="yeni-ekle" class="buyuk-dugme kucuk" type="button">Ekle</button>
+    </div>
+    <details class="toplu">
+      <summary>Toplu ekle (her satıra: İSİM - Yakınlık)</summary>
+      <textarea id="toplu-metin" rows="6" placeholder="ANNE - Anne&#10;DEDE - Dede"></textarea>
+      <button id="toplu-ekle" class="buyuk-dugme kucuk" type="button">Hepsini ekle</button>
+    </details>
+    <h3>Oyun</h3>
+    <label class="secenek"><input id="ayar-kucuk" type="checkbox"> Küçük harf kullan (ANNE yerine anne)</label>
+    <label class="secenek"><input id="ayar-ipucu" type="checkbox"> Sıradaki harfi kutuda soluk göster</label>
+    <label class="secenek"><input id="ayar-donusum" type="checkbox"> Harfler karaktere dönüşsün (A → ağaç)</label>
+    <label class="secenek">Fazladan şaşırtmaca harf: <input id="ayar-fazla" type="range" min="0" max="4" step="1"> <output id="ayar-fazla-deger">0</output></label>
+    <label class="secenek">Yardım süresi: <input id="ayar-yardim" type="range" min="0" max="30" step="5"> <output id="ayar-yardim-deger">10 sn</output></label>
+    <p class="not">Süre dolmaya yakın doğru harf zıplar; dolunca karakterine dönüşüp kaçar. Yanlış harfte yardım hemen gelir.</p>
+    <h3>İlerleme</h3>
+    <p id="ilerleme-ozet" class="not"></p>
+    <p class="not">Renkler Montessori düzeninde: sesli harfler kırmızı, sessiz harfler mavi.</p>
+    <p id="ses-durumu" class="not"></p>
+  </dialog>
+
+  <script src="harfler.js"></script>
+  <script src="depo.js"></script>
+  <script src="ses.js"></script>
+  <script src="gorsel.js"></script>
+  <script src="cizimler.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
