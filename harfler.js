@@ -5,15 +5,15 @@
  * Ğ ile başlayan kelime olmadığı için "Yağmur" kullanılır (harf kelimenin içinde vurgulanır).
  */
 window.HARFLER = Object.freeze([
-  { h: 'A', kelime: 'Ağaç', resim: '🌳' },
+  { h: 'A', kelime: 'Ağ', resim: '🕸️' },
   { h: 'B', kelime: 'Baykuş', resim: '🦉' },
-  { h: 'C', kelime: 'Ceylan', resim: '🦌' },
-  { h: 'Ç', kelime: 'Çiçek', resim: '🌷' },
+  { h: 'C', kelime: 'Civciv', resim: '🐥' },
+  { h: 'Ç', kelime: 'Çay', resim: '🍵' },
   { h: 'D', kelime: 'Domates', resim: '🍅' },
   { h: 'E', kelime: 'Eşek', resim: '🫏' },
   { h: 'F', kelime: 'Fırça', resim: '🪥' },
   { h: 'G', kelime: 'Güneş', resim: '☀️' },
-  { h: 'Ğ', kelime: 'Yağmur', resim: '🌧️' },
+  { h: 'Ğ', kelime: 'Yağmur', resim: '💧' },
   { h: 'H', kelime: 'Hamak', resim: '🌴' },
   { h: 'I', kelime: 'Işık', resim: '🕯️' },
   { h: 'İ', kelime: 'İğne', resim: '🪡' },
@@ -24,10 +24,10 @@ window.HARFLER = Object.freeze([
   { h: 'N', kelime: 'Nota', resim: '🎵' },
   { h: 'O', kelime: 'Omlet', resim: '🍳' },
   { h: 'Ö', kelime: 'Örümcek', resim: '🕷️' },
-  { h: 'P', kelime: 'Papatya', resim: '🌼' },
-  { h: 'R', kelime: 'Roket', resim: '🚀' },
+  { h: 'P', kelime: 'Pamuk şeker', resim: '🍭' },
+  { h: 'R', kelime: 'Robot', resim: '🤖' },
   { h: 'S', kelime: 'Solucan', resim: '🪱' },
-  { h: 'Ş', kelime: 'Şemsiye', resim: '☂️' },
+  { h: 'Ş', kelime: 'Şimşek', resim: '⚡' },
   { h: 'T', kelime: 'Tahterevalli', resim: '🛝' },
   { h: 'U', kelime: 'Uğur böceği', resim: '🐞' },
   { h: 'Ü', kelime: 'Ütü', resim: '👕' },
@@ -37,15 +37,15 @@ window.HARFLER = Object.freeze([
 ]);
 
 /*
- * Harfin SESİ (adı değil): sessizler "se" değil "sss" diye okunur.
- * Uzatılabilen sesler uzatılır; patlayıcılar (b c ç d g k p t) kısa "ı" ile.
- * Cihaz sesi bunları kusurlu okuyabilir; klon sesle kayıt: sesler/sesler.json → { "ssss": "s.mp3" }.
+ * Harfin SESİ (adı değil, sonuna ünlü eklenmez): sessizler ses.js'te sentezlenir (FONEM).
+ * Bu liste yalnızca ses kartı yoksa cihaz sesine verilen yedektir.
+ * Klon sesle kayıt öncelikli: sesler/sesler.json → { "m": "m.mp3" }.
  */
 window.HARF_SES = Object.freeze({
   A: 'a', E: 'e', I: 'ı', İ: 'i', O: 'o', Ö: 'ö', U: 'u', Ü: 'ü',
   B: 'bı', C: 'cı', Ç: 'çı', D: 'dı', G: 'gı', K: 'kı', P: 'pı', T: 'tı',
-  F: 'ffff', H: 'hhhh', J: 'jjjj', L: 'llll', M: 'mmmm', N: 'nnnn', R: 'rrrr',
-  S: 'ssss', Ş: 'şşşş', V: 'vvvv', Y: 'yyyy', Z: 'zzzz', Ğ: 'ğğğ',
+  F: 'fı', H: 'hı', J: 'jı', L: 'lı', M: 'mı', N: 'nı', R: 'rı',
+  S: 'sı', Ş: 'şı', V: 'vı', Y: 'yı', Z: 'zı', Ğ: 'ğı',
 });
 
 window.SESLI = new Set(['A', 'E', 'I', 'İ', 'O', 'Ö', 'U', 'Ü']);

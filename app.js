@@ -38,8 +38,14 @@
   const bekle = (ms) => new Promise((r) => setTimeout(r, ms));
   const goster = (h) => (durum.ayar.kucukHarf ? KUCUK(h) : BUYUK(h));
   const tur = (h) => (window.SESLI.has(h) ? 'sesli' : 'sessiz');
-  const harfSesi = (h) => window.HARF_SES[h] || KUCUK(h);
-  const harfVeKelime = (h) => { const b = window.HARF_BUL.get(h); return b ? `${harfSesi(h)}... ${KUCUK(b.kelime)}` : harfSesi(h); };
+  /** Sessiz harfler sentezlenen sesiyle ("harf:M" → ünlüsüz m), sesliler cihaz sesiyle okunur. */
+  const harfSesi = (h) => (window.Efekt.fonemVar(h) ? `harf:${h}` : (window.HARF_SES[h] || KUCUK(h)));
+  /** Harfin sesi, ardından o harfle başlayan kelime (iki ayrı parça: ses + kelime). */
+  const harfVeKelimeSoyle = (h) => {
+    const b = window.HARF_BUL.get(h);
+    const ilk = window.Konus.soyle(harfSesi(h));
+    return b ? window.Konus.soyle(KUCUK(b.kelime)) : ilk;
+  };
   const yeniKimlik = () => `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`;
 
   function renkliAd(ad) {
@@ -341,7 +347,7 @@
     const bilgi = window.HARF_BUL.get(h);
     window.Konus.sustur();
     if (durum.ayar.donusum && bilgi) {
-      window.Konus.soyle(harfVeKelime(h));
+      harfVeKelimeSoyle(h);
       await donustur(h, kutu);
     } else {
       await window.Konus.soyle(harfSesi(h));
@@ -364,7 +370,7 @@
   function harfiTani(h, kaynak) {
     const bilgi = window.HARF_BUL.get(h);
     window.Konus.sustur();
-    window.Konus.soyle(harfVeKelime(h));
+    harfVeKelimeSoyle(h);
     kaynak.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(-10deg) scale(1.1)' }, { transform: 'rotate(8deg)' }, { transform: 'none' }], { duration: 420 });
     if (bilgi) donustur(h, kaynak);
   }
@@ -434,6 +440,7 @@
       if (kac) {
         kelime.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300, fill: 'forwards' });
         window.Efekt.yanlis();
+        if (cizim && cizim.kacisSesi) window.Efekt.karakter(cizim.kacisSesi);
         await window.Gorsel.kacis(cizim ? harf : resim, 7);
         if (!canli()) return;
       } else if (cizim && cizim.cikis) {
@@ -492,7 +499,7 @@
     tas.classList.add('ipucu-zipla');
     const h = tas.dataset.h;
     window.Konus.sustur();
-    window.Konus.soyle(harfVeKelime(h));
+    harfVeKelimeSoyle(h);
     await donustur(h, tas, { kac: true });
     if (durum.oyun === o && !o.bitti) sayacKur(durum.ayar.yardim * 1500);
   }

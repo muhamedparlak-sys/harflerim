@@ -6,13 +6,15 @@ Kurulum gerektirmez: düz HTML + CSS + JavaScript, kütüphane yok, internetsiz 
 ## Oyun
 - **Aile kartları**: karta dokun, isim okunur. Harfleri fotoğrafın yanındaki kutulara **sırayla** sürükle.
   Üstte isim harf harf birleşir (A · AN · ANN · ANNE) ve her adımda okunur.
-- **Doğru harf**: harf karakterine dönüşür (A → ağaç, M → martı …), fotoğraftan kalpler uçar.
+- **Doğru harf**: harf karakterine dönüşür (A → ağ, M → martı …), fotoğraftan kalpler uçar.
   İki kelimeli isimde her kelime bitince yanına yeşil ✓ gelir. İsim bitince taç, konfeti, karta ⭐.
 - **Yanlış harf**: kutuda kırmızı görünür, ✕ sallanır, uyarı sesi çalar ve oluşan kelime okunur (MU + M → "mum").
 - **Taşa dokunmak**: o harfin sesi ve karakteri gösterilir.
 - **Harf biçimli dönüşüm**: her harf önce yazılış sırasıyla çizilir, sonra kendi biçimini koruyarak o sesle başlayan
   nesneye dönüşür ve hareket eder (B yan dönüp baykuş gözü olur, M martı olup uçar, Ö örümcek olup kaçar …).
-- **Harf sesleri**: sessizler adıyla değil sesiyle okunur ("se" değil "sss"; patlayıcılar kısa: "bı", "kı").
+- **Harf sesleri**: sessizler adıyla değil sesiyle, sonuna ünlü eklenmeden çalınır ("me" değil "m").
+  Cihazın sesi bunu yapamadığı için sesler tarayıcıda sentezlenir (`ses.js` → `FONEM`); klon sesle kayıt varsa o çalar.
+- **Karakter sesleri ve hareketleri**: her karakterin kendi hareketi ve sesi var (jet uğultusu, zürafanın nal sesi, örümceğin tıkırtısı …).
 - **Yardım geri sayımı**: süre dolmaya yakın doğru taş zıplar; dolunca karakterine dönüşüp ekranda kaçar.
 - **HARFLER kartı**: "Yeni harfler" (aile adlarında olmayanlar) ve "Ailemizin harfleri".
 - **İlerleme**: yıldızlar ve her harfin doğru/yanlış sayısı cihazda kaydedilir; ayarlarda "öğrendiği harfler".
@@ -38,16 +40,18 @@ Aile bilgisi bilerek kodda yok: isimler, fotoğraflar ve ilerleme yalnızca o ci
 `sesler/` klasörüne ses dosyası koy ve `sesler/sesler.json` içine yazılan metinle eşleştir:
 
 ```json
-{ "mum": "mum.mp3", "me": "me.mp3", "a... ağaç": "a-agac.mp3" }
+{ "mum": "mum.mp3", "me": "me.mp3", "m": "m.mp3", "ağ": "ag.mp3" }
 ```
 
-Anahtar, okunan metnin küçük harfli hâlidir. Kaydı olan metin dosyadan çalınır, olmayan cihazın sesiyle okunur.
+Anahtar, okunan metnin küçük harfli hâlidir; harf sesi için harfin kendisi (`"m"`). Kaydı olan metin dosyadan çalınır, olmayan cihazın sesiyle okunur.
 Dosya adı yalnızca küçük harf, rakam, `-` ve `_` içerebilir (.mp3 .m4a .wav .ogg).
 
 ## Düzenleme
 | Ne | Nerede |
 |---|---|
-| Harf → kelime/emoji | `harfler.js` (`HARFLER`) |
+| Harf → kelime | `harfler.js` (`HARFLER`) |
 | Harf sesleri | `harfler.js` (`HARF_SES`) |
 | Harf biçimli çizimler | `cizimler.js` (`TANIM`) |
-| Güncellemeden sonra | `sw.js` içindeki `ONBELLEK` sürümünü artır (ör. `harflerim-v3`) |
+| Karakter sesleri, harf sesleri | `ses.js` (`KARAKTER`, `FONEM`) |
+| Karakter hareketleri | `stil.css` (`.cizim.canli.<ad>`) |
+| Güncellemeden sonra | `sw.js` içindeki `ONBELLEK` sürümünü artır (ör. `harflerim-v4`) |

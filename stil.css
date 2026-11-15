@@ -171,9 +171,7 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
 
 .d-cizim { grid-area: 1 / 1; width: min(46vh, 42vw); }
 .cizim { display: block; width: 100%; height: auto; overflow: visible; }
-.cizim .a-govde, .cizim .a-yaprak, .cizim .a-yaprak > *, .cizim .a-sus { transform-box: fill-box; transform-origin: 50% 100%; }
-.cizim .m-govde, .cizim .arka > *, .cizim .on > * { transform-box: fill-box; transform-origin: 50% 50%; }
-.cizim.a-salla .a-yaprak { animation: salla 2.4s ease-in-out infinite; }
+.cizim .m-govde, .cizim .arka > *, .cizim .yan > *, .cizim .on > * { transform-box: fill-box; transform-origin: 50% 50%; }
 
 /* dönüşümden sonra canlı kalan çizimler */
 .cizim.canli.zipla { animation: c-zipla 1s ease-in-out infinite; }
@@ -189,6 +187,38 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
 .cizim.canli .t-tahta { transform-box: view-box; }
 .cizim .bacak { transform-box: fill-box; transform-origin: center; }
 .cizim.canli .bacak { animation: c-kipir .25s ease-in-out infinite; }
+
+/* her karakterin kendine özgü hareketi (cizimler.js → bosta) */
+.cizim.canli.ag-salla { transform-origin: 50% 9%; animation: c-sallan 2.6s ease-in-out infinite; }
+.cizim.canli .orumcek-in { animation: c-yoyo 1.8s ease-in-out infinite; }
+.cizim.canli.kafa { animation: c-kafa 1.6s ease-in-out infinite; }
+.cizim.canli.gagala { transform-origin: 50% 90%; animation: c-gagala .7s ease-in-out infinite; }
+.cizim.canli.cay-salla { transform-origin: 60% 95%; animation: c-sallan 2s ease-in-out infinite; }
+.cizim.canli.jole { transform-origin: 50% 70%; animation: c-jole .8s ease-in-out infinite; }
+.cizim.canli.tekme { transform-origin: 40% 70%; animation: c-tekme 1.4s ease-in-out infinite; }
+.cizim.canli.fircala { animation: c-fircala .35s ease-in-out infinite; }
+.cizim.canli.nabiz { animation: c-nabiz 1.2s ease-in-out infinite; }
+.cizim.canli.damla { transform-origin: 50% 90%; animation: c-jole 1.1s ease-in-out infinite; }
+.cizim.canli.titrek { animation: c-titrek .3s ease-in-out infinite alternate; }
+.cizim.canli.dikis { animation: c-dikis .6s ease-in-out infinite; }
+.cizim.canli.suzul { animation: c-suzul 1.6s ease-in-out infinite; }
+.cizim.canli.kanat { animation: c-kanat .32s ease-in-out infinite; }
+.cizim.canli.gaga { transform-origin: 50% 95%; animation: c-gaga 1.3s ease-in-out infinite; }
+.cizim.canli.cizir { animation: c-cizir .14s linear infinite; }
+.cizim.canli.tikir { animation: c-tikir .25s linear infinite; }
+.cizim.canli.pamuk { transform-origin: 35% 95%; animation: c-sallan 1.8s ease-in-out infinite; }
+.cizim.canli.robot { animation: c-robot .8s steps(2, jump-none) infinite; }
+.cizim.canli.cak { animation: c-cak 1.6s linear infinite; }
+.cizim.canli.emekle { animation: c-emekle 1.2s ease-in-out infinite; }
+.cizim.canli.utule { animation: c-utule 1s ease-in-out infinite; }
+.cizim.canli.dalga { transform-origin: 50% 90%; animation: c-dalga 1.8s ease-in-out infinite; }
+.cizim.canli.dortnala { animation: c-dortnala .36s ease-in-out infinite; }
+.cizim .z-on-bacak, .cizim .z-arka-bacak, .cizim .bacak-1, .cizim .bacak-2 { transform-box: fill-box; transform-origin: 50% 0; }
+.cizim .bacak-1, .cizim .bacak-2 { transform-origin: center; }
+.cizim.canli .z-on-bacak { animation: c-adim .36s ease-in-out infinite; }
+.cizim.canli .z-arka-bacak { animation: c-adim .36s ease-in-out infinite reverse; }
+.cizim.canli .bacak-1 { animation: c-bacak .25s ease-in-out infinite; }
+.cizim.canli .bacak-2 { animation: c-bacak .25s ease-in-out infinite reverse; }
 
 /* yardım */
 .sayac { height: 14px; border-radius: 999px; background: rgba(0, 0, 0, .06); overflow: hidden; opacity: 0; transition: opacity .3s; }
@@ -268,6 +298,29 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
 @keyframes c-buhar { 0% { transform: translateY(10px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(-16px); opacity: 0; } }
 @keyframes c-don { to { transform: rotate(360deg); } }
 @keyframes c-suz { 0%, 100% { transform: translateX(-6px); } 50% { transform: translateX(6px); } }
+@keyframes c-sallan { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+@keyframes c-yoyo { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(22px); } }
+@keyframes c-kafa { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(-10deg); } 60% { transform: rotate(10deg); } }
+@keyframes c-gagala { 0%, 60%, 100% { transform: rotate(0); } 30% { transform: rotate(14deg) translateY(6px); } }
+@keyframes c-jole { 0%, 100% { transform: scale(1, 1); } 30% { transform: scale(1.1, .9); } 60% { transform: scale(.94, 1.07); } }
+@keyframes c-tekme { 0%, 60%, 100% { transform: rotate(0); } 75% { transform: rotate(-9deg); } }
+@keyframes c-fircala { 0%, 100% { transform: translateX(-14px); } 50% { transform: translateX(14px); } }
+@keyframes c-nabiz { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.07); } }
+@keyframes c-titrek { from { transform: scale(1); filter: brightness(1); } to { transform: scale(1.02, .99); filter: brightness(1.18); } }
+@keyframes c-dikis { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(20px); } }
+@keyframes c-suzul { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-12px) rotate(3deg); } }
+@keyframes c-kanat { 0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(.45); } }
+@keyframes c-gaga { 0%, 70%, 100% { transform: rotate(0); } 80% { transform: rotate(6deg); } 90% { transform: rotate(-2deg); } }
+@keyframes c-cizir { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(2px, -1px); } 75% { transform: translate(-2px, 1px); } }
+@keyframes c-tikir { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
+@keyframes c-robot { 0% { transform: translateX(-8px) rotate(-3deg); } 100% { transform: translateX(8px) rotate(3deg); } }
+@keyframes c-cak { 0%, 8%, 16%, 100% { filter: brightness(1); transform: scale(1); } 4%, 12% { filter: brightness(1.8) drop-shadow(0 0 20px #FFD23F); transform: scale(1.06); } }
+@keyframes c-emekle { 0%, 100% { transform: translateX(-10px) rotate(-4deg); } 50% { transform: translateX(10px) rotate(4deg); } }
+@keyframes c-utule { 0%, 100% { transform: translateX(-24px); } 50% { transform: translateX(24px); } }
+@keyframes c-dalga { 0%, 100% { transform: rotate(-5deg) translateY(0); } 50% { transform: rotate(5deg) translateY(-8px); } }
+@keyframes c-dortnala { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-12px) rotate(-3deg); } }
+@keyframes c-adim { 0%, 100% { transform: rotate(-20deg); } 50% { transform: rotate(20deg); } }
+@keyframes c-bacak { 0%, 100% { transform: rotate(-7deg) scaleY(1); } 50% { transform: rotate(7deg) scaleY(.9); } }
 @keyframes c-dus { from { transform: translateY(0); opacity: 1; } to { transform: translateY(150px); opacity: 0; } }
 @keyframes c-alev { from { transform: scaleY(.85) skewX(-4deg); } to { transform: scaleY(1.12) skewX(4deg); } }
 @keyframes ipucu-zipla { 0%, 100% { translate: 0 0; } 50% { translate: 0 -26px; } }
