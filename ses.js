@@ -239,6 +239,11 @@ window.Efekt = (() => {
     hu: () => { ton(400, 0.32, { guc: 0.14, kayma: 0.9 }); ton(380, 0.5, { guc: 0.14, gecikme: 0.45, kayma: 0.85 }); },
     cik: () => tekrar(4, 0.16, (g) => ton(2600, 0.07, { gecikme: g, guc: 0.08, kayma: 1.35 })),
     cay: () => { ton(3200, 0.5, { guc: 0.05, tur: 'triangle' }); ton(3200, 0.5, { guc: 0.05, tur: 'triangle', gecikme: 0.3 }); gurultu(0.8, { frekans: 5000, tur: 'highpass', guc: 0.03, gecikme: 0.4 }); },
+    // Ejderha: hırıltılı kükreme + ateş üfleme
+    kukre: () => {
+      vizilti(0.7, { f0: 70, formant: [[400, 3, 1], [900, 5, 0.5]], guc: 0.2, titresim: 22 });
+      gurultu(0.9, { frekans: 700, tur: 'lowpass', guc: 0.3, gecikme: 0.45, kayma: 2.5 });
+    },
     // Canavar: iştahlı "ham-nyam-nyam-mmm" (çıtır ısırık + ağız dolu mırıltı)
     nyam: () => {
       tekrar(4, 0.24, (g, i) => {
@@ -257,10 +262,18 @@ window.Efekt = (() => {
     },
     // Canavar şişerken yükselen "fıııı", patlarken "PAT!"
     sisir: () => ton(180, 0.9, { tur: 'triangle', guc: 0.1, kayma: 3 }),
+    // Balon gibi patlar ("BAM" çatlama + gümbürtü), sonra konfeti fışkırır ("fışşş" + pırıltılar)
     patla: () => {
-      gurultu(0.35, { frekans: 900, q: 0.5, guc: 0.45, kayma: 0.3 });
-      ton(120, 0.3, { guc: 0.3, kayma: 0.4 });
-      tekrar(5, 0.07, (g, i) => ton(900 + i * 260, 0.08, { gecikme: 0.25 + g, guc: 0.06, tur: 'triangle' }));
+      gurultu(0.04, { frekans: 3000, tur: 'highpass', guc: 0.55 });
+      gurultu(0.25, { frekans: 1400, q: 0.4, guc: 0.4, kayma: 0.25 });
+      ton(90, 0.45, { guc: 0.35, kayma: 0.35 });
+      gurultu(1.1, { frekans: 6000, q: 0.6, guc: 0.16, gecikme: 0.12, kayma: 0.4 });
+      tekrar(8, 0.09, (g, i) => ton(1400 + ((i * 377) % 1200), 0.07, { gecikme: 0.2 + g, guc: 0.05, tur: 'triangle', kayma: 1.3 }));
+    },
+    // Karnını sıvazlarken memnun "mmm-hı"
+    doydum: () => {
+      vizilti(0.5, { f0: 150, formant: [[280, 4, 1]], guc: 0.15 });
+      vizilti(0.3, { f0: 200, formant: [[280, 4, 1]], guc: 0.13, gecikme: 0.55 });
     },
     cop: () => { ton(220, 0.18, { kayma: 0.4, guc: 0.2 }); gurultu(0.12, { frekans: 600, guc: 0.08 }); },
     aii: () => { ton(620, 0.35, { tur: 'sawtooth', guc: 0.06, kayma: 0.6 }); ton(360, 0.4, { tur: 'sawtooth', guc: 0.06, kayma: 1.6, gecikme: 0.38 }); },

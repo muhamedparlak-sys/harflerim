@@ -442,3 +442,15 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
 .canavar.patliyor svg { animation: c-titre .07s linear infinite; }
 @keyframes c-dolgun { to { transform: scale(1.04, .97); } }
 @keyframes c-titre { 0% { transform: translate(-3px, 0) scale(1.06); } 50% { transform: translate(3px, -2px) scale(1.1); } 100% { transform: translate(-2px, 2px) scale(1.08); } }
+
+/* Ejderha (E): nefes alır, ağzından ateş titrer */
+.cizim.canli.nefes { transform-origin: 50% 90%; animation: c-nefes 2.2s ease-in-out infinite; }
+.cizim.canli .ates-nefes { transform-box: fill-box; transform-origin: 0 50%; animation: c-ates .3s ease-in-out infinite alternate; }
+@keyframes c-nefes { 50% { transform: scale(1.03, .98) translateY(2px); } }
+@keyframes c-ates { from { transform: scaleX(.75) scaleY(.9); } to { transform: scaleX(1.1) scaleY(1.05); } }
+
+/* Canavar yedikten sonra karnını sıvazlar */
+.canavar .cv-sivaz { opacity: 0; }
+.canavar.sivazla .cv-sivaz { opacity: 1; transform-box: view-box; animation: c-sivaz .5s ease-in-out infinite; }
+.canavar.sivazla .cv-sag-kol { opacity: 0; }
+@keyframes c-sivaz { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(-10px, 5px); } 50% { transform: translate(-18px, 0); } 75% { transform: translate(-10px, -5px); } }

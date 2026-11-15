@@ -4,7 +4,7 @@
  *   Canavarı Besle — canavarın düşünce balonunda istediği şeyin resmi var (ör. martı) ve ses
  *                    "mmm… martı" der; çocuk o kelimenin ilk harfini ağzına sürükler. Beslendikçe büyür
  *                    ve değişir (Feed the Monster'daki büyüyen evcil canavar fikri). Büyüme cihazda kalır.
- *   Resim Bilmecesi — tersten: kelimenin (ya da aile adının) harfleri yerine resimler dizilir (ANNE → ağ, nota, nota, eşek);
+ *   Resim Bilmecesi — tersten: kelimenin (ya da aile adının) harfleri yerine resimler dizilir (ANNE → ağ, nota, nota, ejderha);
  *                    çocuk ilk sesleri bulup harfleri altlarına koyar, sonunda kelimenin resmi ya da kişinin fotoğrafı açılır.
  *   Çıkartma Albümü — bir harfi kendi başına 3 kez bulunca o harfin karakteri albüme yapışır.
  * Sorulan harfler uyarlanır: aile adlarındaki harfler önce; çok yanılınan harf daha sık, iyi bilinen daha seyrek.
@@ -178,7 +178,10 @@ window.Oyunlar = (() => {
         <circle class="cv-bebek" cx="96" cy="112" r="10" fill="#2B2D42"/><circle class="cv-bebek" cx="152" cy="112" r="10" fill="#2B2D42"/></g>
       <g class="cv-agiz"><ellipse cx="120" cy="164" rx="36" ry="12" fill="#7A1E2C" stroke="#2B2D42" stroke-width="3"/>
         <path d="M100 154 L106 162 L112 154Z M128 154 L134 162 L140 154Z" fill="#fff"/><ellipse cx="120" cy="170" rx="16" ry="5" fill="#FF6F91"/></g>
-      <path d="M40 150 Q20 150 18 132 M200 150 Q220 150 222 132" fill="none" stroke="#2B2D42" stroke-width="5" stroke-linecap="round"/>`;
+      <path d="M40 150 Q20 150 18 132" fill="none" stroke="#2B2D42" stroke-width="5" stroke-linecap="round"/>
+      <path class="cv-sag-kol" d="M200 150 Q220 150 222 132" fill="none" stroke="#2B2D42" stroke-width="5" stroke-linecap="round"/>
+      <g class="cv-sivaz"><path d="M200 150 Q212 196 146 198" fill="none" stroke="#2B2D42" stroke-width="5" stroke-linecap="round"/>
+        <ellipse cx="140" cy="198" rx="14" ry="10" fill="${renk}" stroke="#2B2D42" stroke-width="3"/></g>`;
     return s;
   }
 
@@ -364,8 +367,14 @@ window.Oyunlar = (() => {
     const eskiEvre = evre(canavar.yem);
     canavar = { yem: canavar.yem + 1 };
     H().kaydet('canavar', canavar);
-    await H().bekle(1300);
+    await H().bekle(1000);
     cv.classList.remove('cigne');
+    if (!canli(m)) return;
+    // Doydu: karnını sıvazlar, "mmm"
+    cv.classList.add('sivazla');
+    window.Efekt.karakter('doydum');
+    await H().bekle(1200);
+    cv.classList.remove('sivazla');
     if (!canli(m)) return;
     sisir(cv, m.soru + 1);
     canavarCiz();
@@ -405,7 +414,6 @@ window.Oyunlar = (() => {
     window.Gorsel.konfeti();
     window.Gorsel.kalpler(cv, 12);
     window.Konus.sustur();
-    window.Konus.soyle('Pat! Canavar patladı!');
     await cv.animate([{ opacity: 1, filter: 'none' }, { opacity: 0, filter: 'blur(6px)', scale: '2.4' }], { duration: 260, easing: 'ease-out', fill: 'forwards' }).finished;
     cv.classList.remove('patliyor', 'dolgun');
     cv.style.transition = 'none';

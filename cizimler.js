@@ -162,14 +162,22 @@ window.CIZIMLER = (() => {
         <ellipse cx="116" cy="104" rx="5" ry="7"/><ellipse cx="124" cy="122" rx="5" ry="7"/><ellipse cx="136" cy="138" rx="5" ry="7"/></g>`,
     },
     E: {
-      cizgiler: ['M150 30 L60 30 L60 210 L150 210', 'M60 120 L135 120'], donus: 90, renk: '#6E7088', bosta: 'tekme', ses: 'aii',
-      arka: `<ellipse cx="100" cy="102" rx="98" ry="34" fill="#A7A9BE"/>
-        <path d="M150 112 L150 168" stroke="#6E7088" stroke-width="16" stroke-linecap="round"/>
-        <path d="M180 92 Q214 72 220 42" fill="none" stroke="#A7A9BE" stroke-width="26" stroke-linecap="round"/>
-        <ellipse cx="226" cy="42" rx="26" ry="18" fill="#A7A9BE"/><ellipse cx="246" cy="50" rx="12" ry="10" fill="#D8D8E4"/>
-        <ellipse cx="214" cy="10" rx="7" ry="22" fill="#8E90A6"/><ellipse cx="230" cy="8" rx="7" ry="22" fill="#8E90A6"/>
-        <path d="M6 92 Q-14 108 -6 134" fill="none" stroke="#8E90A6" stroke-width="6" stroke-linecap="round"/>`,
-      on: `<circle cx="224" cy="36" r="4" fill="#3B2C2A"/>`,
+      /* ejderha: E sola yatar (-90°), sırtı olur; üç kolu sırt dikenleri (y=160 sırt, dikenler x=10/100/190) */
+      cizgiler: ['M150 30 L60 30 L60 210 L150 210', 'M60 120 L135 120'], donus: -90, renk: '#1D6F5F', kalinlik: 12,
+      bosta: 'nefes', ses: 'kukre',
+      arka: `<path d="M-14 160 L10 62 L34 160Z M74 160 L100 78 L126 160Z M166 160 L190 62 L214 160Z" fill="#F4A261" stroke="#E07A2F" stroke-width="4" stroke-linejoin="round"/>
+        <path d="M0 196 Q-34 196 -40 166 L-56 156 L-44 148 L-38 132 Q-26 156 -2 172Z" fill="#2A9D8F"/>
+        <path d="M44 212 L40 238 L60 238 M150 212 L146 238 L166 238" fill="none" stroke="#1D6F5F" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+        <ellipse cx="100" cy="190" rx="106" ry="34" fill="#2A9D8F"/>
+        <path d="M30 206 Q100 226 170 206" fill="none" stroke="#E9C46A" stroke-width="10" stroke-linecap="round"/>
+        <path d="M176 184 Q196 150 220 140" fill="none" stroke="#2A9D8F" stroke-width="30" stroke-linecap="round"/>
+        <path d="M212 120 L204 96 L222 116Z M230 118 L232 94 L242 118Z" fill="#E9C46A"/>
+        <ellipse cx="228" cy="140" rx="30" ry="22" fill="#2A9D8F"/><ellipse cx="254" cy="148" rx="18" ry="13" fill="#2A9D8F"/>`,
+      on: `<circle cx="226" cy="132" r="8" fill="#fff"/><circle cx="228" cy="133" r="4.5" fill="#1B1B1B"/>
+        <circle cx="262" cy="142" r="2.5" fill="#1D6F5F"/>
+        <path d="M244 156 Q256 162 268 154" fill="none" stroke="#1D6F5F" stroke-width="3" stroke-linecap="round"/>
+        <g><g class="ates-nefes"><path d="M270 150 Q292 132 306 146 Q324 136 334 152 Q320 160 334 170 Q312 172 304 166 Q290 176 270 158Z" fill="#FF7B00"/>
+          <path d="M272 152 Q290 144 300 152 Q312 148 318 156 Q304 162 298 160 Q288 166 272 156Z" fill="#FFD23F"/></g></g>`,
     },
     F: {
       cizgiler: ['M70 210 L70 30 L150 30', 'M70 115 L130 115'], donus: -90, renk: '#3A0CA3', kalinlik: 12, bosta: 'fircala', ses: 'fis',
