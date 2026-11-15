@@ -37,8 +37,8 @@ window.HARFLER = Object.freeze([
 ]);
 
 /*
- * Harfin SESİ (adı değil, sonuna ünlü eklenmez): sessizler ses.js'te sentezlenir (FONEM).
- * Bu liste yalnızca ses kartı yoksa cihaz sesine verilen yedektir.
+ * Harfin SESİ (adı değil: "be" değil "bı"): cihaz sesi bu kısa heceyi okur.
+ * ses.js'teki ünlüsüz sentez (FONEM) kısık kaldığı için kapalı (SENTEZLE = false).
  * Klon sesle kayıt öncelikli: sesler/sesler.json → { "m": "m.mp3" }.
  */
 window.HARF_SES = Object.freeze({

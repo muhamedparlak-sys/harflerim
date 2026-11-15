@@ -13,7 +13,10 @@ Kurulum gerektirmez: düz HTML + CSS + JavaScript, kütüphane yok, internetsiz 
 - **Harf biçimli dönüşüm**: her harf önce yazılış sırasıyla çizilir, sonra kendi biçimini koruyarak o sesle başlayan
   nesneye dönüşür ve hareket eder (B yan dönüp baykuş gözü olur, M martı olup uçar, Ö örümcek olup kaçar …).
 - **Harf sesleri**: sessizler adıyla değil sesiyle, sonuna ünlü eklenmeden çalınır ("me" değil "m").
-  Cihazın sesi bunu yapamadığı için sesler tarayıcıda sentezlenir (`ses.js` → `FONEM`); klon sesle kayıt varsa o çalar.
+  Cihaz sesi kısa hece okur ("mı", "kı"); klon sesle kayıt varsa o çalar (en iyisi bu).
+  Ünlüsüz tarayıcı sentezi (`ses.js` → `FONEM`) hoparlörde kısık kaldığı için kapalı (`SENTEZLE = false`).
+- Oyunlar: Harf Avı (sesi dinle, balonu patlat), Canavar (harfli kurabiyeleri yer, istemediğini tükürür),
+  Bilmece (tersten: resimlerin ilk seslerinden ismi bul), Çıkartma Albümü.
 - **Karakter sesleri ve hareketleri**: her karakterin kendi hareketi ve sesi var (jet uğultusu, zürafanın nal sesi, örümceğin tıkırtısı …).
 - **Yardım geri sayımı**: süre dolmaya yakın doğru taş zıplar; dolunca karakterine dönüşüp ekranda kaçar.
 - **HARFLER kartı**: "Yeni harfler" (aile adlarında olmayanlar) ve "Ailemizin harfleri".

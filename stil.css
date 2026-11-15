@@ -46,7 +46,7 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
   min-height: 100dvh;
   padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
 }
-.ekran[hidden] { display: none; }
+.ekran[hidden] { display: none !important; } /* #oyun gibi id kuralları gizlemeyi ezmesin */
 
 /* ---------- ana sayfa ---------- */
 .ust { display: flex; align-items: center; justify-content: space-between; margin: 4px 8px 20px; }
@@ -330,3 +330,108 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
 @media (prefers-reduced-motion: reduce) {
   .logo span, .insa.bos::before, .kutu.sirada, .d-resim span { animation: none; }
 }
+
+/* ---------- oyun modları (oyunlar.js) ---------- */
+.kart-mod .kart-yuz { background: #FFF3C9; }
+.kart-canavar { display: grid; place-items: center; background: #E8F8E0; padding: 10px; }
+.kart-canavar svg { width: 100%; height: 100%; }
+.noktalar { display: flex; gap: 8px; margin-left: auto; }
+.noktalar i { width: 20px; height: 20px; border-radius: 50%; background: rgba(0, 0, 0, .1); transition: background .3s, transform .3s; }
+.noktalar i.dolu { background: #2EC46B; transform: scale(1.15); }
+
+.av-alan { position: relative; height: calc(100dvh - 130px); overflow: hidden; }
+.balon {
+  position: absolute; left: var(--x); top: var(--y); width: min(21vw, 170px); aspect-ratio: 5 / 6;
+  border-radius: 50% 50% 48% 48% / 56% 56% 44% 44%; background: radial-gradient(circle at 32% 28%, rgba(255, 255, 255, .55) 0 12%, transparent 13%), var(--renk);
+  box-shadow: inset -10px -14px 0 rgba(0, 0, 0, .12), var(--golge); display: grid; place-items: center;
+  animation: balon-gel .7s var(--yay) backwards, balon-sallan var(--salla, 3s) ease-in-out infinite;
+  animation-delay: var(--gecikme, 0ms), 0ms;
+}
+.balon::after { content: ''; position: absolute; left: 50%; top: 100%; width: 3px; height: 90px; background: rgba(59, 44, 42, .35); transform: translateX(-50%); }
+.balon-harf { width: 64%; aspect-ratio: 1; border-radius: 50%; background: #fff; display: grid; place-items: center; font-size: min(10vw, 80px); font-weight: 900; }
+.balon.patla { animation: balon-patla .45s ease-out forwards; pointer-events: none; }
+.balon.uc { animation: balon-uc 1s ease-in forwards; pointer-events: none; }
+
+.besle-alan { display: grid; grid-template-rows: 1fr auto; justify-items: center; gap: 12px; height: calc(100dvh - 130px); }
+.canavar { width: min(52vh, 70vw); align-self: center; }
+.canavar svg { display: block; width: 100%; height: auto; overflow: visible; animation: c-nabiz 2.4s ease-in-out infinite; }
+.canavar .cv-agiz { transform-box: fill-box; transform-origin: 50% 30%; transition: transform .2s; }
+.canavar.ac .cv-agiz { transform: scale(1.25, 3); }
+.canavar.cigne .cv-agiz { animation: cigne .18s ease-in-out 4 alternate; }
+.canavar .cv-bebek { transform-box: fill-box; transform-origin: center; animation: c-yanip 4s infinite; }
+.besle-tepsi { display: flex; gap: 22px; justify-content: center; padding-bottom: max(18px, env(safe-area-inset-bottom)); }
+.yem-kutu { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 900; }
+.yem-cubuk { width: 120px; height: 14px; border-radius: 999px; background: rgba(0, 0, 0, .08); overflow: hidden; }
+.yem-cubuk i { display: block; height: 100%; width: var(--oran, 0%); background: #2EC46B; border-radius: 999px; transition: width .6s; }
+
+.album-izgara { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; padding: 0 8px 24px; }
+.cikartma {
+  aspect-ratio: 4 / 5; border-radius: 22px; background: var(--kagit); box-shadow: var(--golge);
+  display: grid; grid-template-rows: 1fr auto; place-items: center; padding: 10px; overflow: hidden;
+}
+.cikartma.acik { border: 4px solid #FFD23F; transform: rotate(-1.5deg); }
+.cikartma.acik:nth-child(even) { transform: rotate(1.5deg); }
+.cikartma.kilitli { background: #F3ECE6; }
+.cikartma-resim { width: 78%; }
+.cikartma-ad { font-size: 18px; font-weight: 800; }
+.cikartma-harf { font-size: 76px; font-weight: 900; opacity: .28; }
+.cikartma-nokta { display: flex; gap: 6px; }
+.cikartma-nokta i { width: 14px; height: 14px; border-radius: 50%; background: rgba(0, 0, 0, .12); }
+.cikartma-nokta i.dolu { background: #2EC46B; }
+
+.mod-bitti { position: fixed; inset: 0; z-index: 70; display: grid; place-items: center; background: rgba(255, 244, 234, .7); }
+.mod-bitti[hidden] { display: none; }
+.mod-bitti-kutu { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: center; padding: 24px 30px; border-radius: 34px; background: var(--kagit); box-shadow: var(--golge); animation: patla .6s var(--yay) both; }
+.mod-bitti-kutu .bitti-emoji { font-size: 64px; width: 100%; text-align: center; }
+
+@keyframes balon-gel { from { transform: translateY(70vh); opacity: 0; } }
+@keyframes balon-sallan { 0%, 100% { translate: 0 0; rotate: -3deg; } 50% { translate: 0 -16px; rotate: 3deg; } }
+@keyframes balon-patla { 0% { transform: scale(1); opacity: 1; } 40% { transform: scale(1.35); opacity: .9; } 100% { transform: scale(1.7); opacity: 0; } }
+@keyframes balon-uc { to { transform: translateY(-110vh); } }
+@keyframes cigne { from { transform: scale(1.2, 1.6); } to { transform: scale(1, .5); } }
+
+.canavar-kap { position: relative; align-self: center; display: grid; place-items: center; }
+.istek {
+  position: absolute; right: -6%; top: -4%; width: min(22vh, 30vw); aspect-ratio: 1; border-radius: 50%;
+  background: #fff; box-shadow: var(--golge); display: grid; place-items: center; padding: 14%;
+  transform: translateX(60%);
+}
+.istek::before, .istek::after { content: ''; position: absolute; border-radius: 50%; background: #fff; box-shadow: var(--golge); }
+.istek::before { width: 22%; height: 22%; left: -12%; bottom: 2%; }
+.istek::after { width: 11%; height: 11%; left: -24%; bottom: -10%; }
+.istek-resim { grid-area: 1 / 1; width: 100%; transition: opacity .3s; }
+.istek-resim.hazirlaniyor { opacity: 0; }
+.istek-dusun { grid-area: 1 / 1; font-size: 48px; font-weight: 900; color: var(--soluk); animation: c-nabiz 1s ease-in-out infinite; }
+.istek-yazi { font-size: 72px; }
+
+/* Resim Bilmecesi */
+#bilmece { display: flex; flex-direction: column; }
+.bilmece-kartlar { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-end; gap: 10px; padding: 10px 0 18px; }
+.bilmece-kart { width: min(11vw, 128px); display: grid; gap: 8px; justify-items: center; }
+.bilmece-resim { width: 100%; aspect-ratio: 5 / 6; border-radius: 18px; background: var(--kagit); box-shadow: var(--golge); display: grid; place-items: center; padding: 10%; transition: transform .3s; }
+.bilmece-resim svg { transition: opacity .3s; }
+.bilmece-resim.hazirlaniyor svg { opacity: 0; }
+.bilmece-kart.bulundu .bilmece-resim { transform: translateY(-6px) rotate(-2deg); }
+.bilmece-kutu { width: 100%; aspect-ratio: 1; border-radius: 16px; border: 4px dashed var(--cizgi); display: grid; place-items: center; font-size: min(8vw, 84px); font-weight: 900; }
+.bilmece-kutu.dolu { border: 0; background: var(--kagit); box-shadow: var(--golge); animation: patla .4s var(--yay); }
+.bilmece-bosluk { width: 24px; }
+.bilmece-tepsi { flex-wrap: wrap; margin-top: auto; }
+.bilmece-cevap { display: flex; align-items: center; justify-content: center; gap: 18px; animation: patla .6s var(--yay); }
+.bilmece-cevap[hidden] { display: none; }
+.bilmece-yuz { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 5px solid #fff; box-shadow: var(--golge); display: grid; place-items: center; font-size: 60px; background: #FFE9DE; }
+.bilmece-ad { font-size: 54px; font-weight: 900; letter-spacing: .05em; }
+
+/* Canavar kurabiyeleri: harf kurabiyenin üstünde, beyaz kremayla çevrili */
+.tas.kurabiye {
+  border-radius: 50%; height: var(--t);
+  background:
+    radial-gradient(circle at 24% 30%, #5A3218 0 5%, transparent 6%),
+    radial-gradient(circle at 74% 24%, #5A3218 0 4%, transparent 5%),
+    radial-gradient(circle at 80% 70%, #5A3218 0 5%, transparent 6%),
+    radial-gradient(circle at 30% 78%, #5A3218 0 4%, transparent 5%),
+    radial-gradient(circle at 52% 52%, #F2C27B 0 55%, #D9984A 72%, #B9762F 100%);
+  border: 4px solid #A8652A;
+  text-shadow: 0 0 2px #fff, 0 0 2px #fff, 0 0 4px #fff, 0 0 6px #fff;
+}
+.canavar.igren .cv-agiz { transform: scale(1.1, .6) rotate(-8deg); }
+.canavar.igren .cv-goz { transform-box: fill-box; transform-origin: center; transform: scaleY(.35); }

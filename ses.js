@@ -117,6 +117,8 @@ window.Efekt = (() => {
 
   function ac() {
     try {
+      // iPad sessiz düğmesi açıkken Web Audio susar; "playback" oturumu sentez seslerini yine çalar (Safari 16.4+).
+      if (navigator.audioSession && navigator.audioSession.type !== 'playback') navigator.audioSession.type = 'playback';
       const Ctor = window.AudioContext || window.webkitAudioContext;
       if (!ctx && Ctor) ctx = new Ctor();
       if (ctx && ctx.state === 'suspended') ctx.resume();
@@ -205,6 +207,7 @@ window.Efekt = (() => {
    * Sessiz harflerin SESİ, sonuna ünlü eklemeden (cihaz sesi "m"yi hep "me" diye okuyor).
    * Değer: saniye cinsinden süre. Klon sesle kayıt varsa (sesler.json → "m") o kullanılır.
    */
+  const SENTEZLE = false; // true: sessiz harfler Web Audio ile ünlüsüz sentezlenir (deneysel)
   const FONEM = {
     M: () => { vizilti(0.55, { formant: [[260, 3, 1.4], [900, 6, 0.08]] }); return 0.55; },
     N: () => { vizilti(0.5, { formant: [[260, 3, 1.2], [1700, 8, 0.12]] }); return 0.5; },
@@ -236,6 +239,22 @@ window.Efekt = (() => {
     hu: () => { ton(400, 0.32, { guc: 0.14, kayma: 0.9 }); ton(380, 0.5, { guc: 0.14, gecikme: 0.45, kayma: 0.85 }); },
     cik: () => tekrar(4, 0.16, (g) => ton(2600, 0.07, { gecikme: g, guc: 0.08, kayma: 1.35 })),
     cay: () => { ton(3200, 0.5, { guc: 0.05, tur: 'triangle' }); ton(3200, 0.5, { guc: 0.05, tur: 'triangle', gecikme: 0.3 }); gurultu(0.8, { frekans: 5000, tur: 'highpass', guc: 0.03, gecikme: 0.4 }); },
+    // Canavar: iştahlı "ham-nyam-nyam-mmm" (çıtır ısırık + ağız dolu mırıltı)
+    nyam: () => {
+      tekrar(4, 0.24, (g, i) => {
+        gurultu(0.06, { frekans: 2200 - i * 150, q: 0.8, guc: 0.24, gecikme: g });
+        vizilti(0.15, { f0: 150 - i * 8, formant: [[650, 5, 1], [1200, 6, 0.45]], guc: 0.14, gecikme: g + 0.05 });
+      });
+      vizilti(0.45, { f0: 175, formant: [[280, 4, 1]], guc: 0.16, gecikme: 1.0 });
+      vizilti(0.25, { f0: 210, formant: [[280, 4, 1]], guc: 0.13, gecikme: 1.42 });
+    },
+    // İstemediği kurabiyeyi tadarken kuşkulu "hı-ıh"
+    hmm: () => { vizilti(0.18, { f0: 160, formant: [[300, 4, 1]], guc: 0.12 }); vizilti(0.22, { f0: 120, formant: [[300, 4, 1]], guc: 0.12, gecikme: 0.22 }); },
+    // Tükürme: "ptuh!" patlaması + "bıııh" iğrenme
+    tukur: () => {
+      gurultu(0.08, { frekans: 2600, q: 0.7, guc: 0.32 });
+      vizilti(0.4, { f0: 140, formant: [[500, 5, 1], [1500, 7, 0.4]], guc: 0.12, titresim: 18, gecikme: 0.1 });
+    },
     cop: () => { ton(220, 0.18, { kayma: 0.4, guc: 0.2 }); gurultu(0.12, { frekans: 600, guc: 0.08 }); },
     aii: () => { ton(620, 0.35, { tur: 'sawtooth', guc: 0.06, kayma: 0.6 }); ton(360, 0.4, { tur: 'sawtooth', guc: 0.06, kayma: 1.6, gecikme: 0.38 }); },
     fis: () => tekrar(4, 0.2, (g) => gurultu(0.14, { frekans: 3500, guc: 0.08, gecikme: g })),
@@ -267,7 +286,9 @@ window.Efekt = (() => {
   return Object.freeze({
     ac,
     karakter: (ad) => { if (KARAKTER[ad]) KARAKTER[ad](); },
-    fonemVar: (h) => !!FONEM[h],
+    // Sentez fonemleri hoparlörde çok kısık/belirsiz kaldı (kullanıcı testi 2026-11-15): harf sesi
+    // şimdilik cihaz sesiyle kısa hece ("mı", "kı") okunur. Klon kaydı (sesler.json) hep önceliklidir.
+    fonemVar: (h) => SENTEZLE && !!FONEM[h],
     /** Harfin sesini sentezler; süreyi (sn) döner. Ses kartı yoksa 0. */
     fonem: (h) => { ac(); return ctx && FONEM[h] ? FONEM[h]() : 0; },
     tut: () => ton(660, 0.08, { guc: 0.07 }),

@@ -411,7 +411,8 @@ window.CIZIMLER = (() => {
     await Promise.all(yan.map((e) => sonuk(e, 350)));
   }
 
-  async function genelOynat(t, s, { sihir = () => {}, kelime = () => {} } = {}) {
+  /* kal: sonunda harfe geri dönme (albüm); sessiz: karakter sesi çalma */
+  async function genelOynat(t, s, { sihir = () => {}, kelime = () => {}, kal = false, sessiz = false } = {}) {
     const renk = s.dataset.renk;
     const harf = s.querySelector('.harf');
     const yollar = [...harf.querySelectorAll('.hy')];
@@ -419,13 +420,13 @@ window.CIZIMLER = (() => {
     for (const y of yollar) await ciz(y, Math.max(260, Math.min(800, y.getTotalLength() * 2.6)));
     yollar.forEach((y) => { y.getAnimations().forEach((a) => a.cancel()); y.style.strokeDasharray = ''; });
     await bekle(220);
-    if (t.yan) await yandanGoster(t, s, yollar, renk, sihir);
+    if (t.yan) await yandanGoster({ ...t, ses: sessiz ? null : t.ses }, s, yollar, renk, sihir);
     else { sihir(); renkle(t, yollar, renk, false); }
     const isler = [];
     if (t.donus) isler.push(dondur(harf, 0, t.donus, 650));
     for (const [i, d] of Object.entries(t.bicim || {})) isler.push(bicimle(yollar[i], d, 650));
     await Promise.all(isler);
-    if (!t.yan) efekt(t.ses);
+    if (!t.yan && !sessiz) efekt(t.ses);
     await Promise.all(susler.map((e, i) => { e.style.opacity = ''; return buyu(e, 460, i * 80); }));
     if (t.salla) {
       const deger = `-${t.salla.aci} ${t.salla.merkez};${t.salla.aci} ${t.salla.merkez};-${t.salla.aci} ${t.salla.merkez}`;
@@ -435,7 +436,7 @@ window.CIZIMLER = (() => {
     }
     s.classList.add('canli', t.bosta || 'zipla');
     kelime();
-    if (!t.geri) return;
+    if (!t.geri || kal) return;
     await bekle(1500);
     s.classList.remove('canli');
     await Promise.all(susler.map((e) => sonuk(e, 400)));
@@ -481,7 +482,7 @@ window.CIZIMLER = (() => {
         <path d="M95 104 L105 104 L100 114 Z" fill="#FFB703"/>
         <path d="M92 152 l-6 10 M108 152 l6 10" stroke="#FFB703" stroke-width="4" stroke-linecap="round"/>
       </g>`),
-    async oynat(s, { sihir = () => {}, kelime = () => {} } = {}) {
+    async oynat(s, { sihir = () => {}, kelime = () => {}, sessiz = false } = {}) {
       const kanat = s.querySelector('.m-cizgi');
       await ciz(kanat, 900);
       await bekle(250);
@@ -489,7 +490,7 @@ window.CIZIMLER = (() => {
       kanat.animate([{ stroke: '#1D63D8' }, { stroke: '#6B7C93' }], { duration: 500, fill: 'forwards' });
       await bicimle(kanat, KANAT_YUKARI, 550);
       kanat.setAttribute('d', KANAT_YUKARI);
-      efekt('kanat');
+      if (!sessiz) efekt('kanat');
       await buyu(s.querySelector('.m-govde'), 450);
       kelime();
     },

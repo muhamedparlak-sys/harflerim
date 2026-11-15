@@ -118,6 +118,7 @@
     harfKart.style.setProperty('--gecikme', `${durum.aile.length * 60}ms`);
     harfKart.addEventListener('click', harflerAc);
     kap.append(harfKart);
+    if (window.Oyunlar) kap.append(...window.Oyunlar.kartlar(durum.aile.length + 1));
   }
 
   /* ---------- oyun ---------- */
@@ -223,23 +224,30 @@
   }
 
   /* ---------- sürükle-bırak ---------- */
+  /*
+   * Sürükleme olayları pencereye bağlanır: parmak taşın dışına çıksa ya da yakalama kaybolsa da
+   * bırakma her zaman yakalanır (yoksa taş havada kalıyor, doğru harf yerine oturmuyordu).
+   */
   function tasBas(e) {
     const o = durum.oyun;
-    if (!o || o.bitti || durum.surukleme) return;
+    if (!o || o.bitti) return;
+    if (durum.surukleme) tasGeriGonder(suruklemeBitir().tas); // yarım kalmış eski sürükleme
     window.Efekt.ac();
     sayacDurdur();
     const tas = e.currentTarget;
     e.preventDefault();
     try { tas.setPointerCapture(e.pointerId); } catch { /* bazı tarayıcılar yakalamayı desteklemez */ }
-    durum.surukleme = { tas, id: e.pointerId, x0: e.clientX, y0: e.clientY, dx: 0, dy: 0, oynadi: false };
-    tas.addEventListener('pointermove', tasOynat);
-    tas.addEventListener('pointerup', tasBirak);
-    tas.addEventListener('pointercancel', tasIptal);
+    durum.surukleme = { tas, id: e.pointerId, x0: e.clientX, y0: e.clientY, x: e.clientX, y: e.clientY, dx: 0, dy: 0, oynadi: false };
+    window.addEventListener('pointermove', tasOynat);
+    window.addEventListener('pointerup', tasBirak);
+    window.addEventListener('pointercancel', tasIptal);
   }
 
   function tasOynat(e) {
     const s = durum.surukleme;
     if (!s || e.pointerId !== s.id) return;
+    s.x = e.clientX;
+    s.y = e.clientY;
     s.dx = e.clientX - s.x0;
     s.dy = e.clientY - s.y0;
     if (!s.oynadi && Math.hypot(s.dx, s.dy) > SURUKLEME_ESIGI) {
@@ -252,9 +260,9 @@
 
   function suruklemeBitir() {
     const s = durum.surukleme;
-    s.tas.removeEventListener('pointermove', tasOynat);
-    s.tas.removeEventListener('pointerup', tasBirak);
-    s.tas.removeEventListener('pointercancel', tasIptal);
+    window.removeEventListener('pointermove', tasOynat);
+    window.removeEventListener('pointerup', tasBirak);
+    window.removeEventListener('pointercancel', tasIptal);
     s.tas.classList.remove('suruklenen');
     durum.surukleme = null;
     return s;
@@ -264,12 +272,15 @@
     if (!durum.surukleme || e.pointerId !== durum.surukleme.id) return;
     const s = suruklemeBitir();
     if (!s.oynadi) { harfiTani(s.tas.dataset.h, s.tas); sayacKur(); return; }
-    birakildi(s.tas);
+    birakildi(s.tas, e.clientX, e.clientY);
   }
 
+  /** iPad bazen bırakma yerine "iptal" gönderir: taş sürüklendiyse son konumunda bırakılmış say. */
   function tasIptal(e) {
     if (!durum.surukleme || e.pointerId !== durum.surukleme.id) return;
-    tasGeriGonder(suruklemeBitir().tas);
+    const s = suruklemeBitir();
+    if (s.oynadi) { birakildi(s.tas, s.x, s.y); return; }
+    tasGeriGonder(s.tas);
     sayacKur();
   }
 
@@ -279,14 +290,19 @@
     tas.animate([{ transform: nereden }, { transform: 'none' }], { duration: 340, easing: 'cubic-bezier(.3,1.4,.5,1)' });
   }
 
-  function birakildi(tas) {
+  /** Taşın ortası ya da parmağın kendisi sıradaki kutuya yeterince yakınsa bırakma geçerlidir. */
+  function birakildi(tas, parmakX, parmakY) {
     const o = durum.oyun;
     const hedef = o.kutular[o.sira];
     const h = tas.dataset.h;
     const t = tas.getBoundingClientRect();
     const k = hedef.getBoundingClientRect();
-    const uzaklik = Math.hypot(t.left + t.width / 2 - (k.left + k.width / 2), t.top + t.height / 2 - (k.top + k.height / 2));
-    if (o.kilit || uzaklik > Math.max(k.width, 70) * 1.2) { tasGeriGonder(tas); sayacKur(); return; }
+    const kx = k.left + k.width / 2;
+    const ky = k.top + k.height / 2;
+    const tasUzak = Math.hypot(t.left + t.width / 2 - kx, t.top + t.height / 2 - ky);
+    const parmakUzak = Math.hypot(parmakX - kx, parmakY - ky);
+    const sinir = Math.max(k.width, 70) * 1.6;
+    if (o.kilit || Math.min(tasUzak, parmakUzak) > sinir) { tasGeriGonder(tas); sayacKur(); return; }
     if (h !== o.harfler[o.sira]) { yanlisHarf(tas, hedef, h); return; }
     yerlestir(tas, hedef, h);
   }
@@ -345,8 +361,12 @@
     const yazilan = o.harfler.slice(0, o.sira).join('').trim();
     const parca = [...yazilan].length === 1 ? harfSesi(yazilan) : KUCUK(yazilan);
     const bilgi = window.HARF_BUL.get(h);
+    /* Harfi zaten biliyorsa (kendi başına 3 kez bulduysa) karakter gösterilmez; isim akıp gitsin. */
+    const biliyor = ((durum.ilerleme[h] || {}).dogru || 0) > OGRENDI_ESIGI;
     window.Konus.sustur();
-    if (durum.ayar.donusum && bilgi) {
+    if (biliyor) {
+      window.Gorsel.kalpler(kutu, 3);
+    } else if (durum.ayar.donusum && bilgi) {
       harfVeKelimeSoyle(h);
       await donustur(h, kutu);
     } else {
@@ -513,6 +533,7 @@
     else yeni = { ...eski, yardimla: (eski.yardimla || 0) + 1 };
     durum.ilerleme = { ...durum.ilerleme, [h]: yeni };
     kaydet('ilerleme', durum.ilerleme);
+    if ((eski.dogru || 0) < OGRENDI_ESIGI && yeni.dogru >= OGRENDI_ESIGI && window.Oyunlar) window.Oyunlar.yeniCikartma(h);
   }
 
   function ilerlemeOzeti() {
@@ -555,6 +576,7 @@
   }
 
   function evDon() {
+    if (window.Oyunlar) window.Oyunlar.durdur();
     window.Konus.sustur();
     sayacDurdur();
     durum.oyun = null;
@@ -737,6 +759,16 @@
   }
 
   /* ---------- açılış ---------- */
+  /* Oyun modları (oyunlar.js) bu küçük arayüzü kullanır. */
+  window.Harflerim = Object.freeze({
+    el, bekle, goster, tur, karistir, bildir, kaydet, ekranAc, renkliAd,
+    harfSesi, harfVeKelimeSoyle, donustur, ilerlemeYaz, evDon, OGRENDI_ESIGI,
+    ilerleme: () => durum.ilerleme,
+    aile: () => durum.aile,
+    yuz,
+    aileHarfleri: () => new Set(durum.aile.flatMap((k) => [...k.name]).filter((h) => window.HARF_BUL.has(h))),
+  });
+
   async function yukle() {
     try {
       const [ayar, aile, yildiz, ilerleme] = await Promise.all(['ayar', 'aile', 'yildiz', 'ilerleme'].map((k) => window.Depo.oku(k)));

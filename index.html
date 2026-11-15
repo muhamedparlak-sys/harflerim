@@ -62,7 +62,58 @@
       <h2 class="bolum-baslik">💛 Ailemizin harfleri</h2>
       <div id="aile-harfleri" class="harf-izgara"></div>
     </section>
+
+    <section id="av" class="ekran mod-ekran" hidden>
+      <div class="cubuk">
+        <button class="geri" type="button" data-geri aria-label="Ana sayfa">🏠</button>
+        <button id="av-tekrar" class="geri" type="button" aria-label="Sesi tekrar dinle">🔊</button>
+        <div id="av-ilerleme" class="noktalar" aria-hidden="true"></div>
+      </div>
+      <div id="av-alan" class="av-alan"></div>
+    </section>
+
+    <section id="besle" class="ekran mod-ekran" hidden>
+      <div class="cubuk">
+        <button class="geri" type="button" data-geri aria-label="Ana sayfa">🏠</button>
+        <button id="besle-tekrar" class="geri" type="button" aria-label="Sesi tekrar dinle">🔊</button>
+        <div id="besle-ilerleme" class="noktalar" aria-hidden="true"></div>
+        <div class="yem-kutu"><span id="canavar-yem" class="yem-sayi"></span><span id="canavar-cubuk" class="yem-cubuk"><i></i></span></div>
+      </div>
+      <div class="besle-alan">
+        <div class="canavar-kap">
+          <div id="canavar" class="canavar"></div>
+          <div id="canavar-istek" class="istek" aria-hidden="true"></div>
+        </div>
+        <div id="besle-tepsi" class="besle-tepsi"></div>
+      </div>
+    </section>
+
+    <section id="bilmece" class="ekran mod-ekran" hidden>
+      <div class="cubuk">
+        <button class="geri" type="button" data-geri aria-label="Ana sayfa">🏠</button>
+        <button id="bilmece-tekrar" class="geri" type="button" aria-label="Resimlerin adlarını dinle">🔊</button>
+      </div>
+      <div id="bilmece-cevap" class="bilmece-cevap" hidden></div>
+      <div id="bilmece-kartlar" class="bilmece-kartlar"></div>
+      <div id="bilmece-tepsi" class="besle-tepsi bilmece-tepsi"></div>
+    </section>
+
+    <section id="album" class="ekran" hidden>
+      <div class="cubuk">
+        <button class="geri" type="button" data-geri aria-label="Ana sayfa">🏠</button>
+        <h2 id="album-baslik" class="bolum-baslik"></h2>
+      </div>
+      <div id="album-izgara" class="album-izgara"></div>
+    </section>
   </main>
+
+  <div id="mod-bitti" class="mod-bitti" hidden>
+    <div class="mod-bitti-kutu">
+      <span class="bitti-emoji">🏆</span>
+      <button id="mod-bitti-tekrar" class="buyuk-dugme" type="button">🔁 Tekrar</button>
+      <button class="buyuk-dugme ikinci" type="button" data-geri>🏠 Ana sayfa</button>
+    </div>
+  </div>
 
   <div id="sahne" class="sahne" aria-hidden="true"></div>
   <canvas id="konfeti" class="konfeti" hidden></canvas>
@@ -107,6 +158,7 @@
   <script src="ses.js"></script>
   <script src="gorsel.js"></script>
   <script src="cizimler.js"></script>
+  <script src="oyunlar.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
