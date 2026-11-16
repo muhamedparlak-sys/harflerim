@@ -4,7 +4,8 @@
  * Her harf bir tanımdır (aşağıda TANIM). Alanlar:
  *   cizgiler  harfin çizgileri, yazılış sırasıyla (viewBox 0 0 200 240, harf merkezi 100,120)
  *   yan       dönmeden önce kısa süre görünen süsler (B: yandan baykuş, sonra ekrana döner)
- *   donus     çizildikten sonra harfin dönme açısı (B yan döner → baykuş gözleri)
+ *   donus     çizildikten sonra harfin dönme açısı (artık kullanılmıyor: harf hep dik kalsın, çocuk harfi görsün)
+ *   susDonus  arka/on süslerini harf merkezinde döndürür (B: baykuş kafasını yana yatırır, harf dik kalır)
  *   bicim     { çizgiNo: yeniYol } harf çizgisinin biçim değiştirmesi (aynı komut dizisi)
  *   arka / on harfin arkasına / önüne gelen süsler (dönmüş hâle göre konumlu)
  *   renk(ler), kalinlik(lar)  dönüşümden sonra çizgilerin rengi / kalınlığı
@@ -102,16 +103,13 @@ window.CIZIMLER = (() => {
       bicim: { 1: 'M62 132 Q100 146 138 132' }, renkler: ['#5E6472', '#5E6472'], kalinliklar: [7, 5],
       bosta: 'ag-salla', ses: 'ag',
       arka: agAgi(),
-      on: `<g><g class="orumcek-in"><path d="M137 72 L137 146" stroke="#5E6472" stroke-width="2"/>
-        <path class="bacak" d="M126 152 L110 140 M126 160 L106 160 M126 168 L110 182 M148 152 L164 140 M148 160 L168 160 M148 168 L164 182"
-          fill="none" stroke="#2B2D42" stroke-width="4" stroke-linecap="round"/>
-        <ellipse cx="137" cy="162" rx="12" ry="15" fill="#2B2D42"/><circle cx="137" cy="146" r="8" fill="#2B2D42"/>
-        <circle cx="134" cy="145" r="2.4" fill="#fff"/><circle cx="140" cy="145" r="2.4" fill="#fff"/></g></g>
-        <g fill="#BDE0FE"><circle cx="72" cy="90" r="4"/><circle cx="118" cy="190" r="5"/><circle cx="40" cy="160" r="4"/></g>`,
+      /* ağda örümcek yok (A'yı Ö örümceğiyle karıştırıyordu); yalnızca çiy damlaları */
+      on: `<g fill="#BDE0FE"><circle cx="72" cy="90" r="4"/><circle cx="118" cy="190" r="5"/><circle cx="40" cy="160" r="4"/></g>`,
     },
     B: {
       cizgiler: ['M60 30 L60 210', 'M60 30 L105 30 Q150 30 150 75 Q150 120 105 120 L60 120', 'M60 120 L112 120 Q160 120 160 165 Q160 210 112 210 L60 210'],
-      donus: -90, renk: '#5C3A21', geri: true, bosta: 'kafa', ses: 'hu',
+      /* baykuş kafasını yana yatırır (baykuşlar kafasını çevirir): B dik kalır, iki göbeği iki göz */
+      susDonus: 90, renk: '#5C3A21', geri: true, bosta: 'kafa', ses: 'hu',
       yan: `<path d="M60 18 Q30 22 30 70 L30 200 Q34 226 70 224 L118 224 Q178 220 182 162 Q184 126 156 118 Q180 104 176 66 Q170 20 112 18Z" fill="#B07A4F"/>
         <path d="M56 26 L40 -14 L86 22Z" fill="#8C5A3A"/>
         <circle cx="106" cy="76" r="26" fill="#FFF3C4"/><circle cx="116" cy="76" r="11" fill="#2B1D16"/><circle cx="120" cy="72" r="3.5" fill="#fff"/>
@@ -151,9 +149,9 @@ window.CIZIMLER = (() => {
         <path d="M58 168 L52 154 L66 162Z" fill="#5E6472"/>`,
     },
     D: {
-      /* bir dilim domates: D yan döner, yarım dilim olur */
+      /* bir dilim domates: D dik durur, dilim onun etrafında dik durur */
       cizgiler: ['M60 30 L60 210', 'M60 30 L95 30 Q160 30 160 120 Q160 210 95 210 L60 210'],
-      donus: -90, renk: '#B5121B', kalinlik: 14, bosta: 'jole', ses: 'cop',
+      susDonus: 90, renk: '#B5121B', kalinlik: 14, bosta: 'jole', ses: 'cop',
       arka: `<circle cx="150" cy="44" r="38" fill="#E63946"/>
         <path d="M150 8 L140 -6 L152 2 L160 -10 L160 6 L176 2 L162 14 L138 14 L124 4Z" fill="#2D9A4E"/>
         <path d="M150 8 L152 -16" stroke="#2D9A4E" stroke-width="5" stroke-linecap="round"/>
@@ -165,31 +163,32 @@ window.CIZIMLER = (() => {
         <ellipse cx="116" cy="104" rx="5" ry="7"/><ellipse cx="124" cy="122" rx="5" ry="7"/><ellipse cx="136" cy="138" rx="5" ry="7"/></g>`,
     },
     E: {
-      /* ejderha: E sola yatar (-90°), sırtı olur; üç kolu sırt dikenleri (y=160 sırt, dikenler x=10/100/190) */
-      cizgiler: ['M150 30 L60 30 L60 210 L150 210', 'M60 120 L135 120'], donus: -90, renk: '#1D6F5F', kalinlik: 12,
+      /* ejderha başı: E dik durur; üst kol üst çene, alt kol alt çene, orta kol ağızdan çıkan ateş */
+      cizgiler: ['M150 30 L60 30 L60 210 L150 210', 'M60 120 L135 120'], renk: '#1D6F5F', kalinlik: 12,
       bosta: 'nefes', ses: 'kukre',
-      arka: `<path d="M-14 160 L10 62 L34 160Z M74 160 L100 78 L126 160Z M166 160 L190 62 L214 160Z" fill="#F4A261" stroke="#E07A2F" stroke-width="4" stroke-linejoin="round"/>
-        <path d="M0 196 Q-34 196 -40 166 L-56 156 L-44 148 L-38 132 Q-26 156 -2 172Z" fill="#2A9D8F"/>
-        <path d="M44 212 L40 238 L60 238 M150 212 L146 238 L166 238" fill="none" stroke="#1D6F5F" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
-        <ellipse cx="100" cy="190" rx="106" ry="34" fill="#2A9D8F"/>
-        <path d="M30 206 Q100 226 170 206" fill="none" stroke="#E9C46A" stroke-width="10" stroke-linecap="round"/>
-        <path d="M176 184 Q196 150 220 140" fill="none" stroke="#2A9D8F" stroke-width="30" stroke-linecap="round"/>
-        <path d="M212 120 L204 96 L222 116Z M230 118 L232 94 L242 118Z" fill="#E9C46A"/>
-        <ellipse cx="228" cy="140" rx="30" ry="22" fill="#2A9D8F"/><ellipse cx="254" cy="148" rx="18" ry="13" fill="#2A9D8F"/>`,
-      on: `<circle cx="226" cy="132" r="8" fill="#fff"/><circle cx="228" cy="133" r="4.5" fill="#1B1B1B"/>
-        <circle cx="262" cy="142" r="2.5" fill="#1D6F5F"/>
-        <path d="M244 156 Q256 162 268 154" fill="none" stroke="#1D6F5F" stroke-width="3" stroke-linecap="round"/>
-        <g><g class="ates-nefes"><path d="M270 150 Q292 132 306 146 Q324 136 334 152 Q320 160 334 170 Q312 172 304 166 Q290 176 270 158Z" fill="#FF7B00"/>
-          <path d="M272 152 Q290 144 300 152 Q312 148 318 156 Q304 162 298 160 Q288 166 272 156Z" fill="#FFD23F"/></g></g>`,
+      arka: `<path d="M-30 260 Q-10 200 30 186 L60 214 Q10 230 10 260Z" fill="#2A9D8F"/>
+        <path d="M26 70 L2 82 L26 96Z M24 120 L-2 132 L24 146Z M28 170 L4 184 L30 196Z" fill="#F4A261" stroke="#E07A2F" stroke-width="4" stroke-linejoin="round"/>
+        <path d="M60 18 Q22 40 22 120 Q22 200 60 222Z" fill="#2A9D8F"/>
+        <path d="M54 34 L54 4 Q66 -26 112 -22 Q166 -16 170 28 Z" fill="#2A9D8F"/>
+        <path d="M70 -14 L62 -44 L88 -20Z M96 -20 L100 -50 L116 -20Z" fill="#E9C46A"/>
+        <rect x="60" y="30" width="96" height="180" fill="#7B1E2B"/>
+        <path d="M54 206 L170 206 Q166 242 112 246 Q62 246 54 230Z" fill="#2A9D8F"/>`,
+      on: `<circle cx="116" cy="2" r="10" fill="#fff"/><circle cx="119" cy="3" r="5.5" fill="#1B1B1B"/><circle cx="121" cy="0" r="2" fill="#fff"/>
+        <circle cx="156" cy="12" r="3" fill="#1D6F5F"/>
+        <path d="M80 36 L87 52 L94 36Z M110 36 L117 52 L124 36Z M140 36 L146 50 L152 36Z M80 204 L87 188 L94 204Z M110 204 L117 188 L124 204Z M140 204 L146 190 L152 204Z" fill="#fff"/>
+        <g><g class="ates-nefes"><path d="M136 120 Q160 96 178 112 Q200 98 214 118 Q198 128 214 142 Q190 146 178 132 Q160 146 136 124Z" fill="#FF7B00"/>
+          <path d="M138 121 Q158 108 172 118 Q188 112 196 122 Q182 128 172 126 Q158 134 138 123Z" fill="#FFD23F"/></g></g>`,
     },
     F: {
-      cizgiler: ['M70 210 L70 30 L150 30', 'M70 115 L130 115'], donus: -90, renk: '#3A0CA3', kalinlik: 12, bosta: 'fircala', ses: 'fis',
-      arka: `<rect x="0" y="140" width="214" height="22" rx="11" fill="#4CC9F0"/>
-        <path d="M18 74 L18 140 M28 72 L28 140 M38 72 L38 140 M48 72 L48 140 M58 72 L58 140 M68 72 L68 140 M78 74 L78 140 M88 76 L88 140"
-          stroke="#fff" stroke-width="7" stroke-linecap="round"/>
-        <path d="M23 80 L23 140 M43 80 L43 140 M63 80 L63 140 M83 80 L83 140" stroke="#90E0EF" stroke-width="5" stroke-linecap="round"/>`,
-      on: `<path d="M12 70 Q16 40 38 54 Q50 28 68 50 Q86 32 96 60 Q98 74 84 72 L22 74 Q8 74 12 70Z" fill="#fff" stroke="#4EA8DE" stroke-width="4"/>
-        <path d="M24 64 Q50 50 86 60" fill="none" stroke="#E63946" stroke-width="5" stroke-linecap="round"/>`,
+      /* dik diş fırçası: F'nin dik çizgisi sap, iki kolu kıl demetinin üstü ve altı */
+      cizgiler: ['M70 210 L70 30 L150 30', 'M70 115 L130 115'], renk: '#3A0CA3', kalinlik: 12, bosta: 'fircala-dik', ses: 'fis',
+      arka: `<rect x="56" y="18" width="28" height="216" rx="14" fill="#4CC9F0"/>
+        <path d="M80 44 L140 44 M80 56 L144 56 M80 68 L140 68 M80 80 L144 80 M80 92 L140 92 M80 104 L136 104"
+          stroke="#fff" stroke-width="8" stroke-linecap="round"/>
+        <path d="M80 50 L136 50 M80 74 L136 74 M80 98 L132 98" stroke="#90E0EF" stroke-width="5" stroke-linecap="round"/>`,
+      on: `<path d="M142 40 Q172 36 166 58 Q182 70 166 82 Q178 98 160 106 Q148 112 142 104 Z" fill="#fff" stroke="#4EA8DE" stroke-width="4"/>
+        <path d="M152 46 Q164 70 152 100" fill="none" stroke="#E63946" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="70" cy="196" r="6" fill="#fff" opacity=".6"/>`,
     },
     G: {
       cizgiler: [G_YOL], renk: '#F28C00', bosta: 'nabiz', ses: 'parla',
@@ -231,23 +230,23 @@ window.CIZIMLER = (() => {
         <path d="M100 36 Q58 60 96 96 Q144 112 122 150 Q104 180 132 204" fill="none" stroke="#E63946" stroke-width="5" stroke-linecap="round"/>`,
     },
     J: {
-      cizgiler: ['M130 30 L130 160 Q130 210 85 210 Q50 210 45 175'], donus: 90, renk: '#457B9D', kalinlik: 12,
-      bosta: 'suzul', ses: 'jet', cikis: 'sag', cikisSesi: 'jet',
+      cizgiler: ['M130 30 L130 160 Q130 210 85 210 Q50 210 45 175'], susDonus: -90, renk: '#457B9D', kalinlik: 12,
+      bosta: 'suzul', ses: 'jet', cikis: 'yukari', cikisSesi: 'jet',
       arka: `<path d="M8 150 L10 66 L46 62 L84 118 L190 118 Q236 134 190 152Z" fill="#E9ECEF" stroke="#8D99AE" stroke-width="4"/>
         <path d="M96 146 L66 196 L108 196 L142 146Z" fill="#ADB5BD"/>`,
       on: `<g fill="#4CC9F0"><circle cx="110" cy="132" r="6"/><circle cx="132" cy="132" r="6"/><circle cx="154" cy="132" r="6"/><circle cx="176" cy="132" r="6"/></g>
         <g><g class="alev"><path d="M8 124 Q-34 136 8 148Z" fill="#FFB703"/></g></g>`,
     },
     K: {
-      cizgiler: ['M100 30 L100 210', 'M190 30 L102 125 L190 210'], renk: '#3B2C2A', kalinlik: 12, bosta: 'kanat', ses: 'pirpir', cikis: 'kelebek', cikisSesi: 'pirpir',
-      arka: `<path d="M102 120 L190 30 Q222 82 180 116 Q150 126 102 122Z" fill="#FF9F1C"/>
-        <path d="M102 128 L190 210 Q210 168 172 140 Q140 128 102 128Z" fill="#FFBF69"/>
-        <path d="M98 120 L10 30 Q-22 82 20 116 Q50 126 98 122Z" fill="#FF9F1C" stroke="#3B2C2A" stroke-width="10" stroke-linejoin="round"/>
-        <path d="M98 128 L10 210 Q-10 168 28 140 Q60 128 98 128Z" fill="#FFBF69" stroke="#3B2C2A" stroke-width="10" stroke-linejoin="round"/>`,
-      on: `<circle cx="150" cy="80" r="12" fill="#fff"/><circle cx="50" cy="80" r="12" fill="#fff"/>
-        <circle cx="150" cy="168" r="9" fill="#FF6F61"/><circle cx="50" cy="168" r="9" fill="#FF6F61"/>
-        <path d="M100 32 Q90 6 74 0 M100 32 Q110 6 126 0" fill="none" stroke="#3B2C2A" stroke-width="5" stroke-linecap="round"/>
-        <circle cx="74" cy="0" r="6" fill="#3B2C2A"/><circle cx="126" cy="0" r="6" fill="#3B2C2A"/>`,
+      cizgiler: ['M100 30 L100 210', 'M190 30 L102 125 L190 210'], renk: '#3B2C2A', kalinlik: 12, bosta: 'kanat-yan', ses: 'pirpir', cikis: 'kelebek', cikisSesi: 'pirpir',
+      /* yandan kelebek: K'nin dik çizgisi gövde, iki kolu üst ve alt kanadın kenarı (aynalama yok) */
+      arka: `<path d="M102 120 L190 30 Q236 70 206 112 Q170 132 102 122Z" fill="#FF9F1C"/>
+        <path d="M102 128 L190 210 Q222 170 186 140 Q150 124 102 128Z" fill="#FFBF69"/>`,
+      on: `<circle cx="160" cy="82" r="13" fill="#fff"/><circle cx="178" cy="100" r="7" fill="#fff"/>
+        <circle cx="166" cy="166" r="10" fill="#FF6F61"/>
+        <circle cx="100" cy="24" r="12" fill="#3B2C2A"/><circle cx="104" cy="21" r="3" fill="#fff"/>
+        <path d="M100 14 Q96 -6 82 -12 M104 14 Q112 -6 126 -10" fill="none" stroke="#3B2C2A" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="82" cy="-12" r="5" fill="#3B2C2A"/><circle cx="126" cy="-10" r="5" fill="#3B2C2A"/>`,
     },
     L: {
       cizgiler: ['M95 46 L95 210 L165 210'], renk: '#FF6F61', kalinlik: 10, bosta: 'gaga', ses: 'tak',
@@ -275,16 +274,19 @@ window.CIZIMLER = (() => {
         <path d="M92 138 Q102 146 112 138" fill="none" stroke="#3B2C2A" stroke-width="3" stroke-linecap="round"/>`,
     },
     'Ö': {
+      /* örümcek: Ö'nün iki noktası sapların ucundaki iki göz olur (yerinde kalır) */
       cizgiler: [O_YOL, nokta(72, 6), nokta(128, 6)],
-      bicim: { 1: nokta(80, 92), 2: nokta(120, 92) },
-      renkler: ['#2B2D42', '#fff', '#fff'], kalinliklar: [18, 32, 32], bosta: 'tikir', ses: 'tikir', cikis: 'kac', cikisSesi: 'tikirkos',
+      renkler: ['#2B2D42', '#fff', '#fff'], kalinliklar: [18, 34, 34], bosta: 'tikir', ses: 'tikir', cikis: 'kac', cikisSesi: 'tikirkos',
       arka: `<path class="bacak bacak-1" d="M44 86 Q10 56 -12 78 M43 140 Q6 150 -12 176 M159 112 Q196 102 216 124 M150 166 Q180 192 200 218"
           fill="none" stroke="#2B2D42" stroke-width="8" stroke-linecap="round"/>
         <path class="bacak bacak-2" d="M41 112 Q4 102 -16 124 M50 166 Q20 192 0 218 M156 86 Q190 56 212 78 M157 140 Q194 150 212 176"
           fill="none" stroke="#2B2D42" stroke-width="8" stroke-linecap="round"/>
+        <path d="M86 40 Q76 26 72 10 M114 40 Q124 26 128 10" fill="none" stroke="#2B2D42" stroke-width="7" stroke-linecap="round"/>
         <ellipse cx="100" cy="120" rx="60" ry="90" fill="#2B2D42"/>`,
-      on: `<circle cx="82" cy="94" r="6" fill="#2B2D42"/><circle cx="122" cy="94" r="6" fill="#2B2D42"/>
-        <path d="M84 132 Q100 146 116 132" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/>`,
+      on: `<circle cx="74" cy="8" r="7" fill="#2B2D42"/><circle cx="130" cy="8" r="7" fill="#2B2D42"/>
+        <circle cx="76" cy="5" r="2.5" fill="#fff"/><circle cx="132" cy="5" r="2.5" fill="#fff"/>
+        <path d="M80 126 Q100 144 120 126" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="72" cy="112" r="7" fill="#FF8FA3" opacity=".5"/><circle cx="128" cy="112" r="7" fill="#FF8FA3" opacity=".5"/>`,
     },
     P: {
       /* pamuk şeker: P'nin dik çizgisi çubuk, göbeği pembe pamuk */
@@ -335,7 +337,7 @@ window.CIZIMLER = (() => {
         <circle cx="154" cy="8" r="3" fill="#3B2C2A"/><circle cx="166" cy="8" r="3" fill="#3B2C2A"/></g></g>`,
     },
     U: {
-      cizgiler: [U_YOL], donus: 180, renk: '#1B1B1B', kalinlik: 10, bosta: 'emekle', ses: 'vizz',
+      cizgiler: [U_YOL], susDonus: 180, renk: '#1B1B1B', kalinlik: 10, bosta: 'emekle', ses: 'vizz',
       arka: `<path d="M45 200 L45 100 Q45 30 100 30 Q155 30 155 100 L155 200Z" fill="#E63946"/>
         <path d="M60 200 Q100 250 140 200Z" fill="#1B1B1B"/>
         <path d="M45 120 L18 108 M45 160 L16 166 M155 120 L182 108 M155 160 L184 166" stroke="#1B1B1B" stroke-width="7" stroke-linecap="round"/>`,
@@ -395,7 +397,8 @@ window.CIZIMLER = (() => {
     const renk = window.SESLI.has(h) ? '#E0363A' : '#1D63D8';
     const yollar = t.cizgiler.map((d) =>
       `<path class="hy" d="${d}" fill="none" stroke="${renk}" stroke-width="${KALIN}" stroke-linecap="round" stroke-linejoin="round"/>`).join('');
-    const s = svgYap(`<g class="arka">${t.arka || ''}</g><g class="yan">${t.yan || ''}</g><g class="harf">${yollar}</g><g class="on">${t.on || ''}</g>`);
+    const don = t.susDonus ? ` transform="rotate(${t.susDonus} ${MERKEZ})"` : '';
+    const s = svgYap(`<g class="arka"${don}>${t.arka || ''}</g><g class="yan">${t.yan || ''}</g><g class="harf">${yollar}</g><g class="on"${don}>${t.on || ''}</g>`);
     s.dataset.renk = renk;
     /* süsler harf çizilmeden görünmesin (yoksa uçuş sırasında karakter bir an önce görünür) */
     for (const ad of ['arka', 'yan', 'on']) katman(s, ad).forEach((e) => { e.style.opacity = '0'; });

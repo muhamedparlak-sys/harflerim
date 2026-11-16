@@ -7,7 +7,8 @@
  *   Kuaför         — 1) saç örme: ses hangi harfi söylüyorsa o tokalı tutam ortaya atılır; her atış sayılır.
  *                    2) tırnak: oje seç, beş tırnağı boya (bir, iki, … beş), üfle kurusun.
  *                    3) ayna: örgülü saç ve ojeli tırnaklarla sevinir.
- * Sonraki dükkânlar (pastane: kaç kişisiniz → dilimle, havuz, park) aynı sokağa eklenecek.
+ *   Restoran       — restoran.js: kaç kişisiniz, tabaklar, menü, dilimle, paylaştır.
+ * Sonraki yerler (hastane, okul, park, yüzme kursu, tenis) YERLER listesine eklenir.
  */
 window.Kasaba = (() => {
   'use strict';
@@ -18,8 +19,9 @@ window.Kasaba = (() => {
   const TIRNAK_SAYISI = 5;
   const SAYILAR = ['bir', 'iki', 'üç', 'dört', 'beş', 'altı', 'yedi', 'sekiz', 'dokuz', 'on'];
   const OJELER = ['#FF4F8B', '#B04BFF', '#FF8C1A', '#18B7A6', '#E0363A'];
-  const YURUME_MS = 2600;
-  const KONUM = Object.freeze({ ev: 20, kuafor: 76 });
+  const YURUME_MS_MIN = 900;
+  const YURUME_MS_YUZDE = 55; // dünya genişliğinin her %'si için
+  const ADIM_SESI_MS = 2500; // ses.js 'adim' 10 adım × 0,25 sn
 
   let kiz = { ...window.Kiz.VARSAYILAN };
   let yuklendi = false;
@@ -154,44 +156,99 @@ window.Kasaba = (() => {
     </svg>`;
   }
 
-  /** Sokak sahnesi. nereden: 'ev' (kapıdan çıkar) ya da 'kuafor' (dükkândan çıkar). */
+  function restoranSvg() {
+    let tente = '';
+    for (let i = 0; i < 8; i += 1) tente += `<path d="M${10 + i * 28} 130 h28 v24 q-14 14 -28 0Z" fill="${i % 2 ? '#fff' : '#E0363A'}"/>`;
+    return `<svg class="bina restoran-bina" viewBox="0 0 240 380" aria-hidden="true">
+      <rect x="170" y="10" width="26" height="60" fill="#B5674E" stroke="#7A5A50" stroke-width="4"/>
+      <g class="duman"><circle cx="183" cy="0" r="10" fill="#fff" opacity=".8"/><circle cx="196" cy="-16" r="13" fill="#fff" opacity=".6"/></g>
+      <rect x="10" y="60" width="220" height="320" rx="10" fill="#FFF6DC" stroke="#7A5A50" stroke-width="5"/>
+      <rect x="22" y="72" width="196" height="50" rx="10" fill="#fff" stroke="#E0363A" stroke-width="4"/>
+      ${tente}
+      <rect x="20" y="176" width="64" height="88" rx="8" fill="#CFEFFF" stroke="#7A5A50" stroke-width="4"/>
+      <rect x="156" y="176" width="64" height="88" rx="8" fill="#CFEFFF" stroke="#7A5A50" stroke-width="4"/>
+      <ellipse cx="52" cy="244" rx="24" ry="7" fill="#E0363A"/><text x="40" y="236" font-size="22">🍕</text>
+      <ellipse cx="188" cy="244" rx="24" ry="7" fill="#E0363A"/><text x="176" y="236" font-size="22">🍰</text>
+      <rect x="90" y="236" width="60" height="144" rx="8" fill="#5A3A30"/>
+      <g class="kapi-kanat"><rect x="94" y="240" width="52" height="140" rx="6" fill="#E9A23B" stroke="#5A3A30" stroke-width="3"/>
+        <rect x="102" y="252" width="36" height="50" rx="5" fill="#CFEFFF"/><circle cx="138" cy="320" r="5" fill="#FFD166"/></g>
+      <g class="zil"><path d="M120 216 q-10 0 -10 12 h20 q0 -12 -10 -12Z" fill="#FFD166" stroke="#B8860B" stroke-width="2"/></g>
+    </svg>`;
+  }
+
+  /*
+   * Sokaktaki yerler (soldan sağa). sol: binanın sol kenarı, kapi: kızın durduğu yer (dünya genişliğinin %'si).
+   * Yeni dükkân: buraya bir satır + açılış işlevi.
+   */
+  const YERLER = [
+    { ad: 'ev', sifre: 'EV', svg: apartmanSvg, sol: 3, kapi: 9 },
+    { ad: 'kuafor', sifre: 'KUAFÖR', tabela: 'KUAFÖR', svg: kuaforSvg, sol: 38, kapi: 46.5 },
+    { ad: 'restoran', sifre: 'RESTORAN', tabela: 'RESTORAN', svg: restoranSvg, sol: 72, kapi: 77.5 },
+  ];
+  const yerBul = (ad) => YERLER.find((y) => y.ad === ad) || YERLER[0];
+
+  function yerAc(ad, no) {
+    if (!canli(no)) return;
+    if (ad === 'kuafor') kuaforAc();
+    else if (ad === 'restoran') restoranAc();
+    else evIci('koridor');
+  }
+
+  /** Sokak sahnesi. nereden: çıkılan yerin adı ('ev', 'kuafor', 'restoran'). */
   async function sokak(nereden) {
     const no = ++oturum;
     H().ekranAc('kasaba');
     const alan = $('#kasaba-sokak');
-    const ev = H().el('button', { className: 'yapi yapi-ev', type: 'button', ariaLabel: 'Eve dön' });
-    ev.innerHTML = apartmanSvg();
-    const kuafor = H().el('button', { className: 'yapi yapi-kuafor', type: 'button', ariaLabel: 'Kuaför' });
-    kuafor.innerHTML = kuaforSvg();
-    const tabela = H().el('span', { className: 'tabela' }, H().renkliAd('KUAFÖR'));
-    kuafor.append(tabela);
+    const dunya = H().el('div', { className: 'dunya' });
+    const binalar = new Map();
+    for (const y of YERLER) {
+      const bina = H().el('button', { className: `yapi yapi-${y.ad}`, type: 'button', ariaLabel: y.tabela || 'Ev' });
+      bina.innerHTML = y.svg();
+      bina.style.left = `${y.sol}%`;
+      if (y.tabela) {
+        const tabela = H().el('span', { className: 'tabela' }, H().renkliAd(y.tabela));
+        tabela.addEventListener('click', (e) => { e.stopPropagation(); window.Konus.sustur(); konus(y.tabela.toLocaleLowerCase('tr')); });
+        bina.append(tabela);
+      }
+      binalar.set(y.ad, bina);
+    }
     const kizKap = H().el('div', { className: 'sokak-kiz iceride' }, [window.Kiz.on(kiz, { orgu: kiz.orgu, oje: kiz.oje })]);
-    kizKap.style.left = `${KONUM[nereden]}%`;
-    alan.replaceChildren(
-      H().el('div', { className: 'gunes-top' }), H().el('div', { className: 'bulut b1' }), H().el('div', { className: 'bulut b2' }),
-      ev, H().el('div', { className: 'agac a1' }), H().el('div', { className: 'agac a2' }), kuafor, kizKap,
-      H().el('div', { className: 'kaldirim' }),
+    kizKap.style.left = `${yerBul(nereden).kapi}%`;
+    const agac = (sol, olcek = 1) => { const a = H().el('div', { className: 'agac' }); a.style.left = `${sol}%`; a.style.scale = olcek; return a; };
+    dunya.append(
+      H().el('div', { className: 'gunes-top' }), H().el('div', { className: 'bulut b1' }), H().el('div', { className: 'bulut b2' }), H().el('div', { className: 'bulut b3' }),
+      ...binalar.values(), agac(20), agac(27, 0.8), agac(57), agac(64, 0.85), agac(93, 0.9), kizKap, H().el('div', { className: 'kaldirim' }),
     );
+    alan.replaceChildren(dunya);
+    takipEt(alan, kizKap, 0);
     let mesgul = true;
     const gidis = async (hedef) => {
       if (mesgul || !canli(no)) return;
       mesgul = true;
-      await yuru(kizKap, KONUM[hedef], no);
+      const yer = yerBul(hedef);
+      await yuru(kizKap, yer.kapi, no, alan);
       if (!canli(no)) return;
-      const acildi = await sifre(hedef === 'kuafor' ? 'KUAFÖR' : 'EV', no);
-      if (!acildi) { mesgul = false; return; }
-      if (hedef === 'kuafor') { await iceriGir(kuafor, kizKap, no); if (canli(no)) kuaforAc(); }
-      else { await iceriGir(ev, kizKap, no); if (canli(no)) evIci('koridor'); }
+      if (!(await sifre(yer.sifre, no))) { mesgul = false; return; }
+      await iceriGir(binalar.get(hedef), kizKap, no);
+      yerAc(hedef, no);
     };
-    ev.addEventListener('click', () => gidis('ev'));
-    kuafor.addEventListener('click', () => gidis('kuafor'));
-    tabela.addEventListener('click', (e) => { e.stopPropagation(); window.Konus.sustur(); konus('kuaför'); });
+    binalar.forEach((bina, ad) => bina.addEventListener('click', () => gidis(ad)));
 
-    await disariCik(nereden === 'ev' ? ev : kuafor, kizKap, no);
+    await disariCik(binalar.get(yerBul(nereden).ad), kizKap, no);
     if (!canli(no)) return;
     mesgul = false;
-    if (nereden === 'ev') konus('Günaydın! Bugün nereye gidelim? Kuaföre dokun.');
-    else konus('Ne güzel oldun! Eve dönmek için eve dokun.');
+    if (nereden === 'ev') konus('Günaydın! Bugün nereye gidelim? Sokağı kaydır, bir yere dokun.');
+    else konus('Şimdi nereye gidelim?');
+  }
+
+  /** Kamera kızı ortada tutsun (sure ms boyunca her karede). */
+  function takipEt(alan, kizKap, sure) {
+    const bitis = performance.now() + sure;
+    const adim = () => {
+      alan.scrollLeft = kizKap.offsetLeft - alan.clientWidth / 2;
+      if (performance.now() < bitis) requestAnimationFrame(adim);
+    };
+    adim();
   }
 
   /* ---------- kapı şifresi: kelimeyi harf harf yaz, kapı açılsın ---------- */
@@ -331,16 +388,27 @@ window.Kasaba = (() => {
     if (canli(no)) await kapiAc(bina, false);
   }
 
-  async function yuru(kizKap, hedef, no) {
+  async function yuru(kizKap, hedef, no, alan) {
     const simdi = parseFloat(kizKap.style.left) || 0;
-    if (Math.abs(simdi - hedef) < 1) return;
+    const yol = Math.abs(simdi - hedef);
+    if (yol < 1) return;
+    const sure = Math.round(YURUME_MS_MIN + yol * YURUME_MS_YUZDE);
     kizKap.classList.toggle('sola', hedef < simdi);
     kizKap.classList.add('yuruyor');
-    kizKap.style.transitionDuration = `${YURUME_MS}ms`;
+    kizKap.style.transitionDuration = `${sure}ms`;
     kizKap.style.left = `${hedef}%`;
-    window.Efekt.karakter('adim');
-    await H().bekle(YURUME_MS);
+    takipEt(alan, kizKap, sure);
+    for (let t = 0; t < sure; t += ADIM_SESI_MS) setTimeout(() => { if (canli(no)) window.Efekt.karakter('adim'); }, t);
+    await H().bekle(sure);
     if (canli(no)) kizKap.classList.remove('yuruyor', 'sola');
+  }
+
+  /* ---------- restoran (restoran.js) ---------- */
+  function restoranAc() {
+    const no = ++oturum;
+    H().ekranAc('restoran');
+    $('#restoran-cik').onclick = () => sokak('restoran');
+    window.Restoran.baslat({ kiz, canli: () => canli(no), say, konus, cik: () => sokak('restoran') });
   }
 
   /* ---------- kuaför ---------- */
@@ -354,7 +422,7 @@ window.Kasaba = (() => {
 
   /** Ekranın ortasında büyük rakam belirir ve sayı okunur. */
   function say(n) {
-    const kutu = $('#kuafor-sayi');
+    const kutu = $('#buyuk-sayi');
     kutu.textContent = String(n);
     kutu.classList.remove('goster'); void kutu.offsetWidth; kutu.classList.add('goster');
     window.Konus.sustur();
@@ -399,7 +467,8 @@ window.Kasaba = (() => {
         b.addEventListener('click', () => tokaSec(o, i, i === dogruTutam, b, kizSvg));
         return b;
       }));
-      kap.append(tokalar);
+      /* sesi duyduğu harfin karakteri de görünsün (ör. K → kelebek); dokununca adı okunur */
+      kap.append(tokalar, H().el('div', { className: 'orgu-ipucu' }, [harfResmi(o.hedef)]));
     }
     sahne.replaceChildren(kap);
   }

@@ -11,7 +11,8 @@ Kurulum gerektirmez: düz HTML + CSS + JavaScript, kütüphane yok, internetsiz 
 - **Yanlış harf**: kutuda kırmızı görünür, ✕ sallanır, uyarı sesi çalar ve oluşan kelime okunur (MU + M → "mum").
 - **Taşa dokunmak**: o harfin sesi ve karakteri gösterilir.
 - **Harf biçimli dönüşüm**: her harf önce yazılış sırasıyla çizilir, sonra kendi biçimini koruyarak o sesle başlayan
-  nesneye dönüşür ve hareket eder (B yan dönüp baykuş gözü olur, M martı olup uçar, Ö örümcek olup kaçar …).
+  nesneye dönüşür ve hareket eder (B baykuş, E ağzı açık ejderha, F dik diş fırçası, M martı olup uçar …).
+  Harf hiç yatmaz, hep okunur kalır; karakter harfin etrafında döner (`susDonus`).
 - **Harf sesleri**: sessizler adıyla değil sesiyle çalınır ("me" değil "mı"; tek sefer, tekrar yok).
   Cihaz sesi kısa hece okur ("mı", "kı"); klon sesle kayıt varsa o çalar (en iyisi bu).
   Ünlüsüz tarayıcı sentezi (`ses.js` → `FONEM`) hoparlörde kısık kaldığı için kapalı (`SENTEZLE = false`).
@@ -21,7 +22,8 @@ Kurulum gerektirmez: düz HTML + CSS + JavaScript, kütüphane yok, internetsiz 
   Kız apartmandan çıkar, sokakta yürür. Kapılar şifreli: **KUAFÖR**, **EV**, **ODA** harf harf yazılınca açılır (soluk harfler yol gösterir).
   Kuaförde saç örülür (ses hangi harfi söylüyorsa o tokalı tutam ortaya atılır, her atış sayılır: bir … altı),
   beş tırnak boyanır ve sayılır, üflenip kurutulur, sonra aynaya bakılır. Evde koridor, oda, dolap ve yatak var.
-  Sonraki dükkânlar: pastane (kaç kişisiniz → pastayı dilimle), havuz, park.
+  Restoranda "Kaç kişisiniz?" sorulur, misafirler ve tabaklar sayılır, pizza ya da pasta kişi sayısı kadar dilimlenir ve paylaştırılır.
+  Sokak yana kaydırılır; sonraki yerler: hastane, okul, park, yüzme kursu, tenis.
 - **Karakter sesleri ve hareketleri**: her karakterin kendi hareketi ve sesi var (jet uğultusu, zürafanın nal sesi, örümceğin tıkırtısı …).
 - **Yardım geri sayımı**: süre dolmaya yakın doğru taş zıplar; dolunca karakterine dönüşüp ekranda kaçar.
 - **HARFLER kartı**: "Yeni harfler" (aile adlarında olmayanlar) ve "Ailemizin harfleri".
@@ -64,4 +66,5 @@ Dosya adı yalnızca küçük harf, rakam, `-` ve `_` içerebilir (.mp3 .m4a .wa
 | Karakter hareketleri | `stil.css` (`.cizim.canli.<ad>`) |
 | Kendi karakteri (kız) | `kiz.js` |
 | Kasaba, kapı şifreleri, kuaför, ev | `kasaba.js`, `kasaba.css` |
+| Restoran | `restoran.js` |
 | Güncellemeden sonra | `sw.js` içindeki `ONBELLEK` sürümünü artır (ör. `harflerim-v4`) |

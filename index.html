@@ -135,7 +135,19 @@
         <span id="kuafor-ipucu" class="kuafor-ipucu"></span>
       </div>
       <div id="kuafor-sahne" class="kuafor-sahne"></div>
-      <div id="kuafor-sayi" class="kuafor-sayi" aria-live="polite"></div>
+    </section>
+
+    <section id="restoran" class="ekran kasaba-ekran" hidden>
+      <div class="cubuk">
+        <button class="geri" type="button" data-geri aria-label="Ana sayfa">🏠</button>
+        <button id="restoran-cik" class="geri" type="button" aria-label="Sokağa çık">🚪</button>
+        <button id="restoran-tekrar" class="geri" type="button" aria-label="Tekrar dinle">🔊</button>
+        <p id="restoran-balon" class="restoran-balon"></p>
+      </div>
+      <div class="restoran-sahne">
+        <div id="restoran-masa" class="restoran-masa"></div>
+        <div id="restoran-arac" class="restoran-arac"></div>
+      </div>
     </section>
 
     <section id="album" class="ekran" hidden>
@@ -167,6 +179,7 @@
     </div>
   </div>
 
+  <div id="buyuk-sayi" class="buyuk-sayi" aria-live="polite"></div>
   <div id="sahne" class="sahne" aria-hidden="true"></div>
   <canvas id="konfeti" class="konfeti" hidden></canvas>
   <div id="bildirim" class="bildirim" role="status" hidden></div>
@@ -212,6 +225,7 @@
   <script src="cizimler.js"></script>
   <script src="oyunlar.js"></script>
   <script src="kiz.js"></script>
+  <script src="restoran.js"></script>
   <script src="kasaba.js"></script>
   <script src="app.js"></script>
 </body>
