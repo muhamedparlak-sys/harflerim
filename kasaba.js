@@ -8,7 +8,8 @@
  *                    2) tırnak: oje seç, beş tırnağı boya (bir, iki, … beş), üfle kurusun.
  *                    3) ayna: örgülü saç ve ojeli tırnaklarla sevinir.
  *   Restoran       — restoran.js: kaç kişisiniz, tabaklar, menü, dilimle, paylaştır.
- * Sonraki yerler (hastane, okul, park, yüzme kursu, tenis) YERLER listesine eklenir.
+ *   Hastane        — hastane.js: kalp atışını say, yara bantla, harfli şurup, reçetedeki kadar kaşık.
+ * Sonraki yerler (okul, park, yüzme kursu, tenis) YERLER listesine eklenir.
  */
 window.Kasaba = (() => {
   'use strict';
@@ -176,14 +177,34 @@ window.Kasaba = (() => {
     </svg>`;
   }
 
+  function hastaneSvg() {
+    let pencere = '';
+    for (let kat = 0; kat < 3; kat += 1) {
+      for (const x of [26, 168]) pencere += `<rect x="${x}" y="${120 + kat * 52}" width="46" height="36" rx="5" fill="#BFE6FF" stroke="#7A5A50" stroke-width="4"/>`;
+    }
+    return `<svg class="bina hastane-bina" viewBox="0 0 240 380" aria-hidden="true">
+      <rect x="10" y="40" width="220" height="340" rx="10" fill="#F4F8FB" stroke="#7A5A50" stroke-width="5"/>
+      <rect x="0" y="30" width="240" height="18" rx="8" fill="#8FB8DE"/>
+      <rect x="22" y="56" width="196" height="46" rx="10" fill="#fff" stroke="#E0363A" stroke-width="4"/>
+      <g class="hastane-arti"><rect x="98" y="114" width="44" height="100" rx="8" fill="#E0363A"/><rect x="70" y="142" width="100" height="44" rx="8" fill="#E0363A"/></g>
+      ${pencere}
+      <rect x="86" y="262" width="68" height="118" rx="8" fill="#5A3A30"/>
+      <g class="kapi-kanat"><rect x="90" y="266" width="60" height="114" rx="6" fill="#8FB8DE" stroke="#5A3A30" stroke-width="3"/>
+        <rect x="98" y="276" width="44" height="48" rx="5" fill="#E4F4FF"/><circle cx="140" cy="334" r="5" fill="#FFD166"/></g>
+      <g class="zil"><path d="M120 236 q-10 0 -10 12 h20 q0 -12 -10 -12Z" fill="#FFD166" stroke="#B8860B" stroke-width="2"/></g>
+    </svg>`;
+  }
+
   /*
-   * Sokaktaki yerler (soldan sağa). sol: binanın sol kenarı, kapi: kızın durduğu yer (dünya genişliğinin %'si).
+   * Sokaktaki yerler (soldan sağa). sol: binanın sol kenarı (dünya genişliğinin %'si),
+   * kapi: kapının bina içindeki yeri (0 sol kenar … 1 sağ kenar); kızın durduğu yer ekranda ölçülür.
    * Yeni dükkân: buraya bir satır + açılış işlevi.
    */
   const YERLER = [
-    { ad: 'ev', sifre: 'EV', svg: apartmanSvg, sol: 3, kapi: 9 },
-    { ad: 'kuafor', sifre: 'KUAFÖR', tabela: 'KUAFÖR', svg: kuaforSvg, sol: 38, kapi: 46.5 },
-    { ad: 'restoran', sifre: 'RESTORAN', tabela: 'RESTORAN', svg: restoranSvg, sol: 72, kapi: 77.5 },
+    { ad: 'ev', sifre: 'EV', svg: apartmanSvg, sol: 2, kapi: 0.5 },
+    { ad: 'kuafor', sifre: 'KUAFÖR', tabela: 'KUAFÖR', svg: kuaforSvg, sol: 27, kapi: 0.79 },
+    { ad: 'restoran', sifre: 'RESTORAN', tabela: 'RESTORAN', svg: restoranSvg, sol: 52, kapi: 0.5 },
+    { ad: 'hastane', sifre: 'HASTANE', tabela: 'HASTANE', svg: hastaneSvg, sol: 77, kapi: 0.5 },
   ];
   const yerBul = (ad) => YERLER.find((y) => y.ad === ad) || YERLER[0];
 
@@ -191,6 +212,7 @@ window.Kasaba = (() => {
     if (!canli(no)) return;
     if (ad === 'kuafor') kuaforAc();
     else if (ad === 'restoran') restoranAc();
+    else if (ad === 'hastane') hastaneAc();
     else evIci('koridor');
   }
 
@@ -213,20 +235,22 @@ window.Kasaba = (() => {
       binalar.set(y.ad, bina);
     }
     const kizKap = H().el('div', { className: 'sokak-kiz iceride' }, [window.Kiz.on(kiz, { orgu: kiz.orgu, oje: kiz.oje })]);
-    kizKap.style.left = `${yerBul(nereden).kapi}%`;
     const agac = (sol, olcek = 1) => { const a = H().el('div', { className: 'agac' }); a.style.left = `${sol}%`; a.style.scale = olcek; return a; };
     dunya.append(
       H().el('div', { className: 'gunes-top' }), H().el('div', { className: 'bulut b1' }), H().el('div', { className: 'bulut b2' }), H().el('div', { className: 'bulut b3' }),
-      ...binalar.values(), agac(20), agac(27, 0.8), agac(57), agac(64, 0.85), agac(93, 0.9), kizKap, H().el('div', { className: 'kaldirim' }),
+      ...binalar.values(), agac(16), agac(21.5, 0.8), agac(41), agac(46.5, 0.85), agac(66), agac(71.5, 0.8), agac(93), kizKap, H().el('div', { className: 'kaldirim' }),
     );
     alan.replaceChildren(dunya);
+    /* kapının dünyadaki yeri (%): bina ekranda ölçülür, böylece her ekran boyunda kız kapının önünde durur */
+    const kapiYeri = (ad) => { const y = yerBul(ad); const b = binalar.get(y.ad); return ((b.offsetLeft + b.offsetWidth * y.kapi) / dunya.offsetWidth) * 100; };
+    kizKap.style.left = `${kapiYeri(nereden)}%`;
     takipEt(alan, kizKap, 0);
     let mesgul = true;
     const gidis = async (hedef) => {
       if (mesgul || !canli(no)) return;
       mesgul = true;
       const yer = yerBul(hedef);
-      await yuru(kizKap, yer.kapi, no, alan);
+      await yuru(kizKap, kapiYeri(yer.ad), no, alan);
       if (!canli(no)) return;
       if (!(await sifre(yer.sifre, no))) { mesgul = false; return; }
       await iceriGir(binalar.get(hedef), kizKap, no);
@@ -409,6 +433,14 @@ window.Kasaba = (() => {
     H().ekranAc('restoran');
     $('#restoran-cik').onclick = () => sokak('restoran');
     window.Restoran.baslat({ kiz, canli: () => canli(no), say, konus, cik: () => sokak('restoran') });
+  }
+
+  /* ---------- hastane (hastane.js) ---------- */
+  function hastaneAc() {
+    const no = ++oturum;
+    H().ekranAc('hastane');
+    $('#hastane-cik').onclick = () => sokak('hastane');
+    window.Hastane.baslat({ kiz, canli: () => canli(no), say, konus, harfResmi, harfHavuzu, cik: () => sokak('hastane') });
   }
 
   /* ---------- kuaför ---------- */

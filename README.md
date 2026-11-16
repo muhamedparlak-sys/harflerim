@@ -23,7 +23,8 @@ Kurulum gerektirmez: düz HTML + CSS + JavaScript, kütüphane yok, internetsiz 
   Kuaförde saç örülür (ses hangi harfi söylüyorsa o tokalı tutam ortaya atılır, her atış sayılır: bir … altı),
   beş tırnak boyanır ve sayılır, üflenip kurutulur, sonra aynaya bakılır. Evde koridor, oda, dolap ve yatak var.
   Restoranda "Kaç kişisiniz?" sorulur, misafirler ve tabaklar sayılır, pizza ya da pasta kişi sayısı kadar dilimlenir ve paylaştırılır.
-  Sokak yana kaydırılır; sonraki yerler: hastane, okul, park, yüzme kursu, tenis.
+  Hastanede (şifre HASTANE) hasta ayıcığın kalbi dinlenip atışlar sayılır, yaralara bant yapıştırılırken sayılır, duyulan harfin şurup şişesi bulunur ve reçetedeki rakam kadar kaşık verilir.
+  Sokak yana kaydırılır; sonraki yerler: plaj (yüzme, şifre PLAJ), okul, park, tenis.
 - **Karakter sesleri ve hareketleri**: her karakterin kendi hareketi ve sesi var (jet uğultusu, zürafanın nal sesi, örümceğin tıkırtısı …).
 - **Yardım geri sayımı**: süre dolmaya yakın doğru taş zıplar; dolunca karakterine dönüşüp ekranda kaçar.
 - **HARFLER kartı**: "Yeni harfler" (aile adlarında olmayanlar) ve "Ailemizin harfleri".
@@ -67,4 +68,5 @@ Dosya adı yalnızca küçük harf, rakam, `-` ve `_` içerebilir (.mp3 .m4a .wa
 | Kendi karakteri (kız) | `kiz.js` |
 | Kasaba, kapı şifreleri, kuaför, ev | `kasaba.js`, `kasaba.css` |
 | Restoran | `restoran.js` |
+| Hastane | `hastane.js` |
 | Güncellemeden sonra | `sw.js` içindeki `ONBELLEK` sürümünü artır (ör. `harflerim-v4`) |

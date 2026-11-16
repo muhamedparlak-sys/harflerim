@@ -33,7 +33,7 @@
 /* sokak */
 .sokak { position: relative; min-height: 70dvh; border-radius: 30px; overflow-x: auto; overflow-y: hidden; box-shadow: var(--golge); scrollbar-width: none; -webkit-overflow-scrolling: touch; }
 .sokak::-webkit-scrollbar { display: none; }
-.dunya { position: relative; width: max(220%, 1900px); height: 100%; min-height: 70dvh;
+.dunya { position: relative; width: max(260%, 2300px); height: 100%; min-height: 70dvh;
   background: linear-gradient(#8FD3FF 0 62%, #A6E07A 62% 80%, #CFC7BF 80%); }
 .gunes-top { position: absolute; top: 6%; left: 30%; width: 90px; height: 90px; border-radius: 50%; background: #FFD23F; box-shadow: 0 0 0 16px rgba(255, 210, 63, .3); animation: c-nabiz 3s ease-in-out infinite; }
 .bulut { position: absolute; width: 140px; height: 46px; border-radius: 999px; background: #fff; opacity: .9; animation: c-suz 8s ease-in-out infinite; }
@@ -50,6 +50,8 @@
 .kapi-acik .zil { animation: c-kafa .4s ease-in-out 2; }
 .duman { animation: c-buhar 2.4s ease-in-out infinite; }
 .yapi-restoran .tabela { top: 21%; }
+.yapi-hastane .tabela { top: 17%; }
+.hastane-arti { transform-box: fill-box; transform-origin: center; animation: c-nabiz 1.6s ease-in-out infinite; }
 .tabela { position: absolute; top: 15%; left: 12%; right: 12%; font-size: clamp(20px, 3.4vw, 40px); font-weight: 900; letter-spacing: .06em; text-align: center; }
 .agac { position: absolute; bottom: 20%; width: 70px; height: 150px; }
 .agac::before { content: ''; position: absolute; left: 28px; bottom: 0; width: 16px; height: 70px; border-radius: 6px; background: #9C6B45; }
@@ -193,3 +195,37 @@
 .menu-ad { font-size: 34px; font-weight: 900; letter-spacing: .05em; }
 .bicak { font-size: 90px; animation: c-sallan 1.2s ease-in-out infinite; }
 @media (max-width: 800px) { .restoran-sahne { grid-template-columns: 1fr; } .restoran-masa { height: 52dvh; } .restoran-arac { flex-direction: row; flex-wrap: wrap; } }
+
+/* hastane */
+.hastane-sahne { display: grid; grid-template-columns: minmax(90px, 16%) 1fr minmax(200px, 28%); gap: 16px; align-items: end; min-height: 70dvh; padding: 16px; border-radius: 30px;
+  background: linear-gradient(#E4F4FF 0 70%, #CFE6F5 70%); box-shadow: var(--golge); }
+.hastane-doktor { position: relative; align-self: end; }
+.hastane-doktor .kiz { width: 100%; }
+.hastane-doktor::after { content: '🩺'; position: absolute; top: 44%; left: 30%; font-size: clamp(30px, 4vw, 48px); }
+.hastane-ayi { min-width: 0; height: 60dvh; }
+.ayi { display: block; width: 100%; height: 100%; overflow: visible; }
+.ayi .yara { cursor: pointer; animation: c-nabiz 1s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.ayi .ates-isi { animation: c-buhar 1.4s ease-in-out infinite; }
+.ayi .kalp-yeri circle { transform-box: fill-box; transform-origin: center; }
+.ayi .kalp-yeri.atti circle { animation: kalp-at .6s ease-out; }
+@keyframes kalp-at { 0% { opacity: 0; transform: scale(.4); } 30% { opacity: .9; transform: scale(1.6); } 100% { opacity: 0; transform: scale(1); } }
+.ayi.sevin { animation: c-dans .6s ease-in-out 4; transform-origin: 50% 100%; }
+.hastane-arac { align-self: center; }
+.hastane-alet { font-size: 90px; width: 150px; height: 150px; border-radius: 50%; background: var(--kagit); box-shadow: var(--golge); animation: zipla 1.4s infinite; }
+.hastane-alet.kucuk { font-size: 34px; width: auto; height: auto; padding: 10px 20px; border-radius: 999px; animation: none; }
+.hastane-alet.takili { animation: c-nabiz .75s infinite; }
+.sayi-dugme.salla, .sise.salla { animation: titre .4s ease-in-out 2; }
+.hastane-ipucu .sifre-resim { width: 130px; height: 150px; border-radius: 24px; background: #fff; box-shadow: var(--golge); }
+.siseler { display: flex; gap: 14px; }
+.sise { display: flex; flex-direction: column; align-items: center; transition: transform .25s var(--yay); }
+.sise-kapak { width: 30px; height: 26px; border-radius: 6px 6px 2px 2px; background: #fff; border: 4px solid var(--renk); }
+.sise-govde { width: 76px; height: 96px; border-radius: 18px 18px 24px 24px; background: color-mix(in srgb, var(--renk) 30%, #fff); border: 5px solid var(--renk); display: grid; place-items: center; font-size: 48px; font-weight: 900; }
+.sise.secildi { transform: scale(1.18) rotate(-8deg); }
+.recete { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 14px 26px; background: #fff; border-radius: 14px; box-shadow: var(--golge); rotate: -3deg; }
+.recete-baslik { font-size: 34px; }
+.recete-rakam { font-size: 90px; font-weight: 900; color: var(--sessiz); line-height: 1; }
+.recete-kasik { font-size: 24px; }
+.kasik { font-size: 80px; width: 140px; height: 140px; border-radius: 50%; background: color-mix(in srgb, var(--renk, #FF6F9F) 25%, #fff); box-shadow: var(--golge); }
+.kasik.ver { animation: kasik-ver .7s ease-in-out; }
+@keyframes kasik-ver { 0%, 100% { transform: none; } 50% { transform: translate(-120%, -30%) rotate(-40deg); } }
+@media (max-width: 800px) { .hastane-sahne { grid-template-columns: 1fr; } .hastane-doktor { display: none; } .hastane-ayi { height: 46dvh; } }

@@ -173,6 +173,8 @@ window.Oyunlar = (() => {
     s.innerHTML = `${kanat}${boynuz}
       <ellipse cx="86" cy="222" rx="22" ry="10" fill="${renk}" stroke="#2B2D42" stroke-width="3"/><ellipse cx="154" cy="222" rx="22" ry="10" fill="${renk}" stroke="#2B2D42" stroke-width="3"/>
       <path d="M40 150 Q30 60 120 52 Q210 60 200 150 Q204 222 120 222 Q36 222 40 150Z" fill="${renk}" stroke="#2B2D42" stroke-width="4"/>
+      <ellipse class="cv-karin" cx="120" cy="194" rx="48" ry="24" fill="#fff" opacity=".4"/>
+      <g class="cv-gobek"><circle cx="120" cy="201" r="5" fill="#2B2D42" opacity=".5"/><path d="M113 196 q7 -6 14 0" fill="none" stroke="#2B2D42" stroke-width="2.5" stroke-linecap="round" opacity=".6"/></g>
       ${benek}${tac}
       <g class="cv-goz"><circle cx="92" cy="108" r="22" fill="#fff" stroke="#2B2D42" stroke-width="3"/><circle cx="148" cy="108" r="22" fill="#fff" stroke="#2B2D42" stroke-width="3"/>
         <circle class="cv-bebek" cx="96" cy="112" r="10" fill="#2B2D42"/><circle class="cv-bebek" cx="152" cy="112" r="10" fill="#2B2D42"/></g>
@@ -180,8 +182,8 @@ window.Oyunlar = (() => {
         <path d="M100 154 L106 162 L112 154Z M128 154 L134 162 L140 154Z" fill="#fff"/><ellipse cx="120" cy="170" rx="16" ry="5" fill="#FF6F91"/></g>
       <path d="M40 150 Q20 150 18 132" fill="none" stroke="#2B2D42" stroke-width="5" stroke-linecap="round"/>
       <path class="cv-sag-kol" d="M200 150 Q220 150 222 132" fill="none" stroke="#2B2D42" stroke-width="5" stroke-linecap="round"/>
-      <g class="cv-sivaz"><path d="M200 150 Q212 196 146 198" fill="none" stroke="#2B2D42" stroke-width="5" stroke-linecap="round"/>
-        <ellipse cx="140" cy="198" rx="14" ry="10" fill="${renk}" stroke="#2B2D42" stroke-width="3"/></g>`;
+      <g class="cv-sivaz"><path d="M200 150 Q208 176 178 182" fill="none" stroke="#2B2D42" stroke-width="5" stroke-linecap="round"/>
+        <ellipse cx="172" cy="182" rx="13" ry="10"fill="${renk}" stroke="#2B2D42" stroke-width="3"/></g>`;
     return s;
   }
 
@@ -370,7 +372,7 @@ window.Oyunlar = (() => {
     await H().bekle(1000);
     cv.classList.remove('cigne');
     if (!canli(m)) return;
-    // Doydu: karnını sıvazlar, "mmm"
+    // Doydu: göbekli karnının yanına pat pat vurur, "mmm"
     cv.classList.add('sivazla');
     window.Efekt.karakter('doydum');
     await H().bekle(1200);

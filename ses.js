@@ -289,6 +289,10 @@ window.Efekt = (() => {
     ufle: () => gurultu(1.2, { frekans: 900, q: 0.5, guc: 0.2, kayma: 0.6 }),
     kilit: () => { gurultu(0.04, { frekans: 2600, q: 4, guc: 0.25 }); gurultu(0.04, { frekans: 1900, q: 4, guc: 0.25, gecikme: 0.12 }); [784, 988, 1175].forEach((f, i) => ton(f, 0.2, { gecikme: 0.25 + i * 0.1, guc: 0.08, tur: 'triangle' })); },
     kes: () => { gurultu(0.35, { frekans: 2800, q: 2, guc: 0.16, kayma: 0.7 }); gurultu(0.05, { frekans: 1500, q: 3, guc: 0.2, gecikme: 0.33 }); },
+    // Hastane: "güm-güm" kalp atışı, yara bandı yapışması, şurup yudumu
+    kalpatisi: () => { ton(62, 0.14, { guc: 0.5, kayma: 0.7 }); ton(55, 0.16, { guc: 0.4, kayma: 0.7, gecikme: 0.2 }); },
+    bant: () => { gurultu(0.18, { frekans: 1800, q: 1.5, guc: 0.12, kayma: 0.5 }); ton(900, 0.08, { tur: 'triangle', guc: 0.05, gecikme: 0.2 }); },
+    yudum: () => { tekrar(2, 0.22, (g) => ton(320, 0.14, { guc: 0.12, kayma: 1.4, gecikme: g })); },
     cop: () => { ton(220, 0.18, { kayma: 0.4, guc: 0.2 }); gurultu(0.12, { frekans: 600, guc: 0.08 }); },
     aii: () => { ton(620, 0.35, { tur: 'sawtooth', guc: 0.06, kayma: 0.6 }); ton(360, 0.4, { tur: 'sawtooth', guc: 0.06, kayma: 1.6, gecikme: 0.38 }); },
     fis: () => tekrar(4, 0.2, (g) => gurultu(0.14, { frekans: 3500, guc: 0.08, gecikme: g })),
