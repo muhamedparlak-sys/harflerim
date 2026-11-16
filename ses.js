@@ -293,6 +293,9 @@ window.Efekt = (() => {
     kalpatisi: () => { ton(62, 0.14, { guc: 0.5, kayma: 0.7 }); ton(55, 0.16, { guc: 0.4, kayma: 0.7, gecikme: 0.2 }); },
     bant: () => { gurultu(0.18, { frekans: 1800, q: 1.5, guc: 0.12, kayma: 0.5 }); ton(900, 0.08, { tur: 'triangle', guc: 0.05, gecikme: 0.2 }); },
     yudum: () => { tekrar(2, 0.22, (g) => ton(320, 0.14, { guc: 0.12, kayma: 1.4, gecikme: g })); },
+    // Plaj: pompa 'fışş' (yükselen hava), suya giriş/kulaç şıpırtısı
+    pompa: () => { gurultu(0.35, { frekans: 700, q: 0.8, guc: 0.16, kayma: 2.2 }); ton(180, 0.12, { tur: 'square', guc: 0.03 }); },
+    sicrama: () => { gurultu(0.5, { frekans: 900, q: 0.6, guc: 0.22, kayma: 0.4 }); tekrar(3, 0.16, (g) => gurultu(0.12, { frekans: 2200, q: 2, guc: 0.08, gecikme: 0.2 + g })); },
     cop: () => { ton(220, 0.18, { kayma: 0.4, guc: 0.2 }); gurultu(0.12, { frekans: 600, guc: 0.08 }); },
     aii: () => { ton(620, 0.35, { tur: 'sawtooth', guc: 0.06, kayma: 0.6 }); ton(360, 0.4, { tur: 'sawtooth', guc: 0.06, kayma: 1.6, gecikme: 0.38 }); },
     fis: () => tekrar(4, 0.2, (g) => gurultu(0.14, { frekans: 3500, guc: 0.08, gecikme: g })),
