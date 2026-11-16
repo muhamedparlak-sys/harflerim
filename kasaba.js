@@ -197,6 +197,20 @@ window.Kasaba = (() => {
   /* ---------- kapı şifresi: kelimeyi harf harf yaz, kapı açılsın ---------- */
   const SIFRE_SASIRTMA = 3;
 
+  /** Kutunun altında harfin dönüştüğü karakter canlanır (K → kelebek); dokununca adı okunur. */
+  function harfResmi(h) {
+    const bilgi = window.HARF_BUL.get(h);
+    const kap = H().el('button', { className: 'sifre-resim', type: 'button', ariaLabel: bilgi ? bilgi.kelime : h });
+    const cizim = window.CIZIMLER && window.CIZIMLER[h];
+    if (cizim) {
+      const svg = cizim.olustur();
+      kap.append(svg);
+      requestAnimationFrame(() => cizim.oynat(svg, { sessiz: true, kal: true }).catch(() => {}));
+    } else if (bilgi) kap.textContent = bilgi.resim;
+    kap.addEventListener('click', () => { if (bilgi) { window.Konus.sustur(); konus(bilgi.kelime.toLocaleLowerCase('tr')); } });
+    return kap;
+  }
+
   /** Şifre panelini açar; kelime yazılınca true, vazgeçilince false. */
   function sifre(kelime, no, mesaj) {
     return new Promise((bitir) => {
@@ -206,6 +220,7 @@ window.Kasaba = (() => {
       let sira = 0;
       let hata = 0;
       const yuvalar = harfler.map((h) => H().el('span', { className: 'sifre-yuva' }, [H().el('span', { className: `hayalet ${H().tur(h)}`, textContent: H().goster(h) })]));
+      const resimler = harfler.map((h) => harfResmi(h));
       const bitis = (sonuc) => { panel.hidden = true; bitir(sonuc); };
       const tas = (h) => {
         const b = H().el('button', { className: `sifre-tas ${H().tur(h)}`, type: 'button', textContent: H().goster(h) });
@@ -237,7 +252,7 @@ window.Kasaba = (() => {
         });
         return b;
       };
-      $('#sifre-yuvalar').replaceChildren(...yuvalar);
+      $('#sifre-yuvalar').replaceChildren(...yuvalar.map((y, i) => H().el('span', { className: 'sifre-sutun' }, [y, resimler[i]])));
       $('#sifre-taslar').replaceChildren(...H().karistir([...harfler, ...sasirt]).map(tas));
       $('#sifre-kapat').onclick = () => bitis(false);
       $('#sifre-dinle').onclick = () => { window.Konus.sustur(); konus(kelime.toLocaleLowerCase('tr')); };

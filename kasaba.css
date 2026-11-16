@@ -67,9 +67,12 @@
 .acildi .sifre-kilit { animation: c-kafa .4s 2; }
 .sifre-yuvalar { display: flex; gap: 12px; }
 .sifre-yuva { width: 84px; height: 96px; border-radius: 18px; border: 4px dashed #E6CFC2; display: grid; place-items: center; font-size: 64px; font-weight: 900; }
-.sifre-yuva .hayalet { opacity: .2; }
+.sifre-sutun { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.sifre-resim { width: 96px; height: 112px; padding: 0; border-radius: 18px; background: #FFF6EF; font-size: 60px; }
+.sifre-resim .cizim { width: 100%; height: 100%; overflow: visible; }
+.sifre-yuva .hayalet { opacity: 0; }
 .sifre-yuva.ipucu { border-color: var(--gunes); animation: parla 1s infinite; }
-.sifre-yuva.ipucu .hayalet { opacity: .55; }
+.sifre-yuva.ipucu .hayalet { opacity: .4; }
 .sifre-yuva .dolu { animation: patla .45s var(--yay); }
 .acildi .sifre-yuva { border-style: solid; border-color: #6BCB77; background: #EFFBEF; }
 .sifre-taslar { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
@@ -140,5 +143,6 @@
   .yarat-izgara { grid-template-columns: 1fr; }
   .renk-dugme { width: 46px; height: 46px; }
   .sifre-yuva, .sifre-tas { width: 62px; height: 70px; font-size: 44px; }
+  .sifre-resim { width: 62px; height: 74px; }
   .toka { width: 66px; height: 66px; font-size: 38px; }
 }
