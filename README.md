@@ -17,6 +17,11 @@ Kurulum gerektirmez: düz HTML + CSS + JavaScript, kütüphane yok, internetsiz 
   Ünlüsüz tarayıcı sentezi (`ses.js` → `FONEM`) hoparlörde kısık kaldığı için kapalı (`SENTEZLE = false`).
 - Oyunlar: Harf Avı (sesi dinle, balonu patlat), Canavar (harfli kurabiyeleri yer, istemediğini tükürür; her lokmada şişer, turun sonunda patlar),
   Bilmece (tersten: resimlerin ilk seslerinden kelimeyi ya da aile adını bul), Çıkartma Albümü.
+- **Kasaba** (kendi karakteri): ten, saç, göz, elbise seçilir; her satır kilitli, kelimesi yazılınca açılır (TEN, SAÇ, GÖZ, ELBİSE).
+  Kız apartmandan çıkar, sokakta yürür. Kapılar şifreli: **KUAFÖR**, **EV**, **ODA** harf harf yazılınca açılır (soluk harfler yol gösterir).
+  Kuaförde saç örülür (ses hangi harfi söylüyorsa o tokalı tutam ortaya atılır, her atış sayılır: bir … altı),
+  beş tırnak boyanır ve sayılır, üflenip kurutulur, sonra aynaya bakılır. Evde koridor, oda, dolap ve yatak var.
+  Sonraki dükkânlar: pastane (kaç kişisiniz → pastayı dilimle), havuz, park.
 - **Karakter sesleri ve hareketleri**: her karakterin kendi hareketi ve sesi var (jet uğultusu, zürafanın nal sesi, örümceğin tıkırtısı …).
 - **Yardım geri sayımı**: süre dolmaya yakın doğru taş zıplar; dolunca karakterine dönüşüp ekranda kaçar.
 - **HARFLER kartı**: "Yeni harfler" (aile adlarında olmayanlar) ve "Ailemizin harfleri".
@@ -57,4 +62,6 @@ Dosya adı yalnızca küçük harf, rakam, `-` ve `_` içerebilir (.mp3 .m4a .wa
 | Harf biçimli çizimler | `cizimler.js` (`TANIM`) |
 | Karakter sesleri, harf sesleri | `ses.js` (`KARAKTER`, `FONEM`) |
 | Karakter hareketleri | `stil.css` (`.cizim.canli.<ad>`) |
+| Kendi karakteri (kız) | `kiz.js` |
+| Kasaba, kapı şifreleri, kuaför, ev | `kasaba.js`, `kasaba.css` |
 | Güncellemeden sonra | `sw.js` içindeki `ONBELLEK` sürümünü artır (ör. `harflerim-v4`) |

@@ -118,7 +118,8 @@
     harfKart.style.setProperty('--gecikme', `${durum.aile.length * 60}ms`);
     harfKart.addEventListener('click', harflerAc);
     kap.append(harfKart);
-    if (window.Oyunlar) kap.append(...window.Oyunlar.kartlar(durum.aile.length + 1));
+    if (window.Kasaba) kap.append(window.Kasaba.kart(durum.aile.length + 1));
+    if (window.Oyunlar) kap.append(...window.Oyunlar.kartlar(durum.aile.length + 2));
   }
 
   /* ---------- oyun ---------- */
@@ -577,6 +578,8 @@
 
   function evDon() {
     if (window.Oyunlar) window.Oyunlar.durdur();
+    if (window.Kasaba) window.Kasaba.durdur();
+    $('#sifre').hidden = true;
     window.Konus.sustur();
     sayacDurdur();
     durum.oyun = null;

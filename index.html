@@ -14,6 +14,7 @@
   <link rel="apple-touch-icon" href="simgeler/apple-touch-icon.png">
   <link rel="icon" href="simgeler/simge-192.png">
   <link rel="stylesheet" href="stil.css">
+  <link rel="stylesheet" href="kasaba.css">
 </head>
 <body>
   <main>
@@ -98,6 +99,45 @@
       <div id="bilmece-tepsi" class="besle-tepsi bilmece-tepsi"></div>
     </section>
 
+    <section id="kiz-yarat" class="ekran kasaba-ekran" hidden>
+      <div class="cubuk">
+        <button class="geri" type="button" data-geri aria-label="Ana sayfa">🏠</button>
+      </div>
+      <div class="yarat-izgara">
+        <div id="kiz-onizle" class="kiz-onizle"></div>
+        <div class="yarat-sag">
+          <div id="kiz-secenek" class="kiz-secenek"></div>
+          <button id="kiz-hazir" class="buyuk-dugme" type="button">✓ Hazırım!</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="kasaba" class="ekran kasaba-ekran" hidden>
+      <div class="cubuk">
+        <button class="geri" type="button" data-geri aria-label="Ana sayfa">🏠</button>
+      </div>
+      <div id="kasaba-sokak" class="sokak"></div>
+    </section>
+
+    <section id="evici" class="ekran kasaba-ekran" hidden>
+      <div class="cubuk">
+        <button class="geri" type="button" data-geri aria-label="Ana sayfa">🏠</button>
+        <button id="evici-cik" class="geri" type="button" aria-label="Sokağa çık">🚪</button>
+      </div>
+      <div id="evici-sahne" class="evici-sahne"></div>
+    </section>
+
+    <section id="kuafor" class="ekran kasaba-ekran" hidden>
+      <div class="cubuk">
+        <button class="geri" type="button" data-geri aria-label="Ana sayfa">🏠</button>
+        <button id="kuafor-cik" class="geri" type="button" aria-label="Sokağa çık">🚪</button>
+        <button id="kuafor-tekrar" class="geri" type="button" aria-label="Tekrar dinle">🔊</button>
+        <span id="kuafor-ipucu" class="kuafor-ipucu"></span>
+      </div>
+      <div id="kuafor-sahne" class="kuafor-sahne"></div>
+      <div id="kuafor-sayi" class="kuafor-sayi" aria-live="polite"></div>
+    </section>
+
     <section id="album" class="ekran" hidden>
       <div class="cubuk">
         <button class="geri" type="button" data-geri aria-label="Ana sayfa">🏠</button>
@@ -112,6 +152,18 @@
       <span class="bitti-emoji">🏆</span>
       <button id="mod-bitti-tekrar" class="buyuk-dugme" type="button">🔁 Tekrar</button>
       <button class="buyuk-dugme ikinci" type="button" data-geri>🏠 Ana sayfa</button>
+    </div>
+  </div>
+
+  <div id="sifre" class="sifre" hidden>
+    <div class="sifre-kutu">
+      <span class="sifre-kilit">🔒</span>
+      <div id="sifre-yuvalar" class="sifre-yuvalar"></div>
+      <div id="sifre-taslar" class="sifre-taslar"></div>
+      <div class="sifre-alt">
+        <button id="sifre-dinle" class="geri" type="button" aria-label="Şifreyi dinle">🔊</button>
+        <button id="sifre-kapat" class="geri" type="button" aria-label="Vazgeç">✖️</button>
+      </div>
     </div>
   </div>
 
@@ -159,6 +211,8 @@
   <script src="gorsel.js"></script>
   <script src="cizimler.js"></script>
   <script src="oyunlar.js"></script>
+  <script src="kiz.js"></script>
+  <script src="kasaba.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

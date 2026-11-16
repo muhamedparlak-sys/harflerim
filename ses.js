@@ -280,6 +280,14 @@ window.Efekt = (() => {
       vizilti(0.5, { f0: 150, formant: [[280, 4, 1]], guc: 0.15 });
       vizilti(0.3, { f0: 200, formant: [[280, 4, 1]], guc: 0.13, gecikme: 0.55 });
     },
+    // Kasaba: ayak sesleri (yürüme 2,6 sn), kapı gıcırtısı + tık, dükkân zili, saç hışırtısı, fırça, üfleme, kilit açılışı
+    adim: () => tekrar(10, 0.25, (g, i) => gurultu(0.05, { frekans: i % 2 ? 900 : 1100, q: 2, guc: 0.14, gecikme: g })),
+    kapi: () => { ton(420, 0.35, { tur: 'sawtooth', guc: 0.03, kayma: 1.4 }); gurultu(0.05, { frekans: 1800, q: 3, guc: 0.2, gecikme: 0.36 }); },
+    zil: () => { ton(1760, 0.6, { tur: 'triangle', guc: 0.07 }); ton(2093, 0.6, { tur: 'triangle', guc: 0.06, gecikme: 0.14 }); },
+    sac: () => gurultu(0.45, { frekans: 3500, q: 0.7, guc: 0.12, kayma: 0.6 }),
+    firca: () => tekrar(3, 0.12, (g) => gurultu(0.1, { frekans: 2500, q: 1.2, guc: 0.1, gecikme: g })),
+    ufle: () => gurultu(1.2, { frekans: 900, q: 0.5, guc: 0.2, kayma: 0.6 }),
+    kilit: () => { gurultu(0.04, { frekans: 2600, q: 4, guc: 0.25 }); gurultu(0.04, { frekans: 1900, q: 4, guc: 0.25, gecikme: 0.12 }); [784, 988, 1175].forEach((f, i) => ton(f, 0.2, { gecikme: 0.25 + i * 0.1, guc: 0.08, tur: 'triangle' })); },
     cop: () => { ton(220, 0.18, { kayma: 0.4, guc: 0.2 }); gurultu(0.12, { frekans: 600, guc: 0.08 }); },
     aii: () => { ton(620, 0.35, { tur: 'sawtooth', guc: 0.06, kayma: 0.6 }); ton(360, 0.4, { tur: 'sawtooth', guc: 0.06, kayma: 1.6, gecikme: 0.38 }); },
     fis: () => tekrar(4, 0.2, (g) => gurultu(0.14, { frekans: 3500, guc: 0.08, gecikme: g })),
