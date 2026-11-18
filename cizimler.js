@@ -135,18 +135,15 @@ window.CIZIMLER = (() => {
         <path d="M84 36 Q92 14 100 34 Q108 16 112 38" fill="none" stroke="#F2A900" stroke-width="5" stroke-linecap="round"/>`,
     },
     'Ç': {
-      /* çengel: C açılıp çengelin gövdesi ve kıvrımı olur, altındaki çengel (virgül) ucundaki diken olur;
-         zincirle tepeden sarkar ve sallanır */
+      /* çengel: C hiç değişmez, üst kolu askı çubuğuna takılır, alt ucu sivri çengel ucu olur;
+         altındaki çengel (virgül) yerinde kalır, çengelin ucundan sarkan küçük halka olur */
       cizgiler: [C_YOL, CENGEL],
-      bicim: {
-        0: 'M120 14 Q120 60 120 110 Q120 150 120 160 Q120 214 88 214 Q56 214 56 170',
-        1: 'M56 170 Q62 186 76 186 Q64 180 56 170',
-      },
       renkler: ['#5E6472', '#5E6472'], kalinliklar: [16, 10], bosta: 'sarkac', ses: 'zincir',
-      arka: `<path d="M120 -60 L120 -4" stroke="#8D99AE" stroke-width="6" stroke-dasharray="10 6" stroke-linecap="round"/>
-        <circle cx="120" cy="2" r="13" fill="none" stroke="#5E6472" stroke-width="7"/>`,
-      on: `<path d="M126 40 L126 140" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".5"/>
-        <path d="M58 168 L52 154 L66 162Z" fill="#5E6472"/>`,
+      arka: `<rect x="96" y="44" width="112" height="14" rx="7" fill="#A0522D"/>
+        <rect x="96" y="44" width="112" height="5" rx="2.5" fill="#C97B4A"/>
+        <rect x="200" y="-10" width="16" height="130" rx="4" fill="#C9A27E"/><circle cx="208" cy="20" r="3" fill="#6B3E26"/><circle cx="208" cy="90" r="3" fill="#6B3E26"/>`,
+      on: `<path d="M50 96 Q46 120 50 146" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".55" fill="none"/>
+        <path d="M141 186 L163 160 L156 190Z" fill="#5E6472"/>`,
     },
     D: {
       /* bir dilim domates: D dik durur, dilim onun etrafında dik durur */
@@ -163,21 +160,19 @@ window.CIZIMLER = (() => {
         <ellipse cx="116" cy="104" rx="5" ry="7"/><ellipse cx="124" cy="122" rx="5" ry="7"/><ellipse cx="136" cy="138" rx="5" ry="7"/></g>`,
     },
     E: {
-      /* ejderha başı: E dik durur; üst kol üst çene, alt kol alt çene, orta kol ağızdan çıkan ateş */
-      cizgiler: ['M150 30 L60 30 L60 210 L150 210', 'M60 120 L135 120'], renk: '#1D6F5F', kalinlik: 12,
-      bosta: 'nefes', ses: 'kukre',
-      arka: `<path d="M-30 260 Q-10 200 30 186 L60 214 Q10 230 10 260Z" fill="#2A9D8F"/>
-        <path d="M26 70 L2 82 L26 96Z M24 120 L-2 132 L24 146Z M28 170 L4 184 L30 196Z" fill="#F4A261" stroke="#E07A2F" stroke-width="4" stroke-linejoin="round"/>
-        <path d="M60 18 Q22 40 22 120 Q22 200 60 222Z" fill="#2A9D8F"/>
-        <path d="M54 34 L54 4 Q66 -26 112 -22 Q166 -16 170 28 Z" fill="#2A9D8F"/>
-        <path d="M70 -14 L62 -44 L88 -20Z M96 -20 L100 -50 L116 -20Z" fill="#E9C46A"/>
-        <rect x="60" y="30" width="96" height="180" fill="#7B1E2B"/>
-        <path d="M54 206 L170 206 Q166 242 112 246 Q62 246 54 230Z" fill="#2A9D8F"/>`,
-      on: `<circle cx="116" cy="2" r="10" fill="#fff"/><circle cx="119" cy="3" r="5.5" fill="#1B1B1B"/><circle cx="121" cy="0" r="2" fill="#fff"/>
-        <circle cx="156" cy="12" r="3" fill="#1D6F5F"/>
-        <path d="M80 36 L87 52 L94 36Z M110 36 L117 52 L124 36Z M140 36 L146 50 L152 36Z M80 204 L87 188 L94 204Z M110 204 L117 188 L124 204Z M140 204 L146 190 L152 204Z" fill="#fff"/>
-        <g><g class="ates-nefes"><path d="M136 120 Q160 96 178 112 Q200 98 214 118 Q198 128 214 142 Q190 146 178 132 Q160 146 136 124Z" fill="#FF7B00"/>
-          <path d="M138 121 Q158 108 172 118 Q188 112 196 122 Q182 128 172 126 Q158 134 138 123Z" fill="#FFD23F"/></g></g>`,
+      /* erik dalı: E'nin dik çizgisi dal, üç kolu sürgün olur; sürgünlerin ucunda yaprak, altlarından erikler sarkar */
+      cizgiler: ['M150 30 L60 30 L60 210 L150 210', 'M60 120 L135 120'], renk: '#7B4B2A', kalinlik: 14,
+      bosta: 'dalga', ses: 'cop',
+      arka: `<path d="M60 210 Q56 228 48 240" stroke="#7B4B2A" stroke-width="14" stroke-linecap="round" fill="none"/>
+        ${[[150, 30], [135, 120], [150, 210]].map(([x, y]) => `<g><path d="M${x} ${y} Q${x + 18} ${y - 22} ${x + 44} ${y - 10} Q${x + 24} ${y + 10} ${x} ${y}Z" fill="#52B788" stroke="#2D6A4F" stroke-width="3"/></g>`).join('')}
+        <g><path d="M60 70 Q34 52 22 62 Q36 80 60 70Z" fill="#52B788" stroke="#2D6A4F" stroke-width="3"/></g>`,
+      on: `${[[96, 30, 0], [130, 30, 6], [94, 120, -4], [122, 120, 4], [104, 210, 0]].map(([x, y, e]) => {
+        const k = y === 210 ? -1 : 1;
+        const cy = y + k * 30;
+        return `<g><path d="M${x} ${y} L${x + e} ${cy - k * 14}" stroke="#5C3A21" stroke-width="3"/>
+          <ellipse cx="${x + e}" cy="${cy}" rx="14" ry="16" fill="#6A1B9A"/>
+          <ellipse cx="${x + e - 5}" cy="${cy - 5}" rx="4" ry="6" fill="#B07CC6" opacity=".8"/></g>`;
+      }).join('')}`,
     },
     F: {
       /* dik diş fırçası: F'nin dik çizgisi sap, iki kolu kıl demetinin üstü ve altı */
@@ -259,12 +254,15 @@ window.CIZIMLER = (() => {
         <path d="M108 58 L132 108 L110 122" fill="none" stroke="#FF6F61" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>`,
     },
     N: {
-      cizgiler: ['M50 210 L50 30 L150 210 L150 30'],
-      bicim: { 0: 'M50 196 L50 40 L150 22 L150 178' }, renk: '#2B2D42', kalinlik: 12, bosta: 'dans', ses: 'nota',
-      on: `<path d="M50 72 L150 54" stroke="#2B2D42" stroke-width="12" stroke-linecap="round"/>
-        <ellipse cx="32" cy="198" rx="24" ry="17" fill="#2B2D42" transform="rotate(-20 32 198)"/>
-        <ellipse cx="132" cy="180" rx="24" ry="17" fill="#2B2D42" transform="rotate(-20 132 180)"/>
-        <g><g class="buhar"><path d="M176 70 L176 30 L192 36" fill="none" stroke="#9B5DE5" stroke-width="5" stroke-linecap="round"/><circle cx="170" cy="72" r="8" fill="#9B5DE5"/></g></g>`,
+      /* nehir (kuşbakışı): N'nin üç çizgisi kıvrılarak akan nehir olur, kıyıda ağaçlar */
+      cizgiler: ['M50 210 L50 30 L150 210 L150 30'], renk: '#3A86FF', kalinlik: 30, bosta: 'zipla', ses: 'akarsu',
+      arka: `<rect x="2" y="6" width="196" height="228" rx="34" fill="#B7E4A7"/>
+        <path d="M50 210 L50 30 L150 210 L150 30" fill="none" stroke="#E9D8A6" stroke-width="46" stroke-linecap="round" stroke-linejoin="round"/>`,
+      on: `<g><g class="akis"><path d="M50 210 L50 30 L150 210 L150 30" fill="none" stroke="#fff" stroke-width="4" stroke-dasharray="10 16" stroke-linecap="round" opacity=".75"/></g></g>
+        <g><circle cx="116" cy="62" r="18" fill="#2D9A4E"/><rect x="113" y="76" width="6" height="14" fill="#7B4B2A"/></g>
+        <g><circle cx="86" cy="176" r="16" fill="#40916C"/><rect x="83" y="188" width="6" height="12" fill="#7B4B2A"/></g>
+        <g fill="#FFD23F"><circle cx="20" cy="120" r="5"/><circle cx="182" cy="230" r="0"/><circle cx="184" cy="120" r="5"/></g>
+        <path d="M92 108 L110 108 L106 116 L96 116Z" fill="#E63946"/><path d="M101 108 L101 96 L109 104Z" fill="#fff"/>`,
     },
     O: {
       cizgiler: [O_YOL], renk: '#F1E3C8', kalinlik: 12, bosta: 'cizir', ses: 'cizir',
@@ -337,24 +335,36 @@ window.CIZIMLER = (() => {
         <circle cx="154" cy="8" r="3" fill="#3B2C2A"/><circle cx="166" cy="8" r="3" fill="#3B2C2A"/></g></g>`,
     },
     U: {
-      cizgiler: [U_YOL], susDonus: 180, renk: '#1B1B1B', kalinlik: 10, bosta: 'emekle', ses: 'vizz',
-      arka: `<path d="M45 200 L45 100 Q45 30 100 30 Q155 30 155 100 L155 200Z" fill="#E63946"/>
-        <path d="M60 200 Q100 250 140 200Z" fill="#1B1B1B"/>
-        <path d="M45 120 L18 108 M45 160 L16 166 M155 120 L182 108 M155 160 L184 166" stroke="#1B1B1B" stroke-width="7" stroke-linecap="round"/>`,
-      on: `<path d="M100 32 L100 200" stroke="#1B1B1B" stroke-width="5"/>
-        <g fill="#1B1B1B"><circle cx="72" cy="82" r="12"/><circle cx="128" cy="82" r="12"/><circle cx="70" cy="150" r="12"/><circle cx="130" cy="150" r="12"/></g>
-        <circle cx="88" cy="214" r="5" fill="#fff"/><circle cx="112" cy="214" r="5" fill="#fff"/>`,
+      /* uğur böceği (yukarıdan, dik): U kabuğun çevresi, kafa U'nun açık ağzını kapatır */
+      cizgiler: [U_YOL], renk: '#1B1B1B', kalinlik: 10, bosta: 'emekle', ses: 'vizz',
+      arka: `<path d="M45 140 L22 132 M45 172 L22 186 M155 140 L178 132 M155 172 L178 186 M60 52 L36 40 M140 52 L164 40" stroke="#1B1B1B" stroke-width="7" stroke-linecap="round"/>
+        <path d="M86 6 Q80 -14 66 -20 M114 6 Q120 -14 134 -20" fill="none" stroke="#1B1B1B" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="66" cy="-20" r="5" fill="#1B1B1B"/><circle cx="134" cy="-20" r="5" fill="#1B1B1B"/>
+        <path d="M45 46 L45 140 Q45 210 100 210 Q155 210 155 140 L155 46Z" fill="#E63946"/>
+        <path d="M50 48 Q50 2 100 2 Q150 2 150 48Z" fill="#1B1B1B"/>`,
+      on: `<path d="M100 48 L100 208" stroke="#1B1B1B" stroke-width="5"/>
+        <g fill="#1B1B1B"><circle cx="72" cy="86" r="12"/><circle cx="128" cy="86" r="12"/><circle cx="70" cy="150" r="12"/><circle cx="130" cy="150" r="12"/><circle cx="100" cy="190" r="0"/></g>
+        <circle cx="80" cy="26" r="7" fill="#fff"/><circle cx="120" cy="26" r="7" fill="#fff"/>
+        <circle cx="81" cy="27" r="3" fill="#1B1B1B"/><circle cx="121" cy="27" r="3" fill="#1B1B1B"/>`,
     },
     'Ü': {
-      /* ütü: U ters dönüp kulp olur, iki nokta ütünün altından çıkan buhar olur */
+      /* ütü (yukarıdan): U ütünün tabanı olur, burnu biraz sivrilir (U dik kalır); ütü bir tişörtün
+         üstünde gidip gelir, içinde kulp, iki nokta topuktan çıkan buhar */
       cizgiler: [U_YOL, nokta(72, 6), nokta(128, 6)],
-      bicim: { 0: 'M64 132 L64 96 Q64 56 104 56 Q144 56 144 96 L144 132', 1: nokta(160, 230), 2: nokta(186, 228) },
-      renkler: ['#3A0CA3', '#CED4DA', '#CED4DA'], kalinliklar: [14, 20, 16], bosta: 'utule', ses: 'tis',
-      arka: `<path d="M22 200 L198 200 Q176 146 126 130 L44 130 Q22 136 22 168Z" fill="#4CC9F0"/>
-        <path d="M18 200 L200 200 L190 214 L28 214Z" fill="#ADB5BD"/>`,
-      on: `<circle cx="72" cy="166" r="13" fill="#fff" stroke="#3A0CA3" stroke-width="4"/><path d="M72 166 L80 158" stroke="#3A0CA3" stroke-width="4" stroke-linecap="round"/>
-        <circle cx="108" cy="166" r="6" fill="#E63946"/>
-        <g><g class="buhar"><path d="M150 236 Q140 252 150 266 M176 234 Q186 250 176 264" fill="none" stroke="#CED4DA" stroke-width="6" stroke-linecap="round"/></g></g>`,
+      bicim: { 0: 'M45 40 L45 120 Q45 178 100 214 Q155 178 155 120 L155 40' },
+      renkler: ['#3A0CA3', '#ADB5BD', '#ADB5BD'], kalinliklar: [10, 22, 22], bosta: 'utule', ses: 'tis',
+      arka: `<path d="M-20 70 L30 40 L170 40 L220 70 L200 110 L176 100 L176 236 L24 236 L24 100 L0 110Z" fill="#FFAFCC" stroke="#F78FB3" stroke-width="4" stroke-linejoin="round"/>
+        <path d="M74 40 Q100 62 126 40" fill="none" stroke="#F78FB3" stroke-width="5"/>
+        <path d="M30 150 q8 -6 0 -12 q-8 -6 0 -12 M30 196 q8 -6 0 -12 q-8 -6 0 -12 M170 150 q8 -6 0 -12 q-8 -6 0 -12 M170 196 q8 -6 0 -12 q-8 -6 0 -12" fill="none" stroke="#F78FB3" stroke-width="3" stroke-linecap="round"/>
+        <path d="M45 40 L45 120 Q45 178 100 214 Q155 178 155 120 L155 40Z" fill="#ADB5BD" stroke="#ADB5BD" stroke-width="24" stroke-linejoin="round"/>
+        <path d="M45 40 L45 120 Q45 178 100 214 Q155 178 155 120 L155 40Z" fill="#4CC9F0"/>
+        <path d="M100 40 Q100 16 86 0 Q72 -16 84 -36" fill="none" stroke="#6C757D" stroke-width="6" stroke-linecap="round"/>`,
+      on: `<rect x="45" y="40" width="110" height="14" fill="#3A9FC0"/>
+        <rect x="84" y="74" width="32" height="92" rx="16" fill="#3A0CA3"/>
+        <rect x="91" y="84" width="18" height="72" rx="9" fill="#5A2FC2"/>
+        <g fill="#fff"><circle cx="66" cy="112" r="3"/><circle cx="134" cy="112" r="3"/><circle cx="68" cy="146" r="3"/><circle cx="132" cy="146" r="3"/><circle cx="100" cy="188" r="3"/></g>
+        <g><g class="buhar"><path d="M58 -6 Q50 -18 60 -28 M142 -6 Q150 -18 140 -28" fill="none" stroke="#ADB5BD" stroke-width="6" stroke-linecap="round"/></g></g>
+        <g><g class="buhar"><path d="M78 236 Q70 222 80 212 M100 246 Q92 232 102 222 M122 236 Q114 222 124 212" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".9"/></g></g>`,
     },
     V: {
       /* vapur önden: V çentiği gövde olarak kalır */
@@ -368,12 +378,15 @@ window.CIZIMLER = (() => {
         <g><g class="buhar"><circle cx="100" cy="18" r="12" fill="#CED4DA"/><circle cx="114" cy="-4" r="16" fill="#E9ECEF"/></g></g>`,
     },
     Y: {
-      /* üç köşeli yıldız: Y'nin üç kolu yıldızın üç köşesi olur */
-      cizgiler: ['M40 40 L100 120 L160 40', 'M100 120 L100 210'], renk: '#E09F00', kalinlik: 8, bosta: 'parilti', ses: 'parla',
-      arka: `<path d="M40 40 L100 100 L160 40 L120 128 L100 210 L80 128Z" fill="#FFD23F" stroke="#E09F00" stroke-width="8" stroke-linejoin="round"/>`,
-      on: `<circle cx="88" cy="110" r="5" fill="#3B2C2A"/><circle cx="112" cy="110" r="5" fill="#3B2C2A"/>
-        <path d="M90 126 Q100 136 110 126" fill="none" stroke="#3B2C2A" stroke-width="4" stroke-linecap="round"/>
-        <g fill="#FFE66D"><path d="M20 120 l5 -12 l5 12 l-5 12z"/><path d="M178 112 l4 -10 l4 10 l-4 10z"/><path d="M150 196 l4 -9 l4 9 l-4 9z"/></g>`,
+      /* yonca: Y'nin sapı yoncanın sapı, iki kolu iki yaprağın damarı; üçüncü yaprak ortadan çıkar */
+      cizgiler: ['M40 40 L100 120 L160 40', 'M100 120 L100 210'], renk: '#1B5E3A', kalinlik: 8, bosta: 'dans', ses: 'cin',
+      arka: `${[[-36.87, 54, 60], [36.87, 146, 60], [0, 100, 100]].map(([a, x, y]) =>
+        `<g><g transform="translate(${x} ${y}) rotate(${a}) scale(${a ? 1 : 0.8})"><path d="M0 0 C-34 -14 -46 -56 -20 -64 C-7 -68 0 -57 0 -50 C0 -57 7 -68 20 -64 C46 -56 34 -14 0 0Z" fill="#52B788" stroke="#2D6A4F" stroke-width="4" stroke-linejoin="round"/>
+        <path d="M-14 -40 L0 -28 L14 -40" fill="none" stroke="#D8F3DC" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g></g>`).join('')}
+        <path d="M100 100 L100 120" stroke="#1B5E3A" stroke-width="6"/>`,
+      on: `<path d="M100 178 Q120 172 134 182 Q118 192 100 184" fill="#52B788"/>
+        <circle cx="132" cy="38" r="0"/>
+        <path d="M150 64 q5 9 0 12 q-5 -3 0 -12z" fill="#BDE0FE"/>`,
     },
     Z: {
       cizgiler: ['M50 30 L150 30 L50 165 L150 165'], renk: '#E9A23B', kalinlik: 24, bosta: 'dortnala', ses: 'nal', cikis: 'sag', cikisSesi: 'nal',

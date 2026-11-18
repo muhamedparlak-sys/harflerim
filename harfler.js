@@ -10,7 +10,7 @@ window.HARFLER = Object.freeze([
   { h: 'C', kelime: 'Civciv', resim: '🐥' },
   { h: 'Ç', kelime: 'Çengel', resim: '🪝' },
   { h: 'D', kelime: 'Domates', resim: '🍅' },
-  { h: 'E', kelime: 'Ejderha', resim: '🐉' },
+  { h: 'E', kelime: 'Erik', resim: '🟣' },
   { h: 'F', kelime: 'Fırça', resim: '🪥' },
   { h: 'G', kelime: 'Güneş', resim: '☀️' },
   { h: 'Ğ', kelime: 'Yağmur', resim: '💧' },
@@ -21,7 +21,7 @@ window.HARFLER = Object.freeze([
   { h: 'K', kelime: 'Kelebek', resim: '🦋' },
   { h: 'L', kelime: 'Leylek', resim: '🪿' },
   { h: 'M', kelime: 'Martı', resim: '🐦' },
-  { h: 'N', kelime: 'Nota', resim: '🎵' },
+  { h: 'N', kelime: 'Nehir', resim: '🏞️' },
   { h: 'O', kelime: 'Omlet', resim: '🍳' },
   { h: 'Ö', kelime: 'Örümcek', resim: '🕷️' },
   { h: 'P', kelime: 'Pamuk şeker', resim: '🍭' },
@@ -32,7 +32,7 @@ window.HARFLER = Object.freeze([
   { h: 'U', kelime: 'Uğur böceği', resim: '🐞' },
   { h: 'Ü', kelime: 'Ütü', resim: '👕' },
   { h: 'V', kelime: 'Vapur', resim: '⛴️' },
-  { h: 'Y', kelime: 'Yıldız', resim: '⭐' },
+  { h: 'Y', kelime: 'Yonca', resim: '☘️' },
   { h: 'Z', kelime: 'Zürafa', resim: '🦒' },
 ]);
 

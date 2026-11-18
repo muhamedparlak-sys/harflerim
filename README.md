@@ -11,7 +11,7 @@ Kurulum gerektirmez: düz HTML + CSS + JavaScript, kütüphane yok, internetsiz 
 - **Yanlış harf**: kutuda kırmızı görünür, ✕ sallanır, uyarı sesi çalar ve oluşan kelime okunur (MU + M → "mum").
 - **Taşa dokunmak**: o harfin sesi ve karakteri gösterilir.
 - **Harf biçimli dönüşüm**: her harf önce yazılış sırasıyla çizilir, sonra kendi biçimini koruyarak o sesle başlayan
-  nesneye dönüşür ve hareket eder (B baykuş, E ağzı açık ejderha, F dik diş fırçası, M martı olup uçar …).
+  nesneye dönüşür ve hareket eder (B baykuş, E erik dalı, F dik diş fırçası, M martı olup uçar …).
   Harf hiç yatmaz, hep okunur kalır; karakter harfin etrafında döner (`susDonus`).
 - **Harf sesleri**: sessizler adıyla değil sesiyle çalınır ("me" değil "mı"; tek sefer, tekrar yok).
   Cihaz sesi kısa hece okur ("mı", "kı"); klon sesle kayıt varsa o çalar (en iyisi bu).

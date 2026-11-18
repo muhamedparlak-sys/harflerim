@@ -4,7 +4,7 @@
  *   Canavarı Besle — canavarın düşünce balonunda istediği şeyin resmi var (ör. martı) ve ses
  *                    "mmm… martı" der; çocuk o kelimenin ilk harfini ağzına sürükler. Beslendikçe büyür
  *                    ve değişir (Feed the Monster'daki büyüyen evcil canavar fikri). Büyüme cihazda kalır.
- *   Resim Bilmecesi — tersten: kelimenin (ya da aile adının) harfleri yerine resimler dizilir (ANNE → ağ, nota, nota, ejderha);
+ *   Resim Bilmecesi — tersten: kelimenin (ya da aile adının) harfleri yerine resimler dizilir (ANNE → ağ, nehir, nehir, erik);
  *                    çocuk ilk sesleri bulup harfleri altlarına koyar, sonunda kelimenin resmi ya da kişinin fotoğrafı açılır.
  *   Çıkartma Albümü — bir harfi kendi başına 3 kez bulunca o harfin karakteri albüme yapışır.
  * Sorulan harfler uyarlanır: aile adlarındaki harfler önce; çok yanılınan harf daha sık, iyi bilinen daha seyrek.
