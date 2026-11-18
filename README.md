@@ -19,7 +19,11 @@ Kurulum gerektirmez: düz HTML + CSS + JavaScript, kütüphane yok, internetsiz 
 - Oyunlar: Harf Avı (sesi dinle, balonu patlat), Canavar (harfli kurabiyeleri yer, istemediğini tükürür; her lokmada şişer, turun sonunda patlar),
   Bilmece (tersten: resimlerin ilk seslerinden kelimeyi ya da aile adını bul), Çıkartma Albümü.
 - **Kasaba** (kendi karakteri): ten, saç, göz, elbise seçilir; her satır kilitli, kelimesi yazılınca açılır (TEN, SAÇ, GÖZ, ELBİSE).
-  Kız apartmandan çıkar, sokakta yürür. Kapılar şifreli: **KUAFÖR**, **EV**, **ODA** harf harf yazılınca açılır (soluk harfler yol gösterir).
+  Kız apartmandan çıkar, sokakta yürür. Kapılar şifreli: **KUAFÖR**, **EV** … harf harf yazılınca açılır (soluk harfler yol gösterir).
+  **Ev**: koridorda dört kapı: **ODA**, **MUTFAK**, **SALON**, **BANYO**. Odadaki her eşyanın adı üstünde yazar; dokunup adı yazılınca eşya çalışır:
+  banyoda DUŞ (kapak açılır, su akar), SU (el yıkarken beşe kadar sayılır), SABUN (köpükler patlatılıp sayılır), AYNA (buğu silinir);
+  mutfakta FIRIN (kek kabarır), ÇAY, ELMA (sayılır), MASA (sofra kurulur); salonda LAMBA, SAAT (guguk), KİTAP (bir harf ve karakteri), TOP (zıplar, sayılır);
+  odada PERDE, DOLAP (kıyafet), YATAK (uyku), AYI. Yazılmamış etiketler parlar, yazılana ✓ gelir, odanın bütün kelimeleri yazılınca konfeti ve kapıya ⭐.
   Kuaförde saç örülür (ses hangi harfi söylüyorsa o tokalı tutam ortaya atılır, her atış sayılır: bir … altı),
   beş tırnak boyanır ve sayılır, üflenip kurutulur, sonra aynaya bakılır. Evde koridor, oda, dolap ve yatak var.
   Restoranda "Kaç kişisiniz?" sorulur, misafirler ve tabaklar sayılır, pizza ya da pasta kişi sayısı kadar dilimlenir ve paylaştırılır.

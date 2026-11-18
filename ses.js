@@ -308,6 +308,9 @@ window.Efekt = (() => {
     pirpir: () => tekrar(20, 0.13, (g) => gurultu(0.07, { frekans: 900, guc: 0.06, gecikme: g })),
     tak: () => tekrar(8, 0.07, (g) => gurultu(0.04, { frekans: 2200, q: 4, guc: 0.12, gecikme: g })),
     kanat: () => { ton(1400, 0.35, { tur: 'triangle', guc: 0.06, kayma: 0.65 }); tekrar(4, 0.17, (g) => gurultu(0.1, { frekans: 700, guc: 0.08, gecikme: 0.2 + g })); },
+    // Ev: guguklu saat
+    tiktak: () => tekrar(6, 0.25, (g, i) => gurultu(0.03, { frekans: i % 2 ? 2600 : 2000, q: 6, guc: 0.12, gecikme: g })),
+    guguk: () => [[784, 0], [622, 0.3], [784, 0.9], [622, 1.2]].forEach(([f, g]) => ton(f, 0.28, { gecikme: g, guc: 0.12, tur: 'triangle' })),
     // Nehir: alçak şırıltı + birkaç damla
     akarsu: () => { gurultu(1.6, { frekans: 900, q: 0.6, guc: 0.12, kayma: 0.8 }); tekrar(5, 0.26, (g, i) => ton(700 + i * 90, 0.1, { gecikme: 0.2 + g, guc: 0.06, kayma: 1.7 })); },
     // Papağan: iki kısa çığlık "gak gak"

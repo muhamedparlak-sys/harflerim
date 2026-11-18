@@ -2,8 +2,8 @@
  * Kasaba: kendi karakteri evden çıkar, sokakta yürür, kuaföre girer.
  *   Karakter yarat — ten, saç, göz, elbise (cihazda saklanır, Depo 'kiz').
  *   Sokak          — apartman kapısı açılır, kız çıkar; dükkâna dokununca oraya yürür ve girer.
- *   Kapı şifresi   — kapı ancak adı harf harf yazılınca açılır: KUAFÖR, EV, ODA (soluk harfler yol gösterir).
- *   Ev             — koridor (ODA şifreli kapı) → oda: dolap (kıyafet/saç değiştir), yatak.
+ *   Kapı şifresi   — kapı ancak adı harf harf yazılınca açılır: KUAFÖR, EV, ODA … (soluk harfler yol gösterir).
+ *   Ev             — ev.js: koridorda ODA, MUTFAK, SALON, BANYO kapıları; odadaki eşyalar adı yazılınca çalışır.
  *   Kuaför         — 1) saç örme: ses hangi harfi söylüyorsa o tokalı tutam ortaya atılır; her atış sayılır.
  *                    2) tırnak: oje seç, beş tırnağı boya (bir, iki, … beş), üfle kurusun.
  *                    3) ayna: örgülü saç ve ojeli tırnaklarla sevinir.
@@ -377,46 +377,17 @@ window.Kasaba = (() => {
     });
   }
 
-  /* ---------- evin içi: koridor (ODA şifreli kapı) ve oda (dolap, yatak) ---------- */
+  /* ---------- evin içi (ev.js): koridorda ODA, MUTFAK, SALON, BANYO kapıları; eşyalar adı yazılınca çalışır ---------- */
   function evIci(yer) {
     const no = ++oturum;
     H().ekranAc('evici');
-    const sahne = $('#evici-sahne');
-    const kizKap = H().el('div', { className: 'ev-kiz' }, [window.Kiz.on(kiz, { orgu: kiz.orgu, oje: kiz.oje, mutlu: yer === 'oda' })]);
     $('#evici-cik').onclick = () => sokak('ev');
-    if (yer === 'koridor') {
-      const kapi = H().el('button', { className: 'oda-kapisi', type: 'button', ariaLabel: 'Oda' }, [
-        H().el('span', { className: 'oda-tabela' }, H().renkliAd('ODA')), H().el('span', { className: 'oda-kanat' }),
-      ]);
-      let mesgul = false;
-      kapi.addEventListener('click', async () => {
-        if (mesgul) return;
-        mesgul = true;
-        if (await sifre('ODA', no)) {
-          kapi.classList.add('acik');
-          window.Efekt.karakter('kapi');
-          await H().bekle(700);
-          if (canli(no)) evIci('oda');
-        }
-        mesgul = false;
-      });
-      sahne.className = 'evici-sahne koridor';
-      sahne.replaceChildren(H().el('div', { className: 'tablo' }), kapi, kizKap);
-      konus('Evdesin! Odana gitmek için kapıya dokun.');
-      return;
-    }
-    const dolap = H().el('button', { className: 'dolap', type: 'button', ariaLabel: 'Dolap' }, [H().el('span', { className: 'dolap-kapak sol' }), H().el('span', { className: 'dolap-kapak sag' })]);
-    dolap.addEventListener('click', async () => {
-      dolap.classList.add('acik');
-      window.Efekt.karakter('kapi');
-      await H().bekle(500);
-      if (canli(no)) yaratAc('oda');
+    window.Ev.ac(yer, {
+      kiz, konus, say, harfResmi, harfHavuzu, yaratAc,
+      canli: () => canli(no),
+      sifre: (kelime, mesaj) => sifre(kelime, no, mesaj),
+      evIci,
     });
-    const yatak = H().el('button', { className: 'yatak', type: 'button', ariaLabel: 'Yatak' });
-    yatak.addEventListener('click', () => { window.Efekt.karakter('horul'); kizKap.classList.add('uyu'); setTimeout(() => kizKap.classList.remove('uyu'), 2200); });
-    sahne.className = 'evici-sahne oda';
-    sahne.replaceChildren(H().el('div', { className: 'pencere' }), dolap, yatak, kizKap);
-    konus('Burası senin odan! Dolabı açıp üstünü değiştirebilirsin.');
   }
 
   async function kapiAc(bina, acik) {
