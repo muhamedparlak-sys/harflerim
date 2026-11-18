@@ -135,16 +135,15 @@ window.CIZIMLER = (() => {
         <path d="M84 36 Q92 14 100 34 Q108 16 112 38" fill="none" stroke="#F2A900" stroke-width="5" stroke-linecap="round"/>`,
     },
     'Ç': {
-      /* çörek: C ısırılmış halka çöreğin kendisi, C'nin açık ağzı ısırık yeri,
-         altındaki çengel (virgül) ısırırken düşen kırıntı */
+      /* ısırılmış çilek (ters durur): C çileğin kırmızı kabuğu, ucu yukarıda sivrilir;
+         C'nin açık ağzı ısırık yeri (içi açık pembe), altındaki çengel (virgül) yeşil sap olur */
       cizgiler: [C_YOL, CENGEL],
-      bicim: { 1: 'M100 244 Q118 250 112 262 Q106 272 92 268' },
-      renkler: ['#8B5A2B', '#8B5A2B'], kalinliklar: [7, 11], bosta: 'zipla', ses: 'nyam',
-      arka: `<path d="${C_YOL}" fill="none" stroke="#B9783A" stroke-width="58" stroke-linecap="round"/>
-        <path d="${C_YOL}" fill="none" stroke="#E0A458" stroke-width="44" stroke-linecap="round"/>
-        <path d="M60 80 Q72 58 92 52" fill="none" stroke="#F3C987" stroke-width="8" stroke-linecap="round"/>`,
-      on: `<g fill="#FFF8E7"><ellipse cx="80.0" cy="48.0" rx="4" ry="2.4" transform="rotate(-20 80.0 48.0)"/><ellipse cx="112.0" cy="40.0" rx="4" ry="2.4" transform="rotate(10 112.0 40.0)"/><ellipse cx="56.0" cy="74.0" rx="4" ry="2.4" transform="rotate(-50 56.0 74.0)"/><ellipse cx="54.0" cy="110.0" rx="4" ry="2.4" transform="rotate(80 54.0 110.0)"/><ellipse cx="62.0" cy="96.0" rx="4" ry="2.4" transform="rotate(-70 62.0 96.0)"/><ellipse cx="52.0" cy="144.0" rx="4" ry="2.4" transform="rotate(60 52.0 144.0)"/><ellipse cx="58.0" cy="168.0" rx="4" ry="2.4" transform="rotate(30 58.0 168.0)"/><ellipse cx="80.0" cy="190.0" rx="4" ry="2.4" transform="rotate(-10 80.0 190.0)"/><ellipse cx="106.0" cy="196.0" rx="4" ry="2.4" transform="rotate(20 106.0 196.0)"/><ellipse cx="130.0" cy="192.0" rx="4" ry="2.4" transform="rotate(-30 130.0 192.0)"/><ellipse cx="70.0" cy="58.0" rx="4" ry="2.4" transform="rotate(40 70.0 58.0)"/><ellipse cx="132.0" cy="46.0" rx="4" ry="2.4" transform="rotate(30 132.0 46.0)"/></g>
-        <g fill="#B9783A"><circle cx="168" cy="216" r="4"/><circle cx="72" cy="252" r="3"/><circle cx="134" cy="258" r="3.5"/></g>`,
+      bicim: { 0: 'M146 58 Q124 18 96 22 Q44 34 40 126 Q38 206 96 208 Q136 210 154 180' },
+      renkler: ['#B5121B', '#2D9A4E'], kalinliklar: [9, 10], bosta: 'jole', ses: 'cop',
+      arka: `<path d='M146 58 Q124 18 96 22 Q44 34 40 126 Q38 206 96 208 Q136 210 154 180 Q124 178 118 154 Q96 140 112 120 Q94 100 116 84 Q118 62 146 58Z' fill="#E63946"/>
+        <path d="M146 58 Q118 62 116 84 Q94 100 112 120 Q96 140 118 154 Q124 178 154 180 Q106 176 100 120 Q104 66 146 58Z" fill="#FFB3C1"/>
+        <path d="M60 198 Q44 226 76 222 Q78 244 98 226 Q114 244 122 222 Q152 228 138 196 Q100 214 60 198Z" fill="#40916C"/>`,
+      on: `<g fill="#FFD23F"><ellipse cx="96" cy="40" rx="2.6" ry="4" transform="rotate(0 96 40)"/><ellipse cx="76" cy="56" rx="2.6" ry="4" transform="rotate(-30 76 56)"/><ellipse cx="112" cy="48" rx="2.6" ry="4" transform="rotate(20 112 48)"/><ellipse cx="62" cy="86" rx="2.6" ry="4" transform="rotate(-50 62 86)"/><ellipse cx="90" cy="74" rx="2.6" ry="4" transform="rotate(-10 90 74)"/><ellipse cx="56" cy="122" rx="2.6" ry="4" transform="rotate(-80 56 122)"/><ellipse cx="80" cy="108" rx="2.6" ry="4" transform="rotate(-30 80 108)"/><ellipse cx="60" cy="160" rx="2.6" ry="4" transform="rotate(-110 60 160)"/><ellipse cx="84" cy="146" rx="2.6" ry="4" transform="rotate(-60 84 146)"/><ellipse cx="76" cy="188" rx="2.6" ry="4" transform="rotate(-150 76 188)"/><ellipse cx="104" cy="190" rx="2.6" ry="4" transform="rotate(180 104 190)"/></g>`,
     },
     D: {
       /* bir dilim domates: D dik durur, dilim onun etrafında dik durur */
