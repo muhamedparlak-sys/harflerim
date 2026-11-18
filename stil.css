@@ -460,5 +460,3 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
 /* Nehir (N): akıntı çizgileri akar */
 .cizim.canli .akis path { animation: c-akis 1.2s linear infinite; }
 @keyframes c-akis { to { stroke-dashoffset: -26; } }
-.cizim.canli.sarkac { transform-origin: 60% -25%; animation: c-sarkac 2.4s ease-in-out infinite; }
-@keyframes c-sarkac { 0%, 100% { transform: rotate(7deg); } 50% { transform: rotate(-7deg); } }
