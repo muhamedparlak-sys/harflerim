@@ -160,19 +160,19 @@ window.CIZIMLER = (() => {
         <ellipse cx="116" cy="104" rx="5" ry="7"/><ellipse cx="124" cy="122" rx="5" ry="7"/><ellipse cx="136" cy="138" rx="5" ry="7"/></g>`,
     },
     E: {
-      /* erik dalı: E'nin dik çizgisi dal, üç kolu sürgün olur; sürgünlerin ucunda yaprak, altlarından erikler sarkar */
+      /* ev: E'nin dik çizgisi duvar, üst kolu çatı altı, orta kolu kat arası, alt kolu zemin;
+         kolların arasındaki iki boşluk evin pencereleri olur, tepeye çatı gelir */
       cizgiler: ['M150 30 L60 30 L60 210 L150 210', 'M60 120 L135 120'], renk: '#7B4B2A', kalinlik: 14,
-      bosta: 'dalga', ses: 'cop',
-      arka: `<path d="M60 210 Q56 228 48 240" stroke="#7B4B2A" stroke-width="14" stroke-linecap="round" fill="none"/>
-        ${[[150, 30], [135, 120], [150, 210]].map(([x, y]) => `<g><path d="M${x} ${y} Q${x + 18} ${y - 22} ${x + 44} ${y - 10} Q${x + 24} ${y + 10} ${x} ${y}Z" fill="#52B788" stroke="#2D6A4F" stroke-width="3"/></g>`).join('')}
-        <g><path d="M60 70 Q34 52 22 62 Q36 80 60 70Z" fill="#52B788" stroke="#2D6A4F" stroke-width="3"/></g>`,
-      on: `${[[96, 30, 0], [130, 30, 6], [94, 120, -4], [122, 120, 4], [104, 210, 0]].map(([x, y, e]) => {
-        const k = y === 210 ? -1 : 1;
-        const cy = y + k * 30;
-        return `<g><path d="M${x} ${y} L${x + e} ${cy - k * 14}" stroke="#5C3A21" stroke-width="3"/>
-          <ellipse cx="${x + e}" cy="${cy}" rx="14" ry="16" fill="#6A1B9A"/>
-          <ellipse cx="${x + e - 5}" cy="${cy - 5}" rx="4" ry="6" fill="#B07CC6" opacity=".8"/></g>`;
-      }).join('')}`,
+      bosta: 'zipla', ses: 'kapi',
+      arka: `<rect x="62" y="32" width="88" height="176" fill="#FFF1D6"/>
+        <rect x="128" y="-34" width="18" height="40" fill="#B5121B"/>
+        <path d="M40 34 L105 -26 L170 34Z" fill="#E63946" stroke="#B5121B" stroke-width="5" stroke-linejoin="round"/>
+        <path d="M-6 214 Q100 202 206 214 L206 236 L-6 236Z" fill="#8BC34A"/>`,
+      on: `<g><rect x="80" y="50" width="52" height="52" rx="4" fill="#FFE8A3" stroke="#7B4B2A" stroke-width="5"/>
+          <path d="M106.0 50 L106.0 102 M80 76.0 L132 76.0" stroke="#7B4B2A" stroke-width="4"/></g><g><rect x="80" y="140" width="52" height="52" rx="4" fill="#FFE8A3" stroke="#7B4B2A" stroke-width="5"/>
+          <path d="M106.0 140 L106.0 192 M80 166.0 L132 166.0" stroke="#7B4B2A" stroke-width="4"/></g>
+        <g><g class="buhar"><circle cx="137" cy="-46" r="7" fill="#DEE2E6"/><circle cx="146" cy="-62" r="9" fill="#DEE2E6"/></g></g>
+        <g fill="#E63946"><circle cx="30" cy="204" r="6"/><circle cx="176" cy="204" r="6"/></g><g fill="#FFD23F"><circle cx="30" cy="204" r="2.5"/><circle cx="176" cy="204" r="2.5"/></g>`,
     },
     F: {
       /* dik diş fırçası: F'nin dik çizgisi sap, iki kolu kıl demetinin üstü ve altı */
@@ -378,15 +378,15 @@ window.CIZIMLER = (() => {
         <g><g class="buhar"><circle cx="100" cy="18" r="12" fill="#CED4DA"/><circle cx="114" cy="-4" r="16" fill="#E9ECEF"/></g></g>`,
     },
     Y: {
-      /* yonca: Y'nin sapı yoncanın sapı, iki kolu iki yaprağın damarı; üçüncü yaprak ortadan çıkar */
-      cizgiler: ['M40 40 L100 120 L160 40', 'M100 120 L100 210'], renk: '#1B5E3A', kalinlik: 8, bosta: 'dans', ses: 'cin',
-      arka: `${[[-36.87, 54, 60], [36.87, 146, 60], [0, 100, 100]].map(([a, x, y]) =>
-        `<g><g transform="translate(${x} ${y}) rotate(${a}) scale(${a ? 1 : 0.8})"><path d="M0 0 C-34 -14 -46 -56 -20 -64 C-7 -68 0 -57 0 -50 C0 -57 7 -68 20 -64 C46 -56 34 -14 0 0Z" fill="#52B788" stroke="#2D6A4F" stroke-width="4" stroke-linejoin="round"/>
-        <path d="M-14 -40 L0 -28 L14 -40" fill="none" stroke="#D8F3DC" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g></g>`).join('')}
-        <path d="M100 100 L100 120" stroke="#1B5E3A" stroke-width="6"/>`,
-      on: `<path d="M100 178 Q120 172 134 182 Q118 192 100 184" fill="#52B788"/>
-        <circle cx="132" cy="38" r="0"/>
-        <path d="M150 64 q5 9 0 12 q-5 -3 0 -12z" fill="#BDE0FE"/>`,
+      /* yonca yaprağı: üç kalp biçimli yaprakçık Y'nin kavşağında birleşir. Y'nin kolları biraz açılır,
+         iki yan yaprakçığın orta damarı olur; Y'nin sapı yoncanın sapı */
+      cizgiler: ['M40 40 L100 120 L160 40', 'M100 120 L100 210'],
+      bicim: { 0: 'M21.4 64.9 L100 120 L178.6 64.9' },
+      renk: '#1B5E3A', kalinlik: 7, bosta: 'dans', ses: 'cin',
+      arka: `${[-55, 55, 0].map((a) =>
+        `<g><g transform="translate(100 120) rotate(${a})"><path d="M0 4 C-42 -6 -54 -62 -30 -84 C-14 -98 0 -88 0 -74 C0 -88 14 -98 30 -84 C54 -62 42 -6 0 4Z" fill="#52B788" stroke="#2D6A4F" stroke-width="4" stroke-linejoin="round"/>
+        <path d="M-20 -58 L0 -42 L20 -58" fill="none" stroke="#D8F3DC" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></g></g>`).join('')}`,
+      on: `<path d="M100 200 Q118 186 134 192 Q120 206 100 204" fill="#52B788"/>`,
     },
     Z: {
       cizgiler: ['M50 30 L150 30 L50 165 L150 165'], renk: '#E9A23B', kalinlik: 24, bosta: 'dortnala', ses: 'nal', cikis: 'sag', cikisSesi: 'nal',
