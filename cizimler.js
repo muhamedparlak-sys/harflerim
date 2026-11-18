@@ -193,16 +193,15 @@ window.CIZIMLER = (() => {
         <path d="M74 142 Q98 166 124 142" fill="none" stroke="#3B2C2A" stroke-width="6" stroke-linecap="round"/>`,
     },
     'Ğ': {
-      /* yağmur damlası: G damlaya, üstündeki ˘ damlanın gülüşüne dönüşür */
+      /* yumuşak G: G'nin güneşinin yumuşak hâli (sabahın tatlı, doğan güneşi). G hiç değişmez;
+         ışınlar yumuşak yuvarlak yapraklara döner, renkler pastel, gözler Ğ'nin şapkası (˘) gibi kapalı gülümser */
       cizgiler: [G_YOL, 'M70 4 Q100 26 130 4'],
-      bicim: { 0: DAMLA, 1: 'M82 158 Q100 178 118 158' }, renkler: ['#1D63D8', '#1D3557'], kalinliklar: [8, 6],
-      bosta: 'damla', ses: 'damla',
-      arka: `<path d="${DAMLA}" fill="#8ECAE6"/>`,
-      on: `<circle cx="84" cy="136" r="7" fill="#1D3557"/><circle cx="116" cy="136" r="7" fill="#1D3557"/>
-        <ellipse cx="78" cy="96" rx="7" ry="16" fill="#fff" opacity=".7" transform="rotate(20 78 96)"/>
-        <g><g class="bulut"><circle cx="20" cy="-14" r="20" fill="#fff" stroke="#9DB4CC" stroke-width="4"/><circle cx="52" cy="-22" r="24" fill="#fff" stroke="#9DB4CC" stroke-width="4"/>
-        <rect x="6" y="-14" width="60" height="18" fill="#fff"/></g></g>
-        ${damlalar([22, 44, 160, 182], 10)}`,
+      renkler: ['#F4A261', '#F4A261'], kalinliklar: [12, 9], bosta: 'nabiz', ses: 'cin',
+      arka: `<g><g class="don" style="transform-origin:98px 120px"><g fill="#FFD8A8"><ellipse cx="126.0" cy="15.7" rx="11" ry="17" transform="rotate(15 126.0 15.7)"/><ellipse cx="174.4" cy="43.6" rx="11" ry="17" transform="rotate(45 174.4 43.6)"/><ellipse cx="202.3" cy="92.0" rx="11" ry="17" transform="rotate(75 202.3 92.0)"/><ellipse cx="202.3" cy="148.0" rx="11" ry="17" transform="rotate(105 202.3 148.0)"/><ellipse cx="174.4" cy="196.4" rx="11" ry="17" transform="rotate(135 174.4 196.4)"/><ellipse cx="126.0" cy="224.3" rx="11" ry="17" transform="rotate(165 126.0 224.3)"/><ellipse cx="70.0" cy="224.3" rx="11" ry="17" transform="rotate(195 70.0 224.3)"/><ellipse cx="21.6" cy="196.4" rx="11" ry="17" transform="rotate(225 21.6 196.4)"/><ellipse cx="-6.3" cy="148.0" rx="11" ry="17" transform="rotate(255 -6.3 148.0)"/><ellipse cx="-6.3" cy="92.0" rx="11" ry="17" transform="rotate(285 -6.3 92.0)"/><ellipse cx="21.6" cy="43.6" rx="11" ry="17" transform="rotate(315 21.6 43.6)"/><ellipse cx="70.0" cy="15.7" rx="11" ry="17" transform="rotate(345 70.0 15.7)"/></g></g></g>
+        <circle cx="98" cy="120" r="84" fill="#FFE8C2"/>`,
+      on: `<path d="M68 106 Q78 116 88 106 M110 106 Q120 116 130 106" fill="none" stroke="#7A4E2D" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="66" cy="128" r="9" fill="#FFB3C1" opacity=".8"/><circle cx="132" cy="128" r="9" fill="#FFB3C1" opacity=".8"/>
+        <path d="M82 140 Q98 154 116 140" fill="none" stroke="#7A4E2D" stroke-width="5" stroke-linecap="round"/>`,
     },
     H: {
       cizgiler: ['M50 30 L50 210', 'M150 30 L150 210', 'M50 120 L150 120'],

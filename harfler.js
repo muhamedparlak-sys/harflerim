@@ -2,7 +2,8 @@
  * Harf → karakter sözlüğü (Montessori: harfin sesi + o sesle başlayan nesne).
  * Bir harfin karakterini değiştirmek için yalnızca bu listeyi düzenle.
  * Her harfin, harfin kendi biçiminden doğan çizimi cizimler.js'te (emoji yalnızca yedek).
- * Ğ ile başlayan kelime olmadığı için "Yağmur" kullanılır (harf kelimenin içinde vurgulanır).
+ * Ğ ile başlayan kelime olmadığı için "Doğan güneş" kullanılır (harf kelimenin içinde vurgulanır);
+ * çizimi G'nin güneşinin yumuşak hâlidir ("yumuşak G").
  */
 window.HARFLER = Object.freeze([
   { h: 'A', kelime: 'Ağ', resim: '🕸️' },
@@ -13,7 +14,7 @@ window.HARFLER = Object.freeze([
   { h: 'E', kelime: 'Ev', resim: '🏠' },
   { h: 'F', kelime: 'Fırça', resim: '🪥' },
   { h: 'G', kelime: 'Güneş', resim: '☀️' },
-  { h: 'Ğ', kelime: 'Yağmur', resim: '💧' },
+  { h: 'Ğ', kelime: 'Doğan güneş', resim: '🌅' },
   { h: 'H', kelime: 'Hamak', resim: '🌴' },
   { h: 'I', kelime: 'Işık', resim: '🕯️' },
   { h: 'İ', kelime: 'İğne', resim: '🪡' },
