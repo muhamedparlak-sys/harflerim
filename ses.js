@@ -310,6 +310,8 @@ window.Efekt = (() => {
     kanat: () => { ton(1400, 0.35, { tur: 'triangle', guc: 0.06, kayma: 0.65 }); tekrar(4, 0.17, (g) => gurultu(0.1, { frekans: 700, guc: 0.08, gecikme: 0.2 + g })); },
     // Nehir: alçak şırıltı + birkaç damla
     akarsu: () => { gurultu(1.6, { frekans: 900, q: 0.6, guc: 0.12, kayma: 0.8 }); tekrar(5, 0.26, (g, i) => ton(700 + i * 90, 0.1, { gecikme: 0.2 + g, guc: 0.06, kayma: 1.7 })); },
+    // Papağan: iki kısa çığlık "gak gak"
+    gak: () => tekrar(2, 0.28, (g) => { ton(1300, 0.16, { tur: 'sawtooth', guc: 0.06, kayma: 0.6, gecikme: g }); gurultu(0.1, { frekans: 2400, q: 2, guc: 0.06, gecikme: g }); }),
     nota: () => [523, 587, 659, 784].forEach((f, i) => ton(f, 0.22, { gecikme: i * 0.18, guc: 0.1, tur: 'triangle' })),
     cizir: () => gurultu(1.2, { frekans: 4000, tur: 'highpass', guc: 0.06 }),
     /* bacak adımıyla aynı ritim: stil.css .bacak 0.25 sn → her yarım adımda bir tık */

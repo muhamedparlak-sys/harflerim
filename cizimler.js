@@ -287,15 +287,23 @@ window.CIZIMLER = (() => {
         <circle cx="72" cy="112" r="7" fill="#FF8FA3" opacity=".5"/><circle cx="128" cy="112" r="7" fill="#FF8FA3" opacity=".5"/>`,
     },
     P: {
-      /* pamuk şeker: P'nin dik çizgisi çubuk, göbeği pembe pamuk */
+      /* papağan (yandan): P'nin göbeği yuvarlak kafa, gaga göbeğin sağından çıkar;
+         P'nin dik çizgisi papağanın sırtı olur, alttan uzun kuyruk sarkar, dala tünemiştir */
       cizgiler: ['M70 210 L70 30', 'M70 30 L110 30 Q160 30 160 77 Q160 125 110 125 L70 125'],
-      renkler: ['#C9A227', '#FF5C8A'], kalinliklar: [10, 8], bosta: 'pamuk', ses: 'pop',
-      arka: `<g fill="#FFB3C8"><circle cx="84" cy="46" r="32"/><circle cx="122" cy="30" r="32"/><circle cx="160" cy="56" r="30"/>
-        <circle cx="166" cy="100" r="28"/><circle cx="132" cy="126" r="30"/><circle cx="92" cy="122" r="28"/><circle cx="70" cy="84" r="30"/>
-        <circle cx="114" cy="78" r="40"/></g>
-        <g fill="#FFD6E2"><circle cx="100" cy="50" r="16"/><circle cx="144" cy="70" r="14"/><circle cx="104" cy="104" r="12"/></g>`,
-      on: `<path d="M86 64 Q100 52 116 64 Q130 76 146 64 M90 100 Q104 88 120 100" fill="none" stroke="#FF8FB1" stroke-width="5" stroke-linecap="round"/>
-        <rect x="60" y="196" width="20" height="30" rx="6" fill="#C9A227"/>`,
+      renkler: ['#9D0208', '#9D0208'], kalinliklar: [9, 9], bosta: 'dans', ses: 'gak',
+      arka: `<path d="M66 196 L50 254 L66 256 L80 200Z" fill="#1D63D8"/><path d="M74 198 L70 256 L84 254 L88 200Z" fill="#E63946"/>
+        <path d="M70 112 Q146 116 142 170 Q136 208 80 208 L70 208Z" fill="#E63946"/>
+        <path d="M70 30 L110 30 Q160 30 160 77 Q160 125 110 125 L70 125Z" fill="#E63946"/>
+        <path d="M74 126 Q118 132 116 176 Q106 206 74 202Z" fill="#2D9A4E"/>
+        <path d="M76 168 Q96 172 104 190 M76 184 Q92 188 98 200" fill="none" stroke="#1D63D8" stroke-width="6" stroke-linecap="round"/>
+        <rect x="14" y="204" width="182" height="12" rx="6" fill="#8D5524"/>
+        <path d="M188 210 Q198 196 206 200" stroke="#8D5524" stroke-width="6" stroke-linecap="round" fill="none"/>
+        <ellipse cx="200" cy="192" rx="10" ry="6" fill="#52B788"/>`,
+      on: `<path d="M150 58 Q196 54 192 104 Q180 88 156 94Z" fill="#FFD23F" stroke="#B08900" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M156 96 Q174 98 172 112 Q160 112 152 102Z" fill="#3B2C2A"/>
+        <ellipse cx="124" cy="70" rx="20" ry="17" fill="#fff"/>
+        <circle cx="128" cy="68" r="7" fill="#1B1B1B"/><circle cx="130" cy="66" r="2.4" fill="#fff"/>
+        <path d="M92 210 l-4 10 M100 210 l0 10 M108 210 l4 10" stroke="#6C757D" stroke-width="4" stroke-linecap="round"/>`,
     },
     R: {
       /* robot: R'nin göbeği kafa, dik çizgisi gövde ve bacak, çapraz çizgisi adım atan bacak */
@@ -378,15 +386,14 @@ window.CIZIMLER = (() => {
         <g><g class="buhar"><circle cx="100" cy="18" r="12" fill="#CED4DA"/><circle cx="114" cy="-4" r="16" fill="#E9ECEF"/></g></g>`,
     },
     Y: {
-      /* altı köşeli yıldız: Y'nin üç kolu eşit aralıkla açılır (120°) ve yıldızın üç ışını olur;
-         öteki üç ışın aralarına gelir, yıldız simetrik olur, Y içinde koyu çizgiyle okunur */
+      /* üç uçlu yıldız: Y'nin üç kolu eşit aralıkla (120°) açılır ve yıldızın üç ucu olur;
+         yıldız simetriktir ve Y'nin kendisidir */
       cizgiler: ['M40 40 L100 120 L160 40', 'M100 120 L100 210'],
       bicim: { 0: 'M22.1 75.0 L100 120 L177.9 75.0' },
       renk: '#C98A00', kalinlik: 9, bosta: 'parilti', ses: 'parla',
-      arka: `<path d="M100.0 16.0 L125.0 76.7 L190.1 68.0 L150.0 120.0 L190.1 172.0 L125.0 163.3 L100.0 224.0 L75.0 163.3 L9.9 172.0 L50.0 120.0 L9.9 68.0 L75.0 76.7Z" fill="#FFD23F" stroke="#E09F00" stroke-width="6" stroke-linejoin="round"/>`,
-      on: `<circle cx="80" cy="140" r="6" fill="#3B2C2A"/><circle cx="120" cy="140" r="6" fill="#3B2C2A"/>
-        <circle cx="82" cy="138" r="2" fill="#fff"/><circle cx="122" cy="138" r="2" fill="#fff"/>
-        <circle cx="72" cy="154" r="6" fill="#FF9EAA" opacity=".7"/><circle cx="128" cy="154" r="6" fill="#FF9EAA" opacity=".7"/>
+      arka: `<path d="M190.1 68.0 L122.5 133.0 L100.0 224.0 L77.5 133.0 L9.9 68.0 L100.0 94.0Z" fill="#FFD23F" stroke="#E09F00" stroke-width="7" stroke-linejoin="round"/>`,
+      on: `<circle cx="88" cy="134" r="5" fill="#3B2C2A"/><circle cx="112" cy="134" r="5" fill="#3B2C2A"/>
+        <circle cx="89.5" cy="132.5" r="1.8" fill="#fff"/><circle cx="113.5" cy="132.5" r="1.8" fill="#fff"/>
         <g fill="#FFE66D"><path d="M18 196 l5 -12 l5 12 l-5 12z"/><path d="M176 196 l4 -10 l4 10 l-4 10z"/><path d="M176 24 l4 -9 l4 9 l-4 9z"/></g>`,
     },
     Z: {

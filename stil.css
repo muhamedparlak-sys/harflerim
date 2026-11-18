@@ -210,7 +210,6 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
 .cizim.canli.gaga { transform-origin: 50% 95%; animation: c-gaga 1.3s ease-in-out infinite; }
 .cizim.canli.cizir { animation: c-cizir .14s linear infinite; }
 .cizim.canli.tikir { animation: c-tikir .25s linear infinite; }
-.cizim.canli.pamuk { transform-origin: 35% 95%; animation: c-sallan 1.8s ease-in-out infinite; }
 .cizim.canli.robot { animation: c-robot .8s steps(2, jump-none) infinite; }
 .cizim.canli.cak { animation: c-cak 1.6s linear infinite; }
 .cizim.canli.emekle { animation: c-emekle 1.2s ease-in-out infinite; }
