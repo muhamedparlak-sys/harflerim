@@ -254,7 +254,7 @@ window.Ev = (() => {
 
     /* ---- oda ---- */
     PERDE: {
-      yer: { x: 120, y: 270, w: 240, h: 250 },
+      yer: { x: 120, y: 230, w: 240, h: 240 },
       ciz: () => `
         <rect x="20" y="30" width="200" height="200" rx="8" fill="#8FD3FF" stroke="#fff" stroke-width="10"/>
         <circle class="gunes" cx="150" cy="90" r="26" fill="#FFD23F"/>
@@ -328,10 +328,10 @@ window.Ev = (() => {
   };
 
   const ODALAR = {
-    banyo: { ad: 'BANYO', esyalar: ['DUŞ', 'SU', 'AYNA', 'SABUN'], kiz: 18, dekor: banyoDekor },
-    mutfak: { ad: 'MUTFAK', esyalar: ['FIRIN', 'ÇAY', 'ELMA', 'MASA'], kiz: 52, dekor: mutfakDekor },
-    salon: { ad: 'SALON', esyalar: ['LAMBA', 'SAAT', 'KİTAP', 'TOP'], kiz: 30, dekor: salonDekor },
-    oda: { ad: 'ODA', esyalar: ['PERDE', 'DOLAP', 'YATAK', 'AYI'], kiz: 12, dekor: () => '' },
+    banyo: { ad: 'BANYO', baslik: 'BANYO', simge: '🛁', esyalar: ['DUŞ', 'SU', 'AYNA', 'SABUN'], kiz: 18, dekor: banyoDekor },
+    mutfak: { ad: 'MUTFAK', baslik: 'MUTFAK', simge: '🍳', esyalar: ['FIRIN', 'ÇAY', 'ELMA', 'MASA'], kiz: 52, dekor: mutfakDekor },
+    salon: { ad: 'SALON', baslik: 'SALON', simge: '🛋️', esyalar: ['LAMBA', 'SAAT', 'KİTAP', 'TOP'], kiz: 30, dekor: salonDekor },
+    oda: { ad: 'ODA', baslik: 'YATAK ODASI', simge: '🛏️', esyalar: ['PERDE', 'DOLAP', 'YATAK', 'AYI'], kiz: 12, dekor: () => '' },
   };
   const KAPILAR = [['oda', '#F28CB1'], ['mutfak', '#FFB703'], ['salon', '#6BCB77'], ['banyo', '#4CC9F0']];
 
@@ -339,7 +339,11 @@ window.Ev = (() => {
   function banyoDekor() {
     return `<rect x="80" y="250" width="16" height="140" rx="6" fill="#ADB5BD"/>
       <path d="M60 260 L120 260 L120 380 Q90 396 60 380Z" fill="#2EC4B6"/><path d="M60 300 L120 300 M60 340 L120 340" stroke="#fff" stroke-width="5"/>
-      <ellipse cx="160" cy="574" rx="70" ry="14" fill="#90E0EF"/>`;
+      <ellipse cx="160" cy="574" rx="70" ry="14" fill="#90E0EF"/>
+      <rect x="616" y="380" width="64" height="80" rx="10" fill="#fff" stroke="#ADB5BD" stroke-width="5"/>
+      <path d="M598 470 L692 470 Q692 520 650 524 L660 556 L630 556 L636 524 Q598 516 598 470Z" fill="#fff" stroke="#ADB5BD" stroke-width="5" stroke-linejoin="round"/>
+      <ellipse cx="645" cy="470" rx="47" ry="10" fill="#E9ECEF" stroke="#ADB5BD" stroke-width="4"/>
+      <rect x="664" y="392" width="10" height="16" rx="4" fill="#ADB5BD"/>`;
   }
   function mutfakDekor() {
     return `<rect x="280" y="300" width="330" height="250" fill="#FFF8E7" stroke="#E9C46A" stroke-width="6"/>
@@ -429,7 +433,8 @@ window.Ev = (() => {
       const tanim = ODALAR[oda];
       const yildiz = kutlanan.has(oda) ? H().el('span', { className: 'ev-kapi-yildiz', textContent: '⭐' }) : null;
       const kapi = H().el('button', { className: 'ev-kapi', type: 'button', ariaLabel: kucuk(tanim.ad) }, [
-        H().el('span', { className: 'oda-tabela' }, [H().renkliAd(tanim.ad)]), H().el('span', { className: 'oda-kanat' }), yildiz,
+        H().el('span', { className: 'oda-tabela' }, [H().renkliAd(tanim.ad)]), H().el('span', { className: 'oda-kanat' }),
+        H().el('span', { className: 'ev-kapi-simge', textContent: tanim.simge }), yildiz,
       ]);
       kapi.style.left = `${24 + i * 19}%`;
       kapi.style.setProperty('--kanat', renk);
@@ -483,17 +488,20 @@ window.Ev = (() => {
           if (c.canli() && tamamMi(oda)) {
             window.Gorsel.konfeti();
             window.Efekt.tac();
-            await a.konus(`Harika! ${kucuk(tanim.ad)} içindeki bütün kelimeleri yazdın!`);
+            await a.konus(`Harika! ${kucuk(tanim.baslik)} içindeki bütün kelimeleri yazdın!`);
           }
         } finally { mesgul = false; }
       });
       return d;
     });
-    sahne.replaceChildren(dekor, ...esyalar, kiz, geri);
+    const baslik = H().el('button', { className: 'ev-oda-ad', type: 'button', ariaLabel: kucuk(tanim.baslik) }, [
+      H().el('span', { className: 'simge', textContent: tanim.simge }), H().el('span', {}, [H().renkliAd(tanim.baslik)])]);
+    baslik.addEventListener('click', () => { window.Konus.sustur(); c.konus(kucuk(tanim.baslik)); });
+    sahne.replaceChildren(dekor, ...esyalar, kiz, geri, baslik);
     const kalan = tanim.esyalar.filter((k) => !yazilan.has(k)).length;
     c.konus(kalan
-      ? `Burası ${kucuk(tanim.ad)}! Eşyaların adı üstlerinde yazıyor. Birine dokun, adını yaz, ne olacak gör!`
-      : `Burası ${kucuk(tanim.ad)}! Eşyalara dokunup oynayabilirsin.`);
+      ? `Burası ${kucuk(tanim.baslik)}! Eşyaların adı üstlerinde yazıyor. Birine dokun, adını yaz, ne olacak gör!`
+      : `Burası ${kucuk(tanim.baslik)}! Eşyalara dokunup oynayabilirsin.`);
   }
 
   /** yer: 'koridor' | 'oda' | 'mutfak' | 'salon' | 'banyo' */

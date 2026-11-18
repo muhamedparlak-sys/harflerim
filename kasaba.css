@@ -361,3 +361,11 @@
 .ev-esya .zzz { opacity: 0; }
 .ev-esya.acik .zzz { animation: c-buhar 2s ease-in-out infinite; }
 .ev-esya.acik .ayi-govde { animation: ev-hop .7s ease-out 2; }
+
+.ev-kapi-simge { position: absolute; z-index: 1; top: 42%; left: 50%; transform: translate(-50%, -50%); width: 70%; aspect-ratio: 1; border-radius: 50%;
+  display: grid; place-items: center; background: rgba(255,255,255,.85); font-size: clamp(34px, 6vw, 80px); line-height: 1; transition: opacity .3s; }
+.ev-kapi.acik .ev-kapi-simge { opacity: 0; }
+.ev-oda-ad { position: absolute; z-index: 5; top: 3%; left: calc(2% + 66px); display: flex; align-items: center; gap: 8px;
+  background: #fff; border-radius: 999px; padding: 4px 18px 4px 8px; box-shadow: var(--golge); font-size: clamp(18px, 2.6vw, 34px); font-weight: 900; letter-spacing: .06em; white-space: nowrap; }
+.ev-oda-ad .simge { font-size: 1.3em; }
+.ev-oda-ad .bosluk { width: .4em; }
