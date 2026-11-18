@@ -378,15 +378,16 @@ window.CIZIMLER = (() => {
         <g><g class="buhar"><circle cx="100" cy="18" r="12" fill="#CED4DA"/><circle cx="114" cy="-4" r="16" fill="#E9ECEF"/></g></g>`,
     },
     Y: {
-      /* yonca yaprağı: üç kalp biçimli yaprakçık Y'nin kavşağında birleşir. Y'nin kolları biraz açılır,
-         iki yan yaprakçığın orta damarı olur; Y'nin sapı yoncanın sapı */
+      /* altı köşeli yıldız: Y'nin üç kolu eşit aralıkla açılır (120°) ve yıldızın üç ışını olur;
+         öteki üç ışın aralarına gelir, yıldız simetrik olur, Y içinde koyu çizgiyle okunur */
       cizgiler: ['M40 40 L100 120 L160 40', 'M100 120 L100 210'],
-      bicim: { 0: 'M21.4 64.9 L100 120 L178.6 64.9' },
-      renk: '#1B5E3A', kalinlik: 7, bosta: 'dans', ses: 'cin',
-      arka: `${[-55, 55, 0].map((a) =>
-        `<g><g transform="translate(100 120) rotate(${a})"><path d="M0 4 C-42 -6 -54 -62 -30 -84 C-14 -98 0 -88 0 -74 C0 -88 14 -98 30 -84 C54 -62 42 -6 0 4Z" fill="#52B788" stroke="#2D6A4F" stroke-width="4" stroke-linejoin="round"/>
-        <path d="M-20 -58 L0 -42 L20 -58" fill="none" stroke="#D8F3DC" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></g></g>`).join('')}`,
-      on: `<path d="M100 200 Q118 186 134 192 Q120 206 100 204" fill="#52B788"/>`,
+      bicim: { 0: 'M22.1 75.0 L100 120 L177.9 75.0' },
+      renk: '#C98A00', kalinlik: 9, bosta: 'parilti', ses: 'parla',
+      arka: `<path d="M100.0 16.0 L125.0 76.7 L190.1 68.0 L150.0 120.0 L190.1 172.0 L125.0 163.3 L100.0 224.0 L75.0 163.3 L9.9 172.0 L50.0 120.0 L9.9 68.0 L75.0 76.7Z" fill="#FFD23F" stroke="#E09F00" stroke-width="6" stroke-linejoin="round"/>`,
+      on: `<circle cx="80" cy="140" r="6" fill="#3B2C2A"/><circle cx="120" cy="140" r="6" fill="#3B2C2A"/>
+        <circle cx="82" cy="138" r="2" fill="#fff"/><circle cx="122" cy="138" r="2" fill="#fff"/>
+        <circle cx="72" cy="154" r="6" fill="#FF9EAA" opacity=".7"/><circle cx="128" cy="154" r="6" fill="#FF9EAA" opacity=".7"/>
+        <g fill="#FFE66D"><path d="M18 196 l5 -12 l5 12 l-5 12z"/><path d="M176 196 l4 -10 l4 10 l-4 10z"/><path d="M176 24 l4 -9 l4 9 l-4 9z"/></g>`,
     },
     Z: {
       cizgiler: ['M50 30 L150 30 L50 165 L150 165'], renk: '#E9A23B', kalinlik: 24, bosta: 'dortnala', ses: 'nal', cikis: 'sag', cikisSesi: 'nal',

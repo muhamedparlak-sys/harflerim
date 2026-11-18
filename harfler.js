@@ -32,7 +32,7 @@ window.HARFLER = Object.freeze([
   { h: 'U', kelime: 'Uğur böceği', resim: '🐞' },
   { h: 'Ü', kelime: 'Ütü', resim: '👕' },
   { h: 'V', kelime: 'Vapur', resim: '⛴️' },
-  { h: 'Y', kelime: 'Yonca', resim: '☘️' },
+  { h: 'Y', kelime: 'Yıldız', resim: '⭐' },
   { h: 'Z', kelime: 'Zürafa', resim: '🦒' },
 ]);
 
