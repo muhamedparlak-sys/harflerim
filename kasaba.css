@@ -279,7 +279,21 @@
 .ev-kapi .oda-tabela { font-size: clamp(14px, 2.1vw, 28px); padding: 3px 8px; white-space: nowrap; }
 .ev-kapi-yildiz { position: absolute; z-index: 1; bottom: 8%; left: 50%; transform: translateX(-50%); font-size: clamp(22px, 3vw, 40px); }
 .ev .ev-kiz { bottom: 6%; height: 44%; pointer-events: none; z-index: 3; transition: left .6s, bottom .6s, rotate .6s; }
-.ev .ev-kiz.uyu { left: 58% !important; bottom: 11%; rotate: -84deg; }
+.ev .ev-kiz.yatakta { left: 48% !important; bottom: 16%; height: 30%; rotate: -84deg; }
+.ev .ev-kiz.uyuyor .kiz-goz { transform: scaleY(.1); transform-box: fill-box; transform-origin: center; }
+.ev-karanlik { position: absolute; inset: 0; z-index: 1; background: rgba(22, 24, 70, .62); opacity: 0; transition: opacity .9s; pointer-events: none; }
+.ev-oda.karanlik .ev-karanlik { opacity: 1; }
+.ev-oda.oda .ev-esya > svg, .ev-oda.oda .ev-kiz, .ev-yorgan-ust { transition: filter .9s; }
+.ev-oda.karanlik .ev-esya > svg, .ev-oda.karanlik .ev-kiz, .ev-oda.karanlik .ev-yorgan-ust { filter: brightness(.5) saturate(.7); }
+.ev-dekor .huzme { opacity: .45; transition: opacity .9s; }
+.ev-oda.karanlik .ev-dekor .huzme { opacity: 0; }
+.ev-yorgan-ust { position: absolute; z-index: 4; pointer-events: none; opacity: 0; transition: opacity .4s; }
+.ev-yorgan-ust > svg { width: 100%; height: 100%; overflow: visible; }
+.ev-oda.yatakta .ev-yorgan-ust { opacity: 1; }
+.ev-yorgan-ust .zzz { opacity: 0; }
+.ev-oda.uyku .ev-yorgan-ust .zzz { animation: c-buhar 2s ease-in-out infinite; }
+.ev-esya .yorgan { transform-origin: 100% 50%; transition: transform .5s ease; }
+.ev-esya.acik .yorgan { transform: scaleX(.3); }
 .ev-oda.banyo { background:
   repeating-linear-gradient(0deg, transparent 0 46px, rgba(255,255,255,.7) 46px 49px) top / 100% 76% no-repeat,
   repeating-linear-gradient(90deg, transparent 0 46px, rgba(255,255,255,.7) 46px 49px) top / 100% 76% no-repeat,
@@ -358,8 +372,6 @@
 .ev-esya .kapak-sol { transform-origin: 0 50%; }
 .ev-esya .kapak-sag { transform-origin: 100% 50%; }
 .ev-esya.acik .kapak-sol, .ev-esya.acik .kapak-sag { transform: scaleX(.15); }
-.ev-esya .zzz { opacity: 0; }
-.ev-esya.acik .zzz { animation: c-buhar 2s ease-in-out infinite; }
 .ev-esya.acik .ayi-govde { animation: ev-hop .7s ease-out 2; }
 
 .ev-kapi-simge { position: absolute; z-index: 1; top: 42%; left: 50%; transform: translate(-50%, -50%); width: 70%; aspect-ratio: 1; border-radius: 50%;

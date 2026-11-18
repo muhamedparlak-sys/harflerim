@@ -23,12 +23,21 @@ window.Ev = (() => {
   const yazilan = new Set(); // bu açılışta yazılan eşya adları
   const kutlanan = new Set(); // bütün kelimeleri yazılmış odalar
 
+  /* Yatak odası hikâyesi: sabah oda karanlık, kız yatakta uyuyor. PERDE açılınca oda aydınlanır;
+     YATAK yazılınca yorgan açılır, kız kalkar ya da yatıp yorganın altına girer. */
+  const yatakOdasi = { perdeAcik: false, yatakta: true };
+
   let c = null; // kasaba bağlamı: kiz, canli, sifre, konus, say, harfResmi, harfHavuzu, yaratAc, evIci
   let sahne = null;
 
   const svg = (w, h, icerik) => `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMax meet" aria-hidden="true">${icerik}</svg>`;
   const yuzde = ({ x, y, w, h }) => `left:${x / 10}%;bottom:${y / 6}%;width:${w / 10}%;height:${h / 6}%`;
   const durum = (dugme, acik) => dugme.classList.toggle('acik', acik);
+
+  /* Yorgan: yatağın üstünde ve kız yatınca onun üstünde (yatak koordinatlarında). */
+  const YORGAN = `<path d="M124 78 Q200 62 284 80 L284 140 L124 140Z" fill="#9B5DE5"/>
+    <path d="M150 72 L150 140 M190 66 L190 140 M230 68 L230 140 M266 74 L266 140" stroke="#B388EB" stroke-width="5"/>
+    <path d="M124 78 Q200 62 284 80" fill="none" stroke="#7B2CBF" stroke-width="5" stroke-linecap="round"/>`;
 
   /* ---------------- eşyalar ---------------- */
   const ESYA = {
@@ -256,7 +265,7 @@ window.Ev = (() => {
     PERDE: {
       yer: { x: 120, y: 230, w: 240, h: 240 },
       ciz: () => `
-        <rect x="20" y="30" width="200" height="200" rx="8" fill="#8FD3FF" stroke="#fff" stroke-width="10"/>
+        <rect class="gok" x="20" y="30" width="200" height="200" rx="8" fill="#8FD3FF" stroke="#fff" stroke-width="10"/>
         <circle class="gunes" cx="150" cy="90" r="26" fill="#FFD23F"/>
         <path d="M30 230 Q80 180 130 210 Q170 180 210 214 L210 225 L30 225Z" fill="#A6E07A"/>
         <path d="M120 30 L120 230 M20 130 L220 130" stroke="#fff" stroke-width="8"/>
@@ -264,10 +273,19 @@ window.Ev = (() => {
         <g class="perde-sol"><path d="M10 20 L124 20 Q114 120 124 244 L10 244Z" fill="#9B5DE5"/><path d="M40 24 L40 240 M72 24 L72 240 M100 24 L104 240" stroke="#B388EB" stroke-width="6"/></g>
         <g class="perde-sag"><path d="M230 20 L116 20 Q126 120 116 244 L230 244Z" fill="#9B5DE5"/><path d="M200 24 L200 240 M168 24 L168 240 M140 24 L136 240" stroke="#B388EB" stroke-width="6"/></g>`,
       async calis(d, a) {
-        const acik = !d.classList.contains('acik');
-        durum(d, acik);
+        const o = yatakOdasi;
+        o.perdeAcik = !o.perdeAcik;
+        durum(d, o.perdeAcik);
+        yatakOdasiGuncelle(a.kiz);
         window.Efekt.karakter('sac');
-        await a.konus(acik ? 'Perde açıldı! Günaydın, güneş!' : 'Perde kapandı.');
+        if (o.perdeAcik) {
+          await a.konus(o.yatakta
+            ? 'Perde açıldı, oda aydınlandı! Günaydın! Kalkmak için yatağa dokun.'
+            : 'Perde açıldı, güneş içeri doldu, oda aydınlandı!');
+        } else {
+          if (o.yatakta) window.Efekt.karakter('horul');
+          await a.konus(o.yatakta ? 'Perde kapandı, oda karardı. İyi geceler!' : 'Perde kapandı, oda karardı.');
+        }
       },
     },
     DOLAP: {
@@ -293,18 +311,21 @@ window.Ev = (() => {
         <rect x="6" y="20" width="22" height="150" rx="8" fill="#B47A55"/><rect x="272" y="70" width="22" height="100" rx="8" fill="#B47A55"/>
         <rect x="20" y="96" width="262" height="50" rx="12" fill="#FF8FB5"/>
         <ellipse cx="74" cy="92" rx="44" ry="18" fill="#fff"/>
-        <path d="M110 84 L276 84 Q284 84 284 96 L284 130 L110 130Z" fill="#9B5DE5"/>
-        <path d="M130 84 L130 130 M170 84 L170 130 M210 84 L210 130 M250 84 L250 130" stroke="#B388EB" stroke-width="5"/>
-        <g class="zzz" fill="#1D63D8" font-weight="900" font-family="sans-serif"><text x="200" y="50" font-size="30">z</text><text x="226" y="30" font-size="24">z</text><text x="248" y="14" font-size="18">z</text></g>`,
+        <g class="yorgan">${YORGAN}</g>`,
       async calis(d, a) {
-        durum(d, true);
-        a.kiz.classList.add('uyu');
+        const o = yatakOdasi;
+        durum(d, true); // yorgan açılır
+        window.Efekt.karakter('sac');
+        await H().bekle(500);
+        o.yatakta = !o.yatakta;
+        yatakOdasiGuncelle(a.kiz);
+        await H().bekle(800);
+        durum(d, false); // yorgan kapanır (kız yattıysa üstüne)
+        if (!a.canli()) return;
+        if (!o.yatakta) { await a.konus('Yorganı açtın, yataktan kalktın. Günaydın!'); return; }
+        if (o.perdeAcik) { await a.konus('Yatağa girdin ama oda çok aydınlık! Uyumak için perdeyi kapat.'); return; }
         window.Efekt.karakter('horul');
-        await a.konus('İyi uykular!');
-        await H().bekle(1800);
-        a.kiz.classList.remove('uyu');
-        durum(d, false);
-        if (a.canli()) await a.konus('Günaydın!');
+        await a.konus('Yorganın altına girdin. İyi uykular!');
       },
     },
     AYI: {
@@ -331,7 +352,7 @@ window.Ev = (() => {
     banyo: { ad: 'BANYO', baslik: 'BANYO', simge: '🛁', esyalar: ['DUŞ', 'SU', 'AYNA', 'SABUN'], kiz: 18, dekor: banyoDekor },
     mutfak: { ad: 'MUTFAK', baslik: 'MUTFAK', simge: '🍳', esyalar: ['FIRIN', 'ÇAY', 'ELMA', 'MASA'], kiz: 52, dekor: mutfakDekor },
     salon: { ad: 'SALON', baslik: 'SALON', simge: '🛋️', esyalar: ['LAMBA', 'SAAT', 'KİTAP', 'TOP'], kiz: 30, dekor: salonDekor },
-    oda: { ad: 'ODA', baslik: 'YATAK ODASI', simge: '🛏️', esyalar: ['PERDE', 'DOLAP', 'YATAK', 'AYI'], kiz: 12, dekor: () => '' },
+    oda: { ad: 'ODA', baslik: 'YATAK ODASI', simge: '🛏️', esyalar: ['PERDE', 'DOLAP', 'YATAK', 'AYI'], kiz: 12, dekor: odaDekor },
   };
   const KAPILAR = [['oda', '#F28CB1'], ['mutfak', '#FFB703'], ['salon', '#6BCB77'], ['banyo', '#4CC9F0']];
 
@@ -360,6 +381,20 @@ window.Ev = (() => {
       <rect x="196" y="516" width="16" height="30" fill="#8D5524"/><rect x="490" y="516" width="16" height="30" fill="#8D5524"/>
       <rect x="250" y="160" width="90" height="110" rx="6" fill="#FFF8E7" stroke="#B07A4F" stroke-width="10"/><circle cx="295" cy="205" r="22" fill="#FFD6A5"/><path d="M262 262 Q295 226 328 262Z" fill="#F28CB1"/>
       <rect x="370" y="190" width="80" height="80" rx="6" fill="#FFF8E7" stroke="#B07A4F" stroke-width="10"/><path d="M380 260 L410 220 L440 260Z" fill="#6BCB77"/><circle cx="430" cy="210" r="10" fill="#FFD23F"/>`;
+  }
+
+  function odaDekor() {
+    return `<path class="huzme" d="M150 300 L360 300 L700 590 L120 590Z" fill="#FFF3B0"/>
+      <circle cx="880" cy="120" r="0"/>`;
+  }
+
+  function yatakOdasiGuncelle(kiz) {
+    const o = yatakOdasi;
+    sahne.classList.toggle('karanlik', !o.perdeAcik);
+    sahne.classList.toggle('yatakta', o.yatakta);
+    sahne.classList.toggle('uyku', o.yatakta && !o.perdeAcik);
+    kiz.classList.toggle('yatakta', o.yatakta);
+    kiz.classList.toggle('uyuyor', o.yatakta && !o.perdeAcik);
   }
 
   /* ---------------- yardımcılar ---------------- */
@@ -498,6 +533,21 @@ window.Ev = (() => {
       H().el('span', { className: 'simge', textContent: tanim.simge }), H().el('span', {}, [H().renkliAd(tanim.baslik)])]);
     baslik.addEventListener('click', () => { window.Konus.sustur(); c.konus(kucuk(tanim.baslik)); });
     sahne.replaceChildren(dekor, ...esyalar, kiz, geri, baslik);
+    if (oda === 'oda') {
+      const karanlik = H().el('div', { className: 'ev-karanlik' });
+      const yorgan = H().el('div', { className: 'ev-yorgan-ust' });
+      yorgan.style.cssText = yuzde(ESYA.YATAK.yer);
+      yorgan.innerHTML = svg(ESYA.YATAK.yer.w, ESYA.YATAK.yer.h, `${YORGAN}
+        <g class="zzz" fill="#BDE0FE" font-weight="900" font-family="sans-serif"><text x="40" y="40" font-size="30">z</text><text x="66" y="18" font-size="24">z</text><text x="88" y="0" font-size="18">z</text></g>`);
+      dekor.after(karanlik);
+      kiz.after(yorgan);
+      esyalar[0].classList.toggle('acik', yatakOdasi.perdeAcik);
+      yatakOdasiGuncelle(kiz);
+      if (yatakOdasi.yatakta && !yatakOdasi.perdeAcik) {
+        c.konus('Günaydın! Sabah oldu ama oda karanlık, sen de hâlâ uyuyorsun. Perdeye dokun, perde yaz, oda aydınlansın!');
+        return;
+      }
+    }
     const kalan = tanim.esyalar.filter((k) => !yazilan.has(k)).length;
     c.konus(kalan
       ? `Burası ${kucuk(tanim.baslik)}! Eşyaların adı üstlerinde yazıyor. Birine dokun, adını yaz, ne olacak gör!`
