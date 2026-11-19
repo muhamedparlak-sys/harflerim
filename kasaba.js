@@ -217,7 +217,7 @@ window.Kasaba = (() => {
   }
 
   /*
-   * Sokaktaki yerler (soldan sağa); eşit aralıkla dizilir, dünya her yer için ~bir ekran uzar.
+   * Sokaktaki yerler (soldan sağa); bitişik nizam: binalar arada boşluk bırakmadan yan yana dizilir.
    * kapi: kapının bina içindeki yeri (0 sol kenar … 1 sağ kenar); kızın durduğu yer ekranda ölçülür.
    * Yeni yer: buraya bir satır + açılış işlevi (yerAc).
    */
@@ -226,13 +226,12 @@ window.Kasaba = (() => {
     { ad: 'kuafor', sifre: 'KUAFÖR', tabela: 'KUAFÖR', svg: kuaforSvg, kapi: 0.79 },
     { ad: 'restoran', sifre: 'RESTORAN', tabela: 'RESTORAN', svg: restoranSvg, kapi: 0.5 },
     { ad: 'hastane', sifre: 'HASTANE', tabela: 'HASTANE', svg: hastaneSvg, kapi: 0.5 },
-    { ad: 'plaj', sifre: 'PLAJ', tabela: 'PLAJ', svg: plajSvg, kapi: 0.5, agacsiz: true },
+    { ad: 'plaj', sifre: 'PLAJ', tabela: 'PLAJ', svg: plajSvg, kapi: 0.5 },
   ];
-  const ARALIK = 100 / YERLER.length; // iki yer arası (dünyanın %'si)
-  const DUNYA_YER_YUZDE = 65; // her yer için ekran genişliğinin %'si
-  const DUNYA_YER_PX = 575; // dar ekranda bile her yere en az bu kadar yol
-  const YER_BOSLUK = 1.6; // ilk binanın soldan boşluğu (%)
-  const yerSol = (i) => YER_BOSLUK + i * ARALIK;
+  const BINA_ORAN = 240 / 380; // bina svg en/boy
+  const BINA_BOY = 0.66; // bina yüksekliği / sokak yüksekliği (kasaba.css .yapi)
+  const SOKAK_BAS = 0.35; // ilk binadan önceki boşluk (bina genişliği cinsinden)
+  const SOKAK_SON = 1.2; // son binadan sonra (deniz) boşluk
   const yerBul = (ad) => YERLER.find((y) => y.ad === ad) || YERLER[0];
 
   function yerAc(ad, no) {
@@ -250,15 +249,10 @@ window.Kasaba = (() => {
     H().ekranAc('kasaba');
     const alan = $('#kasaba-sokak');
     const dunya = H().el('div', { className: 'dunya' });
-    dunya.style.width = `max(${YERLER.length * DUNYA_YER_YUZDE}%, ${YERLER.length * DUNYA_YER_PX}px)`;
     const binalar = new Map();
-    const agaclar = [];
-    const agac = (sol, olcek = 1) => { const a = H().el('div', { className: 'agac' }); a.style.left = `${sol}%`; a.style.scale = olcek; return a; };
-    YERLER.forEach((y, i) => {
+    YERLER.forEach((y) => {
       const bina = H().el('button', { className: `yapi yapi-${y.ad}`, type: 'button', ariaLabel: y.tabela || 'Ev' });
       bina.innerHTML = y.svg();
-      bina.style.left = `${yerSol(i)}%`;
-      if (!y.agacsiz && i < YERLER.length - 1) agaclar.push(agac(yerSol(i) + ARALIK * 0.56), agac(yerSol(i) + ARALIK * 0.78, 0.8 + (i % 2) * 0.05));
       if (y.tabela) {
         const tabela = H().el('span', { className: 'tabela' }, H().renkliAd(y.tabela));
         tabela.addEventListener('click', (e) => { e.stopPropagation(); window.Konus.sustur(); konus(y.tabela.toLocaleLowerCase('tr')); });
@@ -270,9 +264,16 @@ window.Kasaba = (() => {
     dunya.append(
       H().el('div', { className: 'gunes-top' }), H().el('div', { className: 'bulut b1' }), H().el('div', { className: 'bulut b2' }), H().el('div', { className: 'bulut b3' }),
       H().el('div', { className: 'sokak-deniz' }),
-      ...binalar.values(), ...agaclar, kizKap, H().el('div', { className: 'kaldirim' }),
+      ...binalar.values(), kizKap, H().el('div', { className: 'kaldirim' }),
     );
     alan.replaceChildren(dunya);
+    /* bitişik nizam: bina genişliği sokağın yüksekliğinden çıkar; dünya binaların toplamı kadar uzar */
+    const genislik = dunya.offsetHeight * BINA_BOY * BINA_ORAN;
+    const dunyaPx = genislik * (SOKAK_BAS + YERLER.length + SOKAK_SON);
+    dunya.style.width = `${Math.max(dunyaPx, alan.clientWidth)}px`;
+    const solYuzde = (i) => ((genislik * (SOKAK_BAS + i)) / dunya.offsetWidth) * 100;
+    YERLER.forEach((y, i) => { binalar.get(y.ad).style.left = `${solYuzde(i)}%`; });
+    dunya.querySelector('.sokak-deniz').style.left = `${solYuzde(YERLER.length - 1) + 1}%`;
     /* kapının dünyadaki yeri (%): bina ekranda ölçülür, böylece her ekran boyunda kız kapının önünde durur */
     const kapiYeri = (ad) => { const y = yerBul(ad); const b = binalar.get(y.ad); return ((b.offsetLeft + b.offsetWidth * y.kapi) / dunya.offsetWidth) * 100; };
     kizKap.style.left = `${kapiYeri(nereden)}%`;
@@ -289,11 +290,20 @@ window.Kasaba = (() => {
       yerAc(hedef, no);
     };
     binalar.forEach((bina, ad) => bina.addEventListener('click', () => gidis(ad)));
+    /* sokağın boş bir yerine (gökyüzü, kaldırım) dokununca kız oraya yürür */
+    alan.addEventListener('click', (e) => {
+      if (mesgul || !canli(no) || e.target.closest('.yapi')) return;
+      const kutu = dunya.getBoundingClientRect();
+      const ilk = kapiYeri(YERLER[0].ad);
+      const son = kapiYeri(YERLER[YERLER.length - 1].ad);
+      const hedef = Math.min(son, Math.max(ilk, ((e.clientX - kutu.left) / kutu.width) * 100));
+      yuru(kizKap, hedef, no, alan);
+    });
 
     await disariCik(binalar.get(yerBul(nereden).ad), kizKap, no);
     if (!canli(no)) return;
     mesgul = false;
-    if (nereden === 'ev') konus('Günaydın! Bugün nereye gidelim? Sokağı kaydır, bir yere dokun.');
+    if (nereden === 'ev') konus('Günaydın! Bugün nereye gidelim? Yürümek için sokağa dokun, girmek için bir binaya dokun.');
     else konus('Şimdi nereye gidelim?');
   }
 
@@ -415,20 +425,29 @@ window.Kasaba = (() => {
     if (canli(no)) await kapiAc(bina, false);
   }
 
+  let yuruyus = 0; // son yürüyüş; yenisi başlarsa eskisi yarıda kalır
+
   async function yuru(kizKap, hedef, no, alan) {
-    const simdi = parseFloat(kizKap.style.left) || 0;
+    const benim = ++yuruyus;
+    const kap = kizKap.parentElement;
+    /* yürürken yeni hedef gelirse kız bulunduğu yerden döner */
+    const simdi = (kizKap.offsetLeft / kap.offsetWidth) * 100;
+    kizKap.style.transitionDuration = '0ms';
+    kizKap.style.left = `${simdi}%`;
+    void kizKap.offsetWidth;
     const yol = Math.abs(simdi - hedef);
-    if (yol < 1) return;
+    if (yol < 0.5) { kizKap.classList.remove('yuruyor', 'sola'); return; }
     const sure = Math.round(YURUME_MS_MIN + yol * YURUME_MS_YUZDE);
     kizKap.classList.toggle('sola', hedef < simdi);
     kizKap.classList.add('yuruyor');
     kizKap.style.transitionDuration = `${sure}ms`;
     kizKap.style.left = `${hedef}%`;
     takipEt(alan, kizKap, sure);
-    for (let t = 0; t < sure; t += ADIM_SESI_MS) setTimeout(() => { if (canli(no)) window.Efekt.karakter('adim'); }, t);
+    for (let t = 0; t < sure; t += ADIM_SESI_MS) setTimeout(() => { if (canli(no) && benim === yuruyus) window.Efekt.karakter('adim'); }, t);
     await H().bekle(sure);
-    if (canli(no)) kizKap.classList.remove('yuruyor', 'sola');
+    if (canli(no) && benim === yuruyus) kizKap.classList.remove('yuruyor', 'sola');
   }
+
 
   /* ---------- restoran (restoran.js) ---------- */
   function restoranAc() {
