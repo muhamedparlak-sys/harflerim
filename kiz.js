@@ -185,7 +185,7 @@ window.Kiz = (() => {
     const cizgi = koyu(r.ten, 0.76);
     /* x: parmak ortası, ust: uç, alt: kök, w: yarı genişlik, a: eğim (kökü çevresinde) */
     const PARMAK = [
-      { x: 70, ust: 128, alt: 236, w: 22, a: -40 }, // başparmak
+      { x: 108, ust: 150, alt: 268, w: 23, a: -44 }, // başparmak: kökü avucun içinde
       { x: 118, ust: 50, alt: 186, w: 21, a: -7 },
       { x: 160, ust: 30, alt: 182, w: 22, a: 0 },
       { x: 202, ust: 46, alt: 186, w: 21, a: 7 },
@@ -213,7 +213,7 @@ window.Kiz = (() => {
         <linearGradient id="${id}-t" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="${koyu(r.ten, 0.9)}"/><stop offset=".38" stop-color="${acik(r.ten, 0.16)}"/><stop offset="1" stop-color="${koyu(r.ten, 0.9)}"/></linearGradient>
         <radialGradient id="${id}-a" cx=".52" cy=".3" r=".75"><stop offset="0" stop-color="${acik(r.ten, 0.16)}"/><stop offset="1" stop-color="${koyu(r.ten, 0.88)}"/></radialGradient></defs>
       ${parmakCiz(PARMAK[0], 0)}
-      <path d="M92 170 C90 150 110 140 140 141 L230 150 C256 156 262 186 258 214 C252 262 226 300 172 304 C118 306 90 274 84 238 C80 214 84 190 92 170Z" fill="url(#${id}-a)" stroke="${cizgi}" stroke-width="3"/>
+      <path d="M96 168 C94 150 112 140 140 141 L230 150 C256 156 262 186 258 214 C252 262 226 300 172 304 C126 306 98 288 86 262 C76 240 70 214 80 196 C86 184 92 178 96 168Z" fill="url(#${id}-a)" stroke="${cizgi}" stroke-width="3"/>
       ${PARMAK.slice(1).map((p, k) => parmakCiz(p, k + 1)).join('')}
       <path d="M100 176 Q170 168 244 186" fill="none" stroke="${koyu(r.ten, 0.9)}" stroke-width="10" stroke-linecap="round" opacity=".25"/>
       <g fill="none" stroke="${cizgi}" stroke-width="2.4" stroke-linecap="round" opacity=".35">
