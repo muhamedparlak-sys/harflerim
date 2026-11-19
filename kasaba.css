@@ -111,11 +111,16 @@
 .yatak::before { content: ''; position: absolute; left: -6px; bottom: -6px; width: 14px; height: 120%; border-radius: 8px; background: #B47A55; }
 
 /* kuaför */
-.kuafor-sahne { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; min-height: 70dvh; border-radius: 30px; background: linear-gradient(#FFF0F6 0 80%, #F7D4E2 80%); box-shadow: var(--golge); padding: 16px; }
+.kuafor-sahne { position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; min-height: 70dvh; border-radius: 30px; box-shadow: var(--golge); padding: 16px;
+  background: repeating-linear-gradient(90deg, #FFF0F6 0 36px, #FFE3EE 36px 72px) top / 100% 80% no-repeat, repeating-conic-gradient(#F7D4E2 0 25%, #FFF5F9 0 50%) 0 0 / 64px 64px; }
+.kuafor-sahne > *:not(.kuafor-dekor) { position: relative; z-index: 1; }
+.kuafor-dekor { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
 .kuafor-ipucu { font-size: 44px; margin-left: auto; }
 .koltuk { position: relative; height: 68dvh; aspect-ratio: 200 / 340; }
 .koltuk .kiz-arka { position: relative; width: 100%; height: 100%; z-index: 1; }
-.ayna-arka { position: absolute; inset: -4% -30%; border-radius: 50% 50% 18px 18px; background: #CFEFFF; border: 10px solid #E0A9C0; opacity: .7; }
+.ayna-arka { position: absolute; inset: -4% -30% 12% -30%; border-radius: 50% 50% 18px 18px; border: 12px solid #E9C46A;
+  background: linear-gradient(115deg, transparent 0 30%, rgba(255,255,255,.55) 30% 36%, transparent 36% 42%, rgba(255,255,255,.4) 42% 45%, transparent 45%), linear-gradient(#DDF3FF, #BFE6FA);
+  box-shadow: 0 0 0 5px #C9A227, inset 0 0 0 4px #F6DE8D, 0 10px 24px rgba(0,0,0,.12); }
 .tutam { transform-box: fill-box; transition: transform .5s ease; }
 .tutam.ortaya-sol { transform: translateX(-60%) rotate(8deg); }
 .tutam.ortaya-sag { transform: translateX(60%) rotate(-8deg); }
@@ -124,8 +129,12 @@
 .orgu-ipucu::before { content: '🔊'; position: absolute; top: -14px; left: -14px; font-size: 30px; }
 .tokalar { position: absolute; z-index: 2; left: 0; right: 0; bottom: 2%; height: 80px; }
 .toka-0 { left: 15%; } .toka-1 { left: 50%; } .toka-2 { left: 85%; }
-.toka { position: absolute; top: 0; translate: -50% 0; width: 76px; height: 76px; border-radius: 50%; background: #fff; border: 6px solid #FF8FB5; box-shadow: var(--golge); font-size: 50px; font-weight: 900; display: grid; place-items: center; }
-.toka-1 { border-color: #B7A6F0; }
+.toka { --toka: #FF8FB5; position: absolute; top: 0; translate: -50% 0; width: 82px; height: 82px; border-radius: 50%; font-size: 50px; font-weight: 900; display: grid; place-items: center;
+  background: radial-gradient(circle at 34% 28%, #fff 0 46%, #FFF4F8 47% 100%); border: 7px solid var(--toka); box-shadow: 0 6px 0 color-mix(in srgb, var(--toka) 70%, #000), 0 10px 18px rgba(0,0,0,.15); }
+.toka-1 { --toka: #B7A6F0; }
+.toka-2 { --toka: #63D2C6; }
+.toka-fiyonk { position: absolute; top: -22px; left: 50%; translate: -50% 0; width: 46px; height: 24px; pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--toka) 75%, #000) 0 6px, transparent 7px), conic-gradient(from 60deg at 50% 50%, var(--toka) 0 60deg, transparent 60deg 120deg, var(--toka) 120deg 240deg, transparent 240deg 300deg, var(--toka) 300deg); border-radius: 40%; }
 .toka.ipucu { animation: parla 1s infinite, zipla 1s infinite; border-color: var(--gunes); }
 .toka.takildi { transform: scale(1.2); background: #EFFBEF; transition: transform .3s var(--yay); }
 .buyuk-sayi { position: fixed; z-index: 30; left: 50%; top: 42%; transform: translate(-50%, -50%); font-size: 220px; font-weight: 900; color: var(--mercan); text-shadow: 0 8px 0 #fff, 0 12px 24px rgba(0, 0, 0, .15); opacity: 0; pointer-events: none; }

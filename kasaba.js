@@ -496,6 +496,32 @@ window.Kasaba = (() => {
     return aile.length >= 4 ? aile : window.HARFLER.map((x) => x.h);
   }
 
+  /** Kuaför salonu süsü (dokunulmaz): solda raf (şişeler, tarak, fön makinesi), sağda saksı çiçeği ve havlular. */
+  function kuaforDekor() {
+    const d = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    d.setAttribute('viewBox', '0 0 1000 600');
+    d.setAttribute('preserveAspectRatio', 'xMidYMax slice');
+    d.setAttribute('class', 'kuafor-dekor');
+    d.setAttribute('aria-hidden', 'true');
+    d.innerHTML = `
+      <rect x="40" y="250" width="200" height="14" rx="6" fill="#C08B5C"/><rect x="40" y="340" width="200" height="14" rx="6" fill="#C08B5C"/>
+      <rect x="60" y="196" width="30" height="54" rx="8" fill="#4CC9F0"/><rect x="68" y="182" width="14" height="16" rx="3" fill="#3B2C2A"/>
+      <rect x="104" y="206" width="26" height="44" rx="12" fill="#FF8FB5"/><rect x="110" y="194" width="14" height="14" rx="3" fill="#E5689A"/>
+      <rect x="146" y="190" width="34" height="60" rx="6" fill="#B388EB"/><path d="M152 190 L152 176 L174 176 L174 182" fill="none" stroke="#7B5CC4" stroke-width="5"/>
+      <rect x="194" y="214" width="28" height="36" rx="6" fill="#FFD166"/>
+      <rect x="60" y="318" width="90" height="12" rx="4" fill="#E86FA6"/><path d="M66 330 L66 340 M76 330 L76 340 M86 330 L86 340 M96 330 L96 340 M106 330 L106 340 M116 330 L116 340 M126 330 L126 340 M136 330 L136 340" stroke="#E86FA6" stroke-width="4"/>
+      <path d="M172 290 L214 290 Q232 290 232 306 Q232 322 214 322 L172 322Z" fill="#9B5DE5"/><rect x="180" y="320" width="14" height="22" rx="4" fill="#7B5CC4"/>
+      <path d="M232 300 L246 296 L246 316 L232 312Z" fill="#7B5CC4"/>
+      <path d="M820 520 L900 520 L890 590 L830 590Z" fill="#E07A5F"/>
+      <path d="M860 520 Q840 440 800 420 M860 520 Q866 430 900 400 M860 520 Q900 470 940 470 M860 520 Q820 480 790 488" fill="none" stroke="#2D9A4E" stroke-width="10" stroke-linecap="round"/>
+      <g fill="#52B788"><ellipse cx="800" cy="420" rx="22" ry="12" transform="rotate(-30 800 420)"/><ellipse cx="900" cy="400" rx="22" ry="12" transform="rotate(-50 900 400)"/>
+        <ellipse cx="940" cy="470" rx="22" ry="12" transform="rotate(10 940 470)"/><ellipse cx="790" cy="488" rx="20" ry="11" transform="rotate(20 790 488)"/></g>
+      <rect x="780" y="250" width="170" height="14" rx="6" fill="#C08B5C"/>
+      <rect x="796" y="214" width="60" height="36" rx="10" fill="#FFAFCC"/><rect x="800" y="224" width="52" height="5" fill="#fff" opacity=".7"/>
+      <rect x="866" y="204" width="64" height="46" rx="10" fill="#A2D2FF"/><rect x="870" y="216" width="56" height="5" fill="#fff" opacity=".7"/>`;
+    return d;
+  }
+
   /* 1) Saç örme: dış tutamlar sırayla ortaya atılır (sağ, sol, sağ …). */
   function orguBasla(no) {
     const o = { no, adim: 0, hedef: null, hata: 0, kilit: false, harfler: [] };
@@ -525,14 +551,14 @@ window.Kasaba = (() => {
     const kap = H().el('div', { className: 'koltuk' }, [H().el('div', { className: 'ayna-arka' }), kizSvg]);
     if (o.adim < ORGU_ADIMI) {
       const tokalar = H().el('div', { className: 'tokalar' }, o.harfler.map((h, i) => {
-        const b = H().el('button', { className: `toka toka-${i}`, type: 'button' }, [H().el('span', { className: H().tur(h), textContent: H().goster(h) })]);
+        const b = H().el('button', { className: `toka toka-${i}`, type: 'button' }, [H().el('span', { className: 'toka-fiyonk' }), H().el('span', { className: H().tur(h), textContent: H().goster(h) })]);
         b.addEventListener('click', () => tokaSec(o, i, i === dogruTutam, b, kizSvg));
         return b;
       }));
       /* sesi duyduğu harfin karakteri de görünsün (ör. K → kelebek); dokununca adı okunur */
       kap.append(tokalar, H().el('div', { className: 'orgu-ipucu' }, [harfResmi(o.hedef)]));
     }
-    sahne.replaceChildren(kap);
+    sahne.replaceChildren(kuaforDekor(), kap);
   }
 
   async function tokaSec(o, i, dogru, dugme, kizSvg) {
@@ -592,7 +618,7 @@ window.Kasaba = (() => {
       ufle.addEventListener('click', () => kurut(t, ufle));
       parcalar.push(ufle);
     }
-    $('#kuafor-sahne').replaceChildren(...parcalar);
+    $('#kuafor-sahne').replaceChildren(kuaforDekor(), ...parcalar);
   }
 
   async function tirnakBoya(t, i) {
@@ -624,7 +650,7 @@ window.Kasaba = (() => {
     kaydet();
     $('#kuafor-ipucu').textContent = '🪞';
     const kap = H().el('div', { className: 'ayna' }, [window.Kiz.on(kiz, { orgu: true, oje: kiz.oje, mutlu: true })]);
-    $('#kuafor-sahne').replaceChildren(kap);
+    $('#kuafor-sahne').replaceChildren(kuaforDekor(), kap);
     window.Efekt.tac();
     window.Gorsel.konfeti();
     kap.classList.add('sevin');
