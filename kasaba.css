@@ -143,15 +143,20 @@
 .buyuk-sayi { position: fixed; z-index: 30; left: 50%; top: 42%; transform: translate(-50%, -50%); font-size: 220px; font-weight: 900; color: var(--mercan); text-shadow: 0 8px 0 #fff, 0 12px 24px rgba(0, 0, 0, .15); opacity: 0; pointer-events: none; }
 .buyuk-sayi.goster { animation: sayi-patla 1.1s var(--yay); }
 @keyframes sayi-patla { 0% { opacity: 0; transform: translate(-50%, -50%) scale(.2); } 25% { opacity: 1; transform: translate(-50%, -50%) scale(1.15); } 75% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -80%) scale(.9); } }
-.el-kap { height: 60dvh; aspect-ratio: 300 / 330; }
+.el-kap { height: 56dvh; aspect-ratio: 326 / 340; }
+.parmak.siradaki .tirnak { stroke: #FFB703; stroke-width: 5; animation: tirnak-parla 1.1s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes tirnak-parla { 50% { stroke: #FF4F8B; transform: scale(1.08); } }
 .kiz-el { width: 100%; height: 100%; overflow: visible; }
 .parmak { cursor: pointer; }
 .tirnak { transition: fill .3s; }
 .tirnak.boyali { animation: c-parilti .6s ease-out; transform-box: fill-box; transform-origin: center; }
-.ojeler { display: flex; gap: 18px; }
+.ojeler { display: flex; gap: 34px; }
 .oje { display: flex; flex-direction: column; align-items: center; transition: transform .2s var(--yay); }
-.oje-kapak { width: 26px; height: 30px; border-radius: 6px 6px 2px 2px; background: #3B2C2A; }
-.oje-govde { width: 54px; height: 56px; border-radius: 14px; background: var(--renk); box-shadow: inset 8px 0 0 rgba(255, 255, 255, .35); }
+.oje-kapak { width: 34px; height: 34px; border-radius: 6px 6px 2px 2px; background: #3B2C2A; }
+.oje-govde { width: 78px; height: 80px; border-radius: 18px; background: var(--renk); box-shadow: inset 10px 0 0 rgba(255, 255, 255, .35), 0 6px 0 rgba(0,0,0,.15); display: grid; place-items: center; }
+.oje-harf { width: 56px; height: 56px; border-radius: 50%; background: #fff; display: grid; place-items: center; font-size: 40px; font-weight: 900; line-height: 1; }
+.oje.ipucu { animation: zipla 1s infinite; }
+.oje.salla { animation: salla .4s; }
 .oje.secili { transform: translateY(-14px) scale(1.15); }
 .ufle-dugme { font-size: 80px; width: 130px; height: 130px; border-radius: 50%; background: #E4F1FF; box-shadow: var(--golge); animation: zipla 1.2s infinite; }
 .ufle-dugme.esiyor { animation: c-titrek .1s infinite alternate; }

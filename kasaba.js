@@ -593,28 +593,67 @@ window.Kasaba = (() => {
     if (canli(o.no)) { kiz = { ...kiz, orgu: true }; tirnakBasla(o.no); }
   }
 
-  /* 2) Tırnak boyama: oje seç, beş tırnağı boya, say. */
+  /* 2) Tırnak boyama — baş harfini bul: her tırnakta bir resim var (güneş, kedi …). Sıradaki tırnak parlar,
+     resmin adı söylenir ("Güneş! Güneş hangi harfle başlar?"); çocuk üstünde o harf yazan ojeyi seçer, tırnak boyanır ve sayılır. */
+  const TIRNAK_RESIM = {
+    A: ['Arı', '🐝'], B: ['Balık', '🐟'], C: ['Civciv', '🐥'], Ç: ['Çilek', '🍓'], D: ['Dondurma', '🍦'], E: ['Elma', '🍎'],
+    F: ['Fil', '🐘'], G: ['Güneş', '☀️'], H: ['Havuç', '🥕'], İ: ['İnek', '🐄'], K: ['Kedi', '🐱'], L: ['Limon', '🍋'],
+    M: ['Muz', '🍌'], O: ['Otobüs', '🚌'], Ö: ['Ördek', '🦆'], P: ['Pasta', '🎂'], R: ['Roket', '🚀'], S: ['Saat', '⏰'],
+    Ş: ['Şemsiye', '☂️'], T: ['Top', '⚽'], U: ['Uçak', '✈️'], Ü: ['Üzüm', '🍇'], V: ['Vapur', '⛴️'], Y: ['Yıldız', '⭐'], Z: ['Zürafa', '🦒'],
+  };
+
   function tirnakBasla(no) {
-    const t = { no, ojeler: [], renk: OJELER[0], bitti: false };
+    /* önce ailenin harfleri, yetmezse ötekiler; beş farklı harf */
+    const resimli = Object.keys(TIRNAK_RESIM);
+    const aile = H().karistir(harfHavuzu().filter((h) => TIRNAK_RESIM[h]));
+    const harfler = [...new Set([...aile, ...H().karistir(resimli)])].slice(0, TIRNAK_SAYISI);
+    const t = { no, harfler, ojeler: [], sira: 0, hata: 0, kilit: false, secenek: [], bitti: false };
     $('#kuafor-ipucu').textContent = '💅';
-    $('#kuafor-tekrar').onclick = () => { window.Konus.sustur(); konus('Bir oje seç, sonra tırnağa dokun.'); };
-    tirnakCiz(t);
+    $('#kuafor-tekrar').onclick = () => tirnakSor(t);
     window.Konus.sustur();
-    konus('Şimdi tırnaklarını boyayalım. Bir oje seç, sonra tırnağa dokun.');
+    konus('Şimdi tırnaklarını boyayalım! Her tırnakta bir resim var. Resmin adı hangi harfle başlıyorsa, o harfin ojesini seç.')
+      .then(() => { if (canli(no)) tirnakSira(t); });
+    tirnakCiz(t);
+  }
+
+  function tirnakSira(t) {
+    const h = t.harfler[t.sira];
+    const digerleri = H().karistir(Object.keys(TIRNAK_RESIM).filter((x) => x !== h)).slice(0, 2);
+    t.secenek = H().karistir([h, ...digerleri]);
+    t.renkler = H().karistir([...OJELER]).slice(0, 3);
+    t.hata = 0; t.kilit = false;
+    tirnakCiz(t);
+    tirnakSor(t);
+  }
+
+  function tirnakSor(t) {
+    if (!canli(t.no) || t.sira >= TIRNAK_SAYISI) return;
+    const [kelime] = TIRNAK_RESIM[t.harfler[t.sira]];
+    window.Konus.sustur();
+    konus(`${kelime}! ${kelime} hangi harfle başlar?`);
   }
 
   function tirnakCiz(t) {
-    const elSvg = window.Kiz.el(kiz, t.ojeler);
-    elSvg.querySelectorAll('.parmak').forEach((n) => n.addEventListener('click', () => tirnakBoya(t, Number(n.dataset.tirnak))));
-    const sise = (renk) => {
-      const b = H().el('button', { className: `oje${renk === t.renk ? ' secili' : ''}`, type: 'button', ariaLabel: 'oje' }, [H().el('span', { className: 'oje-kapak' }), H().el('span', { className: 'oje-govde' })]);
-      b.style.setProperty('--renk', renk);
-      b.addEventListener('click', () => { t.renk = renk; window.Efekt.tik(); tirnakCiz(t); });
-      return b;
-    };
+    const resimler = t.harfler.map((h) => TIRNAK_RESIM[h][1]);
+    const elSvg = window.Kiz.el(kiz, t.ojeler, resimler, t.bitti ? -1 : t.sira);
+    elSvg.querySelectorAll('.parmak').forEach((n) => n.addEventListener('click', () => {
+      const i = Number(n.dataset.tirnak);
+      window.Konus.sustur();
+      if (i === t.sira) tirnakSor(t);
+      else konus(TIRNAK_RESIM[t.harfler[i]][0]);
+    }));
     const parcalar = [H().el('div', { className: 'el-kap' }, [elSvg])];
-    if (t.ojeler.filter(Boolean).length < TIRNAK_SAYISI) parcalar.push(H().el('div', { className: 'ojeler' }, OJELER.map(sise)));
-    else if (!t.bitti) {
+    if (t.sira < TIRNAK_SAYISI && t.secenek.length) {
+      parcalar.push(H().el('div', { className: 'ojeler' }, t.secenek.map((h, k) => {
+        const b = H().el('button', { className: 'oje', type: 'button', ariaLabel: `${h} ojesi` }, [
+          H().el('span', { className: 'oje-kapak' }),
+          H().el('span', { className: 'oje-govde' }, [H().el('span', { className: `oje-harf ${H().tur(h)}`, textContent: H().goster(h) })]),
+        ]);
+        b.style.setProperty('--renk', t.renkler[k]);
+        b.addEventListener('click', () => ojeSec(t, h, t.renkler[k], b));
+        return b;
+      })));
+    } else if (t.sira >= TIRNAK_SAYISI && !t.bitti) {
       const ufle = H().el('button', { className: 'ufle-dugme', type: 'button', textContent: '🌬️' });
       ufle.addEventListener('click', () => kurut(t, ufle));
       parcalar.push(ufle);
@@ -622,16 +661,36 @@ window.Kasaba = (() => {
     $('#kuafor-sahne').replaceChildren(kuaforDekor(), ...parcalar);
   }
 
-  async function tirnakBoya(t, i) {
-    if (!canli(t.no) || t.bitti) return;
-    const yeni = !t.ojeler[i];
-    t.ojeler = Object.assign([...t.ojeler], { [i]: t.renk });
+  async function ojeSec(t, h, renk, dugme) {
+    if (t.kilit || !canli(t.no) || t.sira >= TIRNAK_SAYISI) return;
+    const hedef = t.harfler[t.sira];
+    const [kelime] = TIRNAK_RESIM[hedef];
+    if (h !== hedef) {
+      if (t.hata === 0) H().ilerlemeYaz(hedef, false);
+      t.hata += 1;
+      window.Efekt.yanlis();
+      dugme.classList.remove('salla'); void dugme.offsetWidth; dugme.classList.add('salla');
+      window.Konus.sustur();
+      if (t.hata >= 2) {
+        document.querySelectorAll('.oje').forEach((o, k) => o.classList.toggle('ipucu', t.secenek[k] === hedef));
+        konus(`${kelime}… ${H().harfSesi(hedef)}`);
+      } else konus(`${kelime} hangi harfle başlar? Dinle: ${kelime}.`);
+      return;
+    }
+    t.kilit = true;
+    H().ilerlemeYaz(hedef, t.hata === 0 ? true : null);
+    t.ojeler = Object.assign([...t.ojeler], { [t.sira]: renk });
+    t.sira += 1;
     window.Efekt.karakter('firca');
+    t.secenek = [];
     tirnakCiz(t);
-    if (!yeni) return;
-    const adet = t.ojeler.filter(Boolean).length;
-    await say(adet);
-    if (canli(t.no) && adet === TIRNAK_SAYISI) konus('Beş tırnak! Şimdi üfle, kurusun.');
+    window.Konus.sustur();
+    await konus(`Evet! ${H().harfSesi(hedef)}, ${kelime}.`);
+    if (!canli(t.no)) return;
+    await say(t.sira);
+    if (!canli(t.no)) return;
+    if (t.sira < TIRNAK_SAYISI) tirnakSira(t);
+    else { tirnakCiz(t); konus('Beş tırnak! Şimdi üfle, kurusun.'); }
   }
 
   async function kurut(t, dugme) {

@@ -2,7 +2,7 @@
  * Kendi karakteri: kızın kendisinin seçtiği ten, saç, göz ve elbise renkleriyle çizilen kız.
  *   on(g, ek)   — önden görünüş (ek.orgu: yana sarkan örgü, ek.oje: tırnak rengi, ek.mutlu: ağzı açık gülüş)
  *   arka(g, a)  — arkadan görünüş (kuaför): üstte örülmüş kısım, altta 3 tutam (a.orgu adım, a.toplam)
- *   el(g, ojeler) — tırnak boyamak için büyük el (5 parmak, .parmak[data-tirnak=0..4])
+ *   el(g, ojeler, resimler, siradaki) — tırnak boyamak için büyük el (5 parmak, .parmak[data-tirnak=0..4]); tırnaklarda resim
  * Seçimler yalnızca cihazda (Depo 'kiz').
  */
 window.Kiz = (() => {
@@ -177,37 +177,52 @@ window.Kiz = (() => {
         <path d="M90 151 Q96 148 102 149" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".6"/></g>`, 'kiz kiz-arka');
   }
 
-  /** Büyük el (tırnak boyama). viewBox 0 0 300 320. ojeler: 5 renk (boyanmamış = null). */
-  function el(g, ojeler = []) {
+  /** Büyük el (tırnak boyama), elin üstü görünür, başparmak solda. viewBox 0 0 300 340.
+   *  ojeler: 5 renk (boyanmamış = null); resimler: her tırnaktaki küçük resim (emoji); siradaki: parlayan tırnak. */
+  function el(g, ojeler = [], resimler = [], siradaki = -1) {
     const r = renkler(g);
     const id = yeniKimlik();
-    const cizgi = koyu(r.ten, 0.78);
-    const parmak = [
-      { x: 70, y: 150, u: 70, a: -32 }, { x: 115, y: 70, u: 105, a: -8 },
-      { x: 160, y: 56, u: 115, a: 0 }, { x: 204, y: 70, u: 105, a: 8 }, { x: 242, y: 108, u: 80, a: 18 },
+    const cizgi = koyu(r.ten, 0.76);
+    /* x: parmak ortası, ust: uç, alt: kök, w: yarı genişlik, a: eğim (kökü çevresinde) */
+    const PARMAK = [
+      { x: 70, ust: 128, alt: 236, w: 22, a: -40 }, // başparmak
+      { x: 118, ust: 50, alt: 186, w: 21, a: -7 },
+      { x: 160, ust: 30, alt: 182, w: 22, a: 0 },
+      { x: 202, ust: 46, alt: 186, w: 21, a: 7 },
+      { x: 240, ust: 90, alt: 196, w: 18, a: 15 },
     ];
-    const parmaklar = parmak.map((p, i) => {
-      const renk = ojeler[i] || '#FFF6EF';
-      const boy = p.u + 40;
-      return `<g class="parmak" data-tirnak="${i}" transform="rotate(${p.a} ${p.x} ${p.y + p.u})">
-        <rect x="${p.x - 23}" y="${p.y}" width="46" height="${boy}" rx="23" fill="url(#${id}-t)" stroke="${cizgi}" stroke-width="3"/>
-        <path d="M${p.x - 12} ${p.y + boy * 0.5} Q${p.x} ${p.y + boy * 0.5 + 5} ${p.x + 12} ${p.y + boy * 0.5}
-          M${p.x - 10} ${p.y + boy * 0.5 + 9} Q${p.x} ${p.y + boy * 0.5 + 13} ${p.x + 10} ${p.y + boy * 0.5 + 9}" fill="none" stroke="${cizgi}" stroke-width="2" opacity=".45"/>
-        <rect class="tirnak${ojeler[i] ? ' boyali' : ''}" x="${p.x - 16}" y="${p.y + 6}" width="32" height="40" rx="15" fill="${renk}" stroke="${koyu(r.ten, 0.7)}" stroke-width="2.5"/>
-        ${ojeler[i]
-    ? `<path d="M${p.x - 7} ${p.y + 14} L${p.x - 7} ${p.y + 32}" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".7"/><circle cx="${p.x + 6}" cy="${p.y + 14}" r="2.5" fill="#fff" opacity=".8"/>`
-    : `<path d="M${p.x - 10} ${p.y + 40} Q${p.x} ${p.y + 34} ${p.x + 10} ${p.y + 40}" fill="none" stroke="#fff" stroke-width="3" opacity=".9"/>`}
+    const parmakCiz = (p, i) => {
+      const { x, ust, alt, w } = p;
+      const govde = `M${x - w} ${alt} L${x - w} ${ust + w} C${x - w} ${ust + w * 0.15} ${x - w * 0.55} ${ust} ${x} ${ust}
+        C${x + w * 0.55} ${ust} ${x + w} ${ust + w * 0.15} ${x + w} ${ust + w} L${x + w} ${alt}Z`;
+      const kirisik = ust + (alt - ust) * 0.52;
+      const tw = w - 5;
+      const th = w * 2.15;
+      const renk = ojeler[i];
+      const resim = resimler[i] ? `<text x="${x}" y="${ust + 6 + th * 0.62}" font-size="${w * 1.05}" text-anchor="middle" dominant-baseline="middle">${resimler[i]}</text>` : '';
+      return `<g class="parmak${i === siradaki ? ' siradaki' : ''}" data-tirnak="${i}" transform="rotate(${p.a} ${x} ${alt})">
+        <path d="${govde}" fill="url(#${id}-t)" stroke="${cizgi}" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M${x - w * 0.55} ${kirisik} Q${x} ${kirisik + 5} ${x + w * 0.55} ${kirisik} M${x - w * 0.45} ${kirisik + 9} Q${x} ${kirisik + 13} ${x + w * 0.45} ${kirisik + 9}"
+          fill="none" stroke="${cizgi}" stroke-width="2" stroke-linecap="round" opacity=".4"/>
+        <rect class="tirnak${renk ? ' boyali' : ''}" x="${x - tw}" y="${ust + 6}" width="${tw * 2}" height="${th}" rx="${tw}" fill="${renk || '#FFF4EC'}" stroke="${koyu(r.ten, 0.68)}" stroke-width="2.5"/>
+        ${renk ? `<path d="M${x - tw * 0.5} ${ust + 14} L${x - tw * 0.5} ${ust + th * 0.55}" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".6"/>` : ''}
+        ${resim}
       </g>`;
-    }).join('');
-    return svg('0 0 300 320', `<defs>
-        <linearGradient id="${id}-t" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="${koyu(r.ten, 0.9)}"/><stop offset=".35" stop-color="${acik(r.ten, 0.18)}"/><stop offset="1" stop-color="${koyu(r.ten, 0.92)}"/></linearGradient>
-        <radialGradient id="${id}-a" cx=".5" cy=".35" r=".7"><stop offset="0" stop-color="${acik(r.ten, 0.18)}"/><stop offset="1" stop-color="${koyu(r.ten, 0.9)}"/></radialGradient></defs>
-      ${parmaklar}
-      <path d="M50 190 Q60 150 100 160 L240 160 Q262 200 250 250 Q230 310 150 312 Q70 310 56 250Z" fill="url(#${id}-a)" stroke="${cizgi}" stroke-width="3"/>
-      <path d="M96 220 Q140 250 196 228 M110 260 Q150 276 190 262" fill="none" stroke="${cizgi}" stroke-width="2.5" stroke-linecap="round" opacity=".35"/>
-      <rect x="92" y="288" width="118" height="42" rx="12" fill="${r.elbise}" stroke="${koyu(r.elbise, 0.8)}" stroke-width="3"/>
-      <path d="M92 300 L210 300" stroke="#fff" stroke-width="4" opacity=".6"/>`, 'kiz-el');
+    };
+    return svg('-26 0 326 340', `<defs>
+        <linearGradient id="${id}-t" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="${koyu(r.ten, 0.9)}"/><stop offset=".38" stop-color="${acik(r.ten, 0.16)}"/><stop offset="1" stop-color="${koyu(r.ten, 0.9)}"/></linearGradient>
+        <radialGradient id="${id}-a" cx=".52" cy=".3" r=".75"><stop offset="0" stop-color="${acik(r.ten, 0.16)}"/><stop offset="1" stop-color="${koyu(r.ten, 0.88)}"/></radialGradient></defs>
+      ${parmakCiz(PARMAK[0], 0)}
+      <path d="M92 170 C90 150 110 140 140 141 L230 150 C256 156 262 186 258 214 C252 262 226 300 172 304 C118 306 90 274 84 238 C80 214 84 190 92 170Z" fill="url(#${id}-a)" stroke="${cizgi}" stroke-width="3"/>
+      ${PARMAK.slice(1).map((p, k) => parmakCiz(p, k + 1)).join('')}
+      <path d="M100 176 Q170 168 244 186" fill="none" stroke="${koyu(r.ten, 0.9)}" stroke-width="10" stroke-linecap="round" opacity=".25"/>
+      <g fill="none" stroke="${cizgi}" stroke-width="2.4" stroke-linecap="round" opacity=".35">
+        <path d="M108 190 q10 -6 20 0 M150 186 q10 -6 20 0 M192 190 q10 -6 20 0 M228 200 q8 -5 16 0"/></g>
+      <rect x="112" y="286" width="112" height="54" rx="14" fill="${r.elbise}" stroke="${koyu(r.elbise, 0.8)}" stroke-width="3"/>
+      <path d="M112 300 Q168 310 224 300" fill="none" stroke="#fff" stroke-width="4" opacity=".6"/>
+      <g>${[124, 140, 156, 172, 188, 204].map((bx, k) => `<circle cx="${bx + 4}" cy="${280 + (k % 2) * 2}" r="7" fill="${['#FF4F8B', '#FFD23F', '#4CC9F0'][k % 3]}" stroke="#fff" stroke-width="2"/>`).join('')}</g>`, 'kiz-el');
   }
+
 
 
   return Object.freeze({ SECENEK, VARSAYILAN, renkler, on, arka, el });
