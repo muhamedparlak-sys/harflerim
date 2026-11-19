@@ -255,6 +255,7 @@ window.Kasaba = (() => {
       bina.innerHTML = y.svg();
       if (y.tabela) {
         const tabela = H().el('span', { className: 'tabela' }, H().renkliAd(y.tabela));
+        tabela.style.setProperty('--n', [...y.tabela].length);
         tabela.addEventListener('click', (e) => { e.stopPropagation(); window.Konus.sustur(); konus(y.tabela.toLocaleLowerCase('tr')); });
         bina.append(tabela);
       }

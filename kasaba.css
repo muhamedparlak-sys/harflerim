@@ -52,7 +52,10 @@
 .yapi-restoran .tabela { top: 21%; }
 .yapi-hastane .tabela { top: 17%; }
 .hastane-arti { transform-box: fill-box; transform-origin: center; animation: c-nabiz 1.6s ease-in-out infinite; }
-.tabela { position: absolute; top: 15%; left: 12%; right: 12%; font-size: clamp(20px, 3.4vw, 40px); font-weight: 900; letter-spacing: .06em; text-align: center; }
+.yapi { container-type: size; }
+/* tabela yazısı tabelanın içine sığar: boyu binanın boyundan, eni harf sayısından (--n) hesaplanır; Ö, Ü noktaları dahil */
+.tabela { position: absolute; top: 15%; left: 12%; right: 12%; font-size: min(7cqh, calc(74cqw / (var(--n, 6) * .78))); line-height: 1.15; font-weight: 900; letter-spacing: .04em; text-align: center; }
+.yapi-kuafor .tabela { top: 18.4%; height: 12.1%; display: flex; align-items: center; justify-content: center; }
 .agac { position: absolute; bottom: 20%; width: 70px; height: 150px; }
 .agac::before { content: ''; position: absolute; left: 28px; bottom: 0; width: 16px; height: 70px; border-radius: 6px; background: #9C6B45; }
 .agac::after { content: ''; position: absolute; left: 0; top: 0; width: 70px; height: 96px; border-radius: 50%; background: #4CBF6B; box-shadow: inset -10px -8px 0 #3DA35A; animation: c-sallan 4s ease-in-out infinite; transform-origin: 50% 100%; }
