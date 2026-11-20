@@ -6,6 +6,7 @@
  *   Mikrofon   — tarayıcının konuşma tanıması (Safari/Chrome, tr-TR). Duyulan ilk 3 tahmin kart olarak gösterilir.
  *   Mikrofon yoksa ya da çocuk söylemek istemezse: hazır resimli kelimelerden ve aile üyelerinden seçer.
  *   Yazdıklarım — yazılan son kelimeler cihazda saklanır; dokununca yeniden yazılır.
+ *   Kötü kelimeler — küfür/hakaret listesi (YASAK) ve cihazın yıldızla gizlediği sözler yazdırılmaz.
  */
 window.Yaz = (() => {
   'use strict';
@@ -35,6 +36,16 @@ window.Yaz = (() => {
     PRENSES: '👸', KRAL: '🤴', PERİ: '🧚', ROBOT: '🤖', CANAVAR: '👾', KORSAN: '🏴‍☠️', SİHİR: '🪄', MERHABA: '👋', TEŞEKKÜR: '🙏',
   };
   const ONERI = ['ANNE', 'BABA', 'ELMA', 'KEDİ', 'TOP', 'EV', 'GÜNEŞ', 'ARABA', 'KÖPEK', 'ÇİÇEK', 'PASTA', 'BALIK'];
+
+  /* Kötü kelime süzgeci: söylenen kelime küfür ya da hakaretse yazdırılmaz.
+     Liste kaynak kodda açık durmasın diye base64 (JSON: tam = birebir, bas = bununla başlayan). */
+  const YASAK = (() => {
+    try {
+      const { tam, bas } = JSON.parse(new TextDecoder().decode(Uint8Array.from(atob('eyJ0YW0iOiBbIkFNIiwgIkFNSyIsICJBTVEiLCAiQVEiLCAiR8OWVCIsICJHw5ZUw5wiLCAiR8OWVExFSyIsICJHw5ZUVkVSRU4iLCAiQk9LIiwgIkJPS1RBTiIsICJCT0tVTiIsICLDh8OcSyIsICJEw5ZMIiwgIk1BTCIsICJQVcWeVCIsICLEsEJORSIsICJBUFRBTCIsICJTQUxBSyIsICJHRVLEsFpFS0FMSSIsICJEQU5HQUxBSyIsICJBSE1BSyIsICJFTkFZxLAiLCAiTUFOWUFLIiwgIkhJUkJPIiwgIsWeQVDFnkFMIiwgIkXFnsWeT8SeTFVFxZ5FSyIsICJLQUhQRSIsICJHQVZBVCIsICJZQVbFnkFLIiwgIktBTkNJSyIsICJTw5xSVMOcSyIsICJQRVpFVkVOSyIsICLFnkVSRUZTxLBaIiwgIk5BTVVTU1VaIiwgIkhBWVPEsFlFVFPEsFoiLCAixZ5JTExJSyIsICJGQUjEsMWeRSIsICJUQcWeQUsiLCAiVEHFnsWeQUsiLCAiWUFSQUsiLCAiWUFSUkFLIiwgIllBUlJBTSIsICJGVUNLIiwgIlNISVQiLCAiQklUQ0giLCAiRElDSyIsICJQVVNTWSIsICJBU1MiLCAiQ1VOVCIsICJTRVgiLCAiU0VLUyIsICJPU0LEsFIiLCAiQU5BTkkiLCAiQU5BTkEiLCAiQU5BTklOIiwgIkJBQ0lOSSIsICJTxLBLVMSwUiJdLCAiYmFzIjogWyJTxLBLIiwgIkFNQ0lLIiwgIkFNSU5BIiwgIkFNSU5JIiwgIk9SVVNQVSIsICJPUk9TUFUiLCAiT1JTUCIsICJQxLDDhyIsICJZQVJSQSIsICJZQVJBxJ4iLCAiUEVaRVZFTkciLCAiS0FIQkUiLCAiR0FWQUQiLCAiWUFWxZ5BxJ4iLCAiR0VSxLBaRUtBTCIsICJGVUNLIiwgIlNISVQiLCAiQklUQ0giLCAixZ5FUkVGU8SwWiIsICLEsEJORSIsICJQVcWeVCIsICJTxLBLxLAiLCAiU0VLU8SwIiwgIlBPUk5PIl19'), (c) => c.charCodeAt(0))));
+      return { tam: new Set(tam), bas };
+    } catch { return { tam: new Set(), bas: [] }; }
+  })();
+  const yasakMi = (kelime) => YASAK.tam.has(kelime) || YASAK.bas.some((b) => kelime.startsWith(b));
 
   let dinleyici = null;
   let oturum = 0;
@@ -141,8 +152,18 @@ window.Yaz = (() => {
     r.onresult = (e) => {
       duyuldu = true;
       const sonuc = e.results[0];
-      const adaylar = [...new Set([...sonuc].map((a) => kelimeYap(a.transcript)).filter((k) => k.length > 0))].slice(0, ADAY_SAYISI);
-      if (benim === oturum && adaylar.length) onayla(adaylar);
+      /* cihaz küfrü yıldızla gizleyebilir ("s***"): yıldızlı tahmin de kötü sayılır */
+      const hepsi = [...sonuc].map((a) => ({ yildizli: (a.transcript || '').includes('*'), kelime: kelimeYap(a.transcript) }));
+      const kotu = hepsi.some((a) => a.yildizli || yasakMi(a.kelime));
+      const adaylar = [...new Set(hepsi.filter((a) => !a.yildizli && a.kelime && !yasakMi(a.kelime)).map((a) => a.kelime))].slice(0, ADAY_SAYISI);
+      if (benim !== oturum) return;
+      if (kotu) {
+        durum('Güzel bir kelime söyle');
+        window.Konus.sustur();
+        window.Konus.soyle('Bu kelimeyi yazmayalım. Güzel bir kelime söyle.');
+        return;
+      }
+      if (adaylar.length) onayla(adaylar);
     };
     r.onerror = (e) => {
       if (benim !== oturum) return;
@@ -213,5 +234,5 @@ window.Yaz = (() => {
     if (dinleyici) { dinleyici.abort(); dinleyici = null; }
   }
 
-  return Object.freeze({ kart, durdur, kelimeYap });
+  return Object.freeze({ kart, durdur, kelimeYap, yasakMi });
 })();
