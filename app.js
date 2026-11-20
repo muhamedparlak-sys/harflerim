@@ -119,8 +119,9 @@
     harfKart.addEventListener('click', harflerAc);
     kap.append(harfKart);
     if (window.Yaz) kap.append(window.Yaz.kart(durum.aile.length + 1));
-    if (window.Kasaba) kap.append(window.Kasaba.kart(durum.aile.length + 2));
-    if (window.Oyunlar) kap.append(...window.Oyunlar.kartlar(durum.aile.length + 3));
+    if (window.Agac && durum.aile.length) kap.append(window.Agac.kart(durum.aile.length + 2));
+    if (window.Kasaba) kap.append(window.Kasaba.kart(durum.aile.length + 3));
+    if (window.Oyunlar) kap.append(...window.Oyunlar.kartlar(durum.aile.length + 4));
   }
 
   /* ---------- oyun ---------- */
@@ -664,9 +665,10 @@
       ad.value = v;
       await aileKaydet(durum.aile.map((x) => (x.id === kisi.id ? { ...x, name: v } : x)));
     });
-    const rol = el('input', { type: 'text', value: kisi.rol || '', maxLength: 16, className: 'rol-girdi', placeholder: 'Yakınlık' });
+    const rol = el('input', { type: 'text', value: kisi.rol || '', maxLength: 20, className: 'rol-girdi', placeholder: 'Yakınlık' });
+    rol.setAttribute('list', 'yakinliklar');
     rol.addEventListener('change', async () => {
-      const v = rol.value.trim().slice(0, 16);
+      const v = rol.value.trim().slice(0, 20);
       await aileKaydet(durum.aile.map((x) => (x.id === kisi.id ? { ...x, rol: v } : x)));
     });
     const yukari = el('button', { type: 'button', className: 'simge-dugme', textContent: '↑', disabled: i === 0, title: 'Yukarı taşı' });
@@ -736,7 +738,7 @@
       const ad = adiDuzelt($('#yeni-ad').value);
       if (!ad) { bildir('İsim yalnızca Türkçe harflerden oluşmalı (en çok 24)'); return; }
       const kisi = {
-        id: yeniKimlik(), name: ad, rol: $('#yeni-rol').value.trim().slice(0, 16),
+        id: yeniKimlik(), name: ad, rol: $('#yeni-rol').value.trim().slice(0, 20),
         emoji: YEDEK_YUZLER[durum.aile.length % YEDEK_YUZLER.length], foto: bekleyenFoto,
       };
       await aileKaydet([...durum.aile, kisi]);
@@ -751,7 +753,7 @@
         const ad = adiDuzelt(adHam);
         if (!ad) { hatali.push(satir); continue; }
         yeniler.push({
-          id: yeniKimlik(), name: ad, rol: rolParca.join(' ').trim().slice(0, 16),
+          id: yeniKimlik(), name: ad, rol: rolParca.join(' ').trim().slice(0, 20),
           emoji: YEDEK_YUZLER[(durum.aile.length + yeniler.length) % YEDEK_YUZLER.length], foto: null,
         });
       }
@@ -791,6 +793,7 @@
     anaSayfa();
     disliBagla();
     ayarlariBagla();
+    if (window.Agac) $('#yakinliklar').replaceChildren(...window.Agac.ONERILER.map((o) => el('option', { value: o })));
     document.querySelectorAll('[data-geri]').forEach((b) => b.addEventListener('click', evDon));
     $('#tekrar').addEventListener('click', () => durum.oyun && oyunBaslat(durum.oyun.kisi));
     window.addEventListener('resize', olcule);

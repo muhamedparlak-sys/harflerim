@@ -433,3 +433,30 @@
 .yaz-klavye input { width: 220px; padding: 10px 16px; border-radius: 16px; border: 3px solid #B7A6F0; font-size: 26px; font-weight: 900; text-transform: uppercase; }
 .yaz-klavye-tamam { padding: 10px 20px; border-radius: 16px; background: #63D2C6; color: #fff; font-size: 22px; font-weight: 900; box-shadow: var(--golge); }
 .yaz-durum { max-width: 90vw; text-align: center; }
+
+/* ---------- SOY AĞACI (agac.js) ---------- */
+.kart-agac { border: 4px solid #6BCB77; }
+.agac-sahne { display: flex; flex-direction: column; align-items: center; gap: 24px; padding: 10px 8px 30px; }
+.soy-agaci { position: relative; display: flex; flex-direction: column; gap: 46px; width: min(100%, 1100px); padding: 18px 10px; border-radius: 30px;
+  background: radial-gradient(ellipse at 50% 120%, #D8F3DC 0 40%, transparent 41%), #F4FBF2; box-shadow: var(--golge); }
+.agac-cizgiler { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; fill: none; stroke: #8D5524; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; z-index: 0; }
+.agac-satir { position: relative; z-index: 1; display: flex; justify-content: center; align-items: flex-end; gap: 18px; }
+.agac-satir.buyukler, .agac-satir.cocuklar-satiri { justify-content: space-around; }
+.agac-grup { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; padding: 8px 10px; border-radius: 22px; background: rgba(255,255,255,.75); }
+.agac-grup.bos-yer { visibility: hidden; min-width: 40px; }
+.agac-grup.cocuklar { background: #FFF6D6; outline: 4px solid #FFD23F; }
+.agac-kalp { font-size: 40px; align-self: center; }
+.agac-kisi { position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 92px; }
+.agac-resim-dugme { padding: 0; background: none; border-radius: 50%; }
+.agac-resim { display: block; width: 82px; height: 82px; border-radius: 50%; object-fit: cover; background: #fff; border: 4px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,.12); font-size: 56px; line-height: 74px; text-align: center; overflow: hidden; }
+.agac-kisi.ebeveyn .agac-resim { width: 100px; height: 100px; line-height: 92px; font-size: 68px; border-color: #FF8FB5; }
+.agac-kisi.ben .agac-resim { width: 108px; height: 108px; border-color: #FFD23F; }
+.agac-kiz .kiz { width: 100%; height: 160%; margin-top: -4%; }
+.agac-ad { font-size: 22px; font-weight: 900; letter-spacing: .03em; white-space: nowrap; }
+.agac-rol { font-size: 15px; font-weight: 700; color: #8A6F65; }
+.agac-yaz { position: absolute; top: -6px; right: 0; width: 36px; height: 36px; border-radius: 50%; background: #fff; box-shadow: var(--golge); font-size: 18px; }
+.agac-kisi.bos { opacity: .45; }
+.agac-kisi.bos .agac-resim { border: 4px dashed #B0A39A; background: transparent; box-shadow: none; font-size: 34px; }
+.agac-diger { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.agac-diger-baslik { font-size: 22px; font-weight: 900; color: #8A6F65; }
+.agac-not { max-width: 640px; text-align: center; font-size: 22px; font-weight: 700; color: #8A6F65; }
