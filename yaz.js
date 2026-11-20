@@ -108,6 +108,17 @@ window.Yaz = (() => {
       mik.addEventListener('click', () => dinle(mik));
       parcalar.push(mik, H().el('p', { id: 'yaz-durum', className: 'yaz-durum', textContent: 'Dokun ve söyle' }));
     }
+    const kDugme = H().el('button', { className: 'yaz-klavye-dugme', type: 'button', textContent: '⌨️ Büyükler yazsın' });
+    kDugme.addEventListener('click', klavye);
+    const kGiris = H().el('input', { type: 'text', placeholder: 'Kelime', autocomplete: 'off', autocapitalize: 'characters', spellcheck: false });
+    const kTamam = H().el('button', { className: 'yaz-klavye-tamam', type: 'submit', textContent: 'Tamam' });
+    const kForm = H().el('form', { id: 'yaz-klavye', className: 'yaz-klavye', hidden: true }, [kGiris, kTamam]);
+    kForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      kGiris.blur();
+      if (kGiris.value.trim()) duyulanlar([kGiris.value]);
+    });
+    parcalar.push(H().el('div', { className: 'yaz-klavye-sarma' }, [kDugme, kForm]));
     const secim = (kelime) => {
       const b = H().el('button', { className: 'yaz-secim', type: 'button', ariaLabel: kucuk(kelime) }, [
         resim(kelime, 'yaz-secim-resim'), H().el('span', { className: 'yaz-secim-ad' }, [H().renkliAd(kelime)]),
@@ -131,55 +142,96 @@ window.Yaz = (() => {
     sahne.replaceChildren(...parcalar);
   }
 
-  /* ---------- mikrofon ---------- */
+  /* ---------- mikrofon ----------
+     iPad Safari'de dikkat: (1) tanıma çoğu zaman "son sonuç" göndermez, durmadan dinler; bu yüzden ara sonuçlar
+     açıktır, konuşma bitince (kısa sessizlikten sonra) dinleme biz durdururuz. (2) Mikrofon açılırken ses
+     çalınmaz, okuma susturulur; ses oturumu çakışırsa tanıma sessizce başarısız olur. */
+  const SESSIZLIK_MS = 1300;
+  const EN_UZUN_DINLEME_MS = 8000;
+  const HATA_METNI = {
+    'not-allowed': 'Mikrofon izni verilmedi', 'service-not-allowed': 'Bu cihazda ses tanıma kapalı',
+    'no-speech': 'Ses duyulmadı', 'audio-capture': 'Mikrofon bulunamadı', network: 'Ses tanıma için internet gerekiyor',
+    aborted: 'Dinleme durdu',
+  };
+
+  /** Duyulan tahminleri süzer: kötü kelime varsa uyarır, yoksa onaya geçer. */
+  function duyulanlar(metinler) {
+    const durum = (t) => { const d = $('#yaz-durum'); if (d) d.textContent = t; };
+    const hepsi = metinler.map((m) => ({ yildizli: (m || '').includes('*'), kelime: kelimeYap(m) }));
+    if (hepsi.some((a) => a.yildizli || yasakMi(a.kelime))) {
+      durum('Güzel bir kelime söyle');
+      window.Konus.sustur();
+      window.Konus.soyle('Bu kelimeyi yazmayalım. Güzel bir kelime söyle.');
+      return;
+    }
+    const adaylar = [...new Set(hepsi.map((a) => a.kelime).filter(Boolean))].slice(0, ADAY_SAYISI);
+    if (adaylar.length) onayla(adaylar);
+    else { durum('Dokun ve söyle'); window.Konus.soyle('Duyamadım. Mikrofona dokun ve tekrar söyle.'); }
+  }
+
   function dinle(mik) {
     const Sinif = TanimaSinifi();
     if (!Sinif) return;
-    if (dinleyici) { dinleyici.abort(); return; }
+    if (dinleyici) { dinleyici.stop(); return; }
     window.Konus.sustur();
     const benim = oturum;
     const r = new Sinif();
     r.lang = 'tr-TR';
-    r.interimResults = false;
+    r.interimResults = true;
     r.continuous = false;
     r.maxAlternatives = 5;
     dinleyici = r;
-    let duyuldu = false;
+    let son = []; // en son duyulan tahminler
+    let bitti = false;
+    let sessizlik = null;
     const durum = (t) => { const d = $('#yaz-durum'); if (d) d.textContent = t; };
+    const sonlandir = () => {
+      if (bitti) return;
+      bitti = true;
+      clearTimeout(sessizlik); clearTimeout(uzun);
+      if (benim === oturum && son.length) duyulanlar(son);
+    };
+    const uzun = setTimeout(() => { try { r.stop(); } catch { /* zaten durdu */ } }, EN_UZUN_DINLEME_MS);
     mik.classList.add('dinliyor');
-    durum('Dinliyorum…');
-    window.Efekt.karakter('cin');
+    durum('Dinliyorum… söyle');
     r.onresult = (e) => {
-      duyuldu = true;
-      const sonuc = e.results[0];
-      /* cihaz küfrü yıldızla gizleyebilir ("s***"): yıldızlı tahmin de kötü sayılır */
-      const hepsi = [...sonuc].map((a) => ({ yildizli: (a.transcript || '').includes('*'), kelime: kelimeYap(a.transcript) }));
-      const kotu = hepsi.some((a) => a.yildizli || yasakMi(a.kelime));
-      const adaylar = [...new Set(hepsi.filter((a) => !a.yildizli && a.kelime && !yasakMi(a.kelime)).map((a) => a.kelime))].slice(0, ADAY_SAYISI);
-      if (benim !== oturum) return;
-      if (kotu) {
-        durum('Güzel bir kelime söyle');
-        window.Konus.sustur();
-        window.Konus.soyle('Bu kelimeyi yazmayalım. Güzel bir kelime söyle.');
-        return;
-      }
-      if (adaylar.length) onayla(adaylar);
+      const sonuc = e.results[e.results.length - 1];
+      son = [...sonuc].map((a) => a.transcript).filter((t) => t && t.trim());
+      if (son.length) durum(`“${son[0].trim()}”`);
+      clearTimeout(sessizlik);
+      if (sonuc.isFinal) { try { r.stop(); } catch { /* */ } sonlandir(); return; }
+      sessizlik = setTimeout(() => { try { r.stop(); } catch { /* */ } }, SESSIZLIK_MS);
     };
     r.onerror = (e) => {
       if (benim !== oturum) return;
-      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
-        durum('Mikrofon izni yok');
-        window.Konus.soyle('Mikrofonu açmama izin verilmedi. Bir resim seçebilirsin.');
-      }
+      bitti = bitti || !son.length;
+      const metin = HATA_METNI[e.error] || `Ses tanıma çalışmadı (${e.error})`;
+      durum(`${metin} — resimden seçebilir ya da ⌨️ ile yazabilirsin`);
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') window.Konus.soyle('Mikrofon çalışmadı. Bir resim seçebilirsin.');
     };
     r.onend = () => {
       dinleyici = null;
       mik.classList.remove('dinliyor');
-      if (benim !== oturum || duyuldu) return;
-      durum('Dokun ve söyle');
-      window.Konus.soyle('Duyamadım. Mikrofona dokun ve tekrar söyle.');
+      clearTimeout(sessizlik); clearTimeout(uzun);
+      if (benim !== oturum) return;
+      if (son.length) { sonlandir(); return; }
+      if (!bitti) { bitti = true; durum('Dokun ve söyle'); window.Konus.soyle('Duyamadım. Mikrofona dokun ve tekrar söyle.'); }
     };
-    try { r.start(); } catch { dinleyici = null; mik.classList.remove('dinliyor'); durum('Dokun ve söyle'); }
+    try { r.start(); } catch (hata) {
+      dinleyici = null; mik.classList.remove('dinliyor'); clearTimeout(uzun);
+      durum(`Mikrofon açılamadı (${hata.name || hata}) — resimden seç ya da ⌨️ ile yaz`);
+    }
+  }
+
+  /* Büyükler için klavye: kelimeyi yazıp onaylatır (mikrofon çalışmazsa ya da bilinmeyen kelime için). */
+  function klavye() {
+    const kap = $('#yaz-klavye');
+    if (!kap) return;
+    kap.hidden = !kap.hidden;
+    if (kap.hidden) return;
+    const giris = kap.querySelector('input');
+    giris.value = '';
+    giris.focus();
   }
 
   /* ---------- 2) onay: "Elma mı?" ---------- */
