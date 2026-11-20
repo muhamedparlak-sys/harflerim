@@ -335,8 +335,8 @@ window.Kasaba = (() => {
     return kap;
   }
 
-  /** Şifre panelini açar; kelime yazılınca true, vazgeçilince false. */
-  function sifre(kelime, no, mesaj) {
+  /** Şifre panelini açar; kelime yazılınca true, vazgeçilince false. simge: kilit yerine (YAZALIM'da kelimenin resmi). */
+  function sifre(kelime, no, mesaj, simge = null) {
     return new Promise((bitir) => {
       const harfler = [...kelime];
       const sasirt = H().karistir(window.HARFLER.map((x) => x.h).filter((h) => !harfler.includes(h))).slice(0, SIFRE_SASIRTMA);
@@ -368,7 +368,7 @@ window.Kasaba = (() => {
           window.Konus.sustur();
           if (sira < harfler.length) { konus(H().harfSesi(h)); return; }
           panel.classList.add('acildi');
-          $('#sifre .sifre-kilit').textContent = '🔓';
+          $('#sifre .sifre-kilit').textContent = simge ? '🎉' : '🔓';
           window.Efekt.karakter('kilit');
           await konus(kelime.toLocaleLowerCase('tr'));
           await H().bekle(500);
@@ -381,7 +381,8 @@ window.Kasaba = (() => {
       $('#sifre-kapat').onclick = () => bitis(false);
       $('#sifre-dinle').onclick = () => { window.Konus.sustur(); konus(kelime.toLocaleLowerCase('tr')); };
       panel.classList.remove('acildi');
-      $('#sifre .sifre-kilit').textContent = '🔒';
+      panel.classList.toggle('uzun', harfler.length > 7);
+      $('#sifre .sifre-kilit').textContent = simge || '🔒';
       panel.hidden = false;
       window.Konus.sustur();
       konus(mesaj || `Kapı kilitli! Şifre: ${kelime.toLocaleLowerCase('tr')}. Harfleri sırayla yaz.`);
@@ -723,5 +724,11 @@ window.Kasaba = (() => {
 
   function durdur() { oturum += 1; }
 
-  return Object.freeze({ kart, durdur });
+  /** Kasaba dışından harf harf yazdırma (YAZALIM): şifre panelini açar; yazılınca true. */
+  function yazdir(kelime, mesaj, simge) {
+    const no = ++oturum;
+    return sifre(kelime, no, mesaj, simge);
+  }
+
+  return Object.freeze({ kart, durdur, yazdir });
 })();

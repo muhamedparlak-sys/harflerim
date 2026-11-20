@@ -1,7 +1,7 @@
 /* Çevrimdışı çalışma: önbellekten hemen aç, arkada yenisini indir (bir sonraki açılışta güncel). */
-const ONBELLEK = 'harflerim-v19';
+const ONBELLEK = 'harflerim-v20';
 const DOSYALAR = [
-  './', 'index.html', 'stil.css', 'harfler.js', 'depo.js', 'ses.js', 'gorsel.js', 'cizimler.js', 'oyunlar.js', 'kiz.js', 'restoran.js', 'hastane.js', 'plaj.js', 'ev.js', 'kasaba.js', 'kasaba.css', 'app.js',
+  './', 'index.html', 'stil.css', 'harfler.js', 'depo.js', 'ses.js', 'gorsel.js', 'cizimler.js', 'oyunlar.js', 'kiz.js', 'restoran.js', 'hastane.js', 'plaj.js', 'yaz.js', 'ev.js', 'kasaba.js', 'kasaba.css', 'app.js',
   'manifest.webmanifest', 'simgeler/simge-192.png', 'simgeler/simge-512.png', 'simgeler/apple-touch-icon.png',
 ];
 
