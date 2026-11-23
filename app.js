@@ -120,8 +120,9 @@
     kap.append(harfKart);
     if (window.Yaz) kap.append(window.Yaz.kart(durum.aile.length + 1));
     if (window.Agac && durum.aile.length) kap.append(window.Agac.kart(durum.aile.length + 2));
-    if (window.Kasaba) kap.append(window.Kasaba.kart(durum.aile.length + 3));
-    if (window.Oyunlar) kap.append(...window.Oyunlar.kartlar(durum.aile.length + 4));
+    if (window.YeniYil) kap.append(window.YeniYil.kart(durum.aile.length + 3));
+    if (window.Kasaba) kap.append(window.Kasaba.kart(durum.aile.length + 4));
+    if (window.Oyunlar) kap.append(...window.Oyunlar.kartlar(durum.aile.length + 5));
   }
 
   /* ---------- oyun ---------- */
@@ -582,6 +583,7 @@
     if (window.Oyunlar) window.Oyunlar.durdur();
     if (window.Kasaba) window.Kasaba.durdur();
     if (window.Yaz) window.Yaz.durdur();
+    if (window.YeniYil) window.YeniYil.durdur();
     $('#sifre').hidden = true;
     window.Konus.sustur();
     sayacDurdur();
