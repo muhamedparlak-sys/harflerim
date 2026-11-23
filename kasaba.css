@@ -475,11 +475,13 @@
 .yy-ad { font-size: 20px; font-weight: 900; }
 .yy-tam { position: fixed; inset: 0; z-index: 60; background: #fff; display: flex; flex-direction: column; }
 .yy-tam[hidden] { display: none; }
-.yy-kagit { flex: 1; min-height: 0; display: grid; place-items: center; padding: 1.5vh 2vw; }
-.yy-kagit .yy-cizim { width: 100%; height: 100%; stroke-width: 9; }
-.yy-tam.ince .yy-kagit .yy-cizim { stroke-width: 4.5; }
-.yy-tam.noktali .yy-kagit .yy-cizim { stroke-dasharray: 0.1 18; stroke-width: 11; }
-.yy-tam.noktali.ince .yy-kagit .yy-cizim { stroke-dasharray: 0.1 12; stroke-width: 7; }
+.yy-kagit { flex: 1; min-height: 0; display: grid; place-items: center; padding: 1.5vh 2vw; overflow: hidden; touch-action: none; }
+.yy-kagit .yy-cizim { transform-origin: center; transition: transform .15s ease-out; }
+#yy-buyut, #yy-kucult { width: 56px; font-size: 24px; }
+.yy-kagit .yy-cizim { --olcek: 1; width: 100%; height: 100%; stroke-width: calc(9px / var(--olcek)); }
+.yy-tam.ince .yy-kagit .yy-cizim { stroke-width: calc(4.5px / var(--olcek)); }
+.yy-tam.noktali .yy-kagit .yy-cizim { stroke-dasharray: 0.1 calc(18px / var(--olcek)); stroke-width: calc(11px / var(--olcek)); }
+.yy-tam.noktali.ince .yy-kagit .yy-cizim { stroke-dasharray: 0.1 calc(12px / var(--olcek)); stroke-width: calc(7px / var(--olcek)); }
 .yy-cubuk { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); background: #F4F4F4; }
 .yy-cubuk button { min-height: 52px; padding: 6px 16px; border-radius: 16px; background: #fff; box-shadow: 0 3px 0 rgba(0,0,0,.12); font-size: 20px; font-weight: 800; }
 #yy-kapat { width: 56px; font-size: 26px; }

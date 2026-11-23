@@ -6,6 +6,7 @@
  *               süs topu, baston şeker; yazılar: YENİ YIL, MUTLU YILLAR, gelen yıl (2027 …).
  *   Kilit       kâğıt ya da el ekrana değince bir şey olmasın diye bütün dokunuşlar kapanır; kilide 2 saniye basılı tutunca açılır.
  *   Ekran       açık kaldıkça kararmaz (Wake Lock, destekleyen tarayıcılarda); tam ekran olur (destekliyorsa).
+ *   Boyut       ➖ ➕ ya da iki parmakla büyütüp küçültme, tek parmakla kaydırma (kâğıdın boyuna göre).
  *   Çizgi       kalın / ince, düz / noktalı (noktalı: noktaları birleştirme gibi).
  *   Yıldız      "Yıldız çizmeyi öğren": beş noktayı parmakla sırayla birleştirir (3 seviye, önce gösterim), sonra kâğıtta dener.
  *
@@ -180,7 +181,9 @@ window.YeniYil = (() => {
     { ad: String(yil()), kod: 'yazi-yil', yazi: [String(yil())] },
   ];
 
-  const ayar = { kalin: true, noktali: false };
+  const ayar = { kalin: true, noktali: false, olcek: 1, x: 0, y: 0 };
+  const OLCEK_MIN = 0.35;
+  const OLCEK_MAX = 2.5;
   let liste = [];
   let sira = 0;
   let uyanik = null;
@@ -417,6 +420,48 @@ window.YeniYil = (() => {
     $('#yy-noktali').textContent = ayar.noktali ? '➖ Düz çizgi' : '⋯ Noktalı';
   }
 
+  /* Büyütme/küçültme: ➖ ➕ düğmeleri, iki parmakla sıkıştırıp açma, tek parmakla kaydırma (kilitliyken kapalı).
+     Çizgi kalınlığı değişmez (non-scaling-stroke); ölçek resimden resme geçerken korunur, konum sıfırlanır. */
+  function yerlestirCizim() {
+    const c = $('#yy-tam .yy-kagit .yy-cizim');
+    if (!c) return;
+    c.style.transform = `translate(${ayar.x}px, ${ayar.y}px) scale(${ayar.olcek})`;
+    c.style.setProperty('--olcek', ayar.olcek); // çizgi kalınlığı ölçekten bağımsız kalsın
+  }
+  function olcekle(o) {
+    ayar.olcek = Math.min(OLCEK_MAX, Math.max(OLCEK_MIN, o));
+    if (ayar.olcek <= 1) { ayar.x = 0; ayar.y = 0; }
+    yerlestirCizim();
+  }
+  function parmakla(alan) {
+    const parmaklar = new Map();
+    let bas = null;
+    const durum0 = () => {
+      const p = [...parmaklar.values()];
+      return { p, olcek: ayar.olcek, x: ayar.x, y: ayar.y, mesafe: p.length > 1 ? Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y) : 0 };
+    };
+    alan.addEventListener('pointerdown', (e) => {
+      if (kilitli) return;
+      alan.setPointerCapture(e.pointerId);
+      parmaklar.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      bas = durum0();
+    });
+    alan.addEventListener('pointermove', (e) => {
+      if (kilitli || !parmaklar.has(e.pointerId)) return;
+      parmaklar.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      const p = [...parmaklar.values()];
+      if (p.length > 1 && bas.mesafe) {
+        olcekle(bas.olcek * (Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y) / bas.mesafe));
+      } else if (p.length === 1 && bas.p.length === 1) {
+        ayar.x = bas.x + (p[0].x - bas.p[0].x);
+        ayar.y = bas.y + (p[0].y - bas.p[0].y);
+        yerlestirCizim();
+      }
+    });
+    const birak = (e) => { parmaklar.delete(e.pointerId); bas = durum0(); };
+    ['pointerup', 'pointercancel'].forEach((t) => alan.addEventListener(t, birak));
+  }
+
   function goster(i) {
     sira = (i + liste.length) % liste.length;
     const sayfa = liste[sira];
@@ -429,6 +474,8 @@ window.YeniYil = (() => {
           H().el('button', { id: 'yy-onceki', type: 'button', textContent: '◀' }),
           H().el('span', { id: 'yy-baslik' }),
           H().el('button', { id: 'yy-sonraki', type: 'button', textContent: '▶' }),
+          H().el('button', { id: 'yy-kucult', type: 'button', textContent: '➖', ariaLabel: 'Küçült' }),
+          H().el('button', { id: 'yy-buyut', type: 'button', textContent: '➕', ariaLabel: 'Büyüt' }),
           H().el('button', { id: 'yy-kalin', type: 'button' }),
           H().el('button', { id: 'yy-noktali', type: 'button' }),
           H().el('button', { id: 'yy-kilitle', type: 'button', textContent: '🔒 Kilitle' }),
@@ -448,11 +495,16 @@ window.YeniYil = (() => {
         soyle(ayar.noktali ? 'Noktalı çizgi. Noktaları birleştir.' : 'Düz çizgi');
       });
       $('#yy-kapat').addEventListener('pointerdown', () => soyle('Resimlere dön'));
+      $('#yy-buyut').addEventListener('click', () => { olcekle(ayar.olcek * 1.25); soyle('Büyüttüm'); });
+      $('#yy-kucult').addEventListener('click', () => { olcekle(ayar.olcek / 1.25); soyle('Küçülttüm'); });
+      parmakla(kap.querySelector('.yy-kagit'));
       $('#yy-kilitle').addEventListener('click', kilitle);
       kilitAcmaKur();
     }
     kap.hidden = false;
     kap.querySelector('.yy-kagit').replaceChildren(svgYap(sayfa));
+    ayar.x = 0; ayar.y = 0;
+    yerlestirCizim();
     $('#yy-baslik').textContent = sayfa.ad;
     cizimGuncelle();
     ekranUyanik(true);
