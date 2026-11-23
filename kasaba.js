@@ -374,11 +374,12 @@ window.Kasaba = (() => {
           sira += 1;
           window.Efekt.tikSesi();
           window.Konus.sustur();
-          if (sira < harfler.length) { konus(H().harfSesi(h)); return; }
+          /* yazılan kısım hece hece: E → "e", EL → "el", ELM → "el … m", ELMA → "el … ma … elma" */
+          if (sira < harfler.length) { H().heceSoyle(kelime, sira); return; }
           panel.classList.add('acildi');
           $('#sifre .sifre-kilit').textContent = simge ? '🎉' : '🔓';
           window.Efekt.karakter('kilit');
-          await konus(kelime.toLocaleLowerCase('tr'));
+          await H().heceSoyle(kelime, sira, true);
           await H().bekle(500);
           if (canli(no)) bitis(true);
         });

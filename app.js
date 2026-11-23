@@ -40,6 +40,52 @@
   const tur = (h) => (window.SESLI.has(h) ? 'sesli' : 'sessiz');
   /** Sessiz harfler sentezlenen sesiyle ("harf:M" → ünlüsüz m), sesliler cihaz sesiyle okunur. */
   const harfSesi = (h) => (window.Efekt.fonemVar(h) ? `harf:${h}` : (window.HARF_SES[h] || KUCUK(h)));
+
+  /**
+   * Türkçe heceleme: her hecede bir ünlü; iki ünlü arasındaki son ünsüz sonraki heceye geçer
+   * (EL-MA, AN-NE, KE-Dİ, SA-AT, TÜR-Kİ-YE). Boşluk kelime ayırır. Döner: [{ bas, son }] (harf dizisindeki yerler).
+   */
+  function hecele(harfler) {
+    const heceler = [];
+    let i = 0;
+    while (i < harfler.length) {
+      if (harfler[i] === ' ') { i += 1; continue; }
+      let j = i;
+      while (j < harfler.length && harfler[j] !== ' ') j += 1; // kelime: i..j
+      const unluler = [];
+      for (let k = i; k < j; k += 1) if (window.SESLI.has(harfler[k])) unluler.push(k);
+      if (!unluler.length) heceler.push({ bas: i, son: j });
+      else {
+        let bas = i;
+        for (let u = 1; u < unluler.length; u += 1) {
+          const sinir = unluler[u] - 1 > unluler[u - 1] && !window.SESLI.has(harfler[unluler[u] - 1]) ? unluler[u] - 1 : unluler[u];
+          heceler.push({ bas, son: sinir });
+          bas = sinir;
+        }
+        heceler.push({ bas, son: j });
+      }
+      i = j;
+    }
+    return heceler;
+  }
+
+  /**
+   * Yazılan kısmı hece hece okur: ELMA'nın ilk 3 harfi yazıldıysa "el … m", 4'ü yazıldıysa "el … ma".
+   * tamam: kelime bittiyse heceler okunduktan sonra kelimenin tamamı da söylenir. Son sözün sözünü döner.
+   */
+  function heceSoyle(kelime, adet, tamam = false) {
+    const harfler = [...kelime];
+    const parcalar = [];
+    hecele(harfler).forEach(({ bas, son }) => {
+      if (bas >= adet) return;
+      const p = harfler.slice(bas, Math.min(son, adet)).join('');
+      parcalar.push([...p].length === 1 ? harfSesi(p) : KUCUK(p));
+    });
+    let son = Promise.resolve();
+    parcalar.forEach((p) => { son = window.Konus.soyle(p); });
+    if (tamam && parcalar.length > 1) son = window.Konus.soyle(KUCUK(kelime));
+    return son;
+  }
   /** Harfin sesi, ardından o harfle başlayan kelime (iki ayrı parça: ses + kelime). */
   const harfVeKelimeSoyle = (h) => {
     const b = window.HARF_BUL.get(h);
@@ -363,8 +409,6 @@
     insaGoster(true);
     siradakiniIsaretle();
 
-    const yazilan = o.harfler.slice(0, o.sira).join('').trim();
-    const parca = [...yazilan].length === 1 ? harfSesi(yazilan) : KUCUK(yazilan);
     const bilgi = window.HARF_BUL.get(h);
     /* Harfi zaten biliyorsa (kendi başına 3 kez bulduysa) karakter gösterilmez; isim akıp gitsin. */
     const biliyor = ((durum.ilerleme[h] || {}).dogru || 0) > OGRENDI_ESIGI;
@@ -378,7 +422,8 @@
       await window.Konus.soyle(harfSesi(h));
     }
     if (durum.oyun !== o || o.no !== no) return;
-    await window.Konus.soyle(parca);
+    /* yazılan kısım hece hece: E → "e", EL → "el", ELM → "el … m", ELMA → "el … ma … elma" */
+    if (o.sira > 1) await heceSoyle(o.harfler.join(''), o.sira, bitti);
     if (durum.oyun !== o || o.no !== no) return;
     if (bitti) kutla(); else sayacKur();
   }
@@ -805,7 +850,7 @@
   /* Oyun modları (oyunlar.js) bu küçük arayüzü kullanır. */
   window.Harflerim = Object.freeze({
     el, bekle, goster, tur, karistir, bildir, kaydet, ekranAc, renkliAd,
-    harfSesi, harfVeKelimeSoyle, donustur, ilerlemeYaz, evDon, OGRENDI_ESIGI,
+    harfSesi, hecele, heceSoyle, harfVeKelimeSoyle, donustur, ilerlemeYaz, evDon, OGRENDI_ESIGI,
     ilerleme: () => durum.ilerleme,
     aile: () => durum.aile,
     yuz,
