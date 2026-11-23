@@ -530,7 +530,39 @@
   }
 
   /* ---------- ilerleme (yalnızca bu cihazda) ---------- */
+  /*
+   * Tahmin freni: bütün harfleri sırayla deneyip doğruyu bulmak bedava olmasın. Her yanlıştan sonra ekran kısa
+   * bir süre dokunmaya kapanır ("👂 dinle"); art arda yanlışlarda süre uzar (1 sn → 2 sn → 3 sn). Doğru cevapta
+   * (ilerlemeYaz) ya da 15 sn yanlış yapılmayınca sayaç sıfırlanır. Oyunlar yanlışta Efekt.yanlis() çağırır; o da
+   * 'yanlis-cevap' olayını yayar.
+   */
+  const FREN_MS = [1000, 2000, 3000];
+  const FREN_SIFIRLAMA_MS = 15000;
+  let ardisikHata = 0;
+  let sonHata = 0;
+  function tahminFreni() {
+    const simdi = Date.now();
+    if (simdi - sonHata > FREN_SIFIRLAMA_MS) ardisikHata = 0;
+    sonHata = simdi;
+    const ms = FREN_MS[Math.min(ardisikHata, FREN_MS.length - 1)];
+    ardisikHata += 1;
+    let ortu = document.getElementById('fren');
+    if (!ortu) {
+      ortu = el('div', { id: 'fren', className: 'fren' }, [el('span', { className: 'fren-kulak', textContent: '👂' }), el('span', { className: 'fren-cubuk' }, [el('i')])]);
+      ['pointerdown', 'click', 'touchstart'].forEach((t) => ortu.addEventListener(t, (e) => { e.preventDefault(); e.stopPropagation(); }, { passive: false }));
+      document.body.append(ortu);
+    }
+    ortu.hidden = false;
+    const cubuk = ortu.querySelector('i');
+    cubuk.getAnimations().forEach((a) => a.cancel());
+    cubuk.animate([{ transform: 'scaleX(1)' }, { transform: 'scaleX(0)' }], { duration: ms, fill: 'forwards' });
+    clearTimeout(tahminFreni.zaman);
+    tahminFreni.zaman = setTimeout(() => { ortu.hidden = true; }, ms);
+  }
+  document.addEventListener('yanlis-cevap', tahminFreni);
+
   function ilerlemeYaz(h, kendiBildi) {
+    if (kendiBildi !== false) ardisikHata = 0;
     const eski = durum.ilerleme[h] || { dogru: 0, yanlis: 0, yardimla: 0 };
     let yeni;
     if (kendiBildi === false) yeni = { ...eski, yanlis: eski.yanlis + 1 };

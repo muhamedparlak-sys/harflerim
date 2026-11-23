@@ -344,23 +344,31 @@ window.Kasaba = (() => {
       let sira = 0;
       let hata = 0;
       const yuvalar = harfler.map((h) => H().el('span', { className: 'sifre-yuva' }, [H().el('span', { className: `hayalet ${H().tur(h)}`, textContent: H().goster(h) })]));
-      const resimler = harfler.map((h) => harfResmi(h));
+      /* kutuların altındaki resimler harfin kendisinden çizilir; baştan görünürse kelime okunur. Gizli başlar, harf yazılınca ya da ipucu olarak açılır. */
+      const resimler = harfler.map((h) => { const r = harfResmi(h); r.classList.add('gizli'); return r; });
       const bitis = (sonuc) => { panel.hidden = true; bitir(sonuc); };
       const tas = (h) => {
         const b = H().el('button', { className: `sifre-tas ${H().tur(h)}`, type: 'button', textContent: H().goster(h) });
         b.addEventListener('click', async () => {
           if (!canli(no) || sira >= harfler.length || b.disabled) return;
           if (h !== harfler[sira]) {
+            /* ipucu basamakları: 1. yanlış sesi söyler, 2. o harfin resmini açar, 3. doğru taşı parlatır ve soluk harfi gösterir */
             hata += 1;
             window.Efekt.yanlis();
             b.classList.remove('salla'); void b.offsetWidth; b.classList.add('salla');
             window.Konus.sustur(); konus(H().harfSesi(harfler[sira]));
-            if (hata >= 2) yuvalar[sira].classList.add('ipucu');
+            if (hata >= 2) resimler[sira].classList.remove('gizli');
+            if (hata >= 3) {
+              yuvalar[sira].classList.add('ipucu');
+              [...$('#sifre-taslar').children].find((t) => !t.disabled && t.textContent === H().goster(harfler[sira]))?.classList.add('ipucu');
+            }
             return;
           }
           H().ilerlemeYaz(h, hata === 0 ? true : null);
           hata = 0;
           b.disabled = true;
+          b.classList.remove('ipucu');
+          resimler[sira].classList.remove('gizli');
           yuvalar[sira].classList.remove('ipucu');
           yuvalar[sira].replaceChildren(H().el('span', { className: `dolu ${H().tur(h)}`, textContent: H().goster(h) }));
           sira += 1;

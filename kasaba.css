@@ -595,3 +595,12 @@
 .hp-cevap.salla { animation: salla .4s; }
 .hp-soru-buyuk { padding: 14px 30px; border-radius: 26px; background: #fff; box-shadow: var(--golge); font-size: 64px; font-weight: 900; }
 .hp-oyun-skor { margin: 0; font-size: 28px; min-height: 34px; }
+
+/* tahmin freni + şifre ipuçları */
+.fren { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; align-content: center; gap: 12px; background: rgba(255, 255, 255, .18); }
+.fren[hidden] { display: none; }
+.fren-kulak { font-size: 90px; animation: zipla .8s ease-in-out infinite; filter: drop-shadow(0 6px 10px rgba(0,0,0,.2)); }
+.fren-cubuk { width: 160px; height: 14px; border-radius: 7px; background: rgba(0,0,0,.12); overflow: hidden; }
+.fren-cubuk i { display: block; height: 100%; background: #FFB703; transform-origin: left; }
+.sifre-resim.gizli { visibility: hidden; }
+.sifre-tas.ipucu { animation: zipla 1s infinite; outline: 5px solid var(--gunes); }

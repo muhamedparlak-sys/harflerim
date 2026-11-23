@@ -352,7 +352,10 @@ window.Efekt = (() => {
     tut: () => ton(660, 0.08, { guc: 0.07 }),
     tik: () => { ton(520, 0.12, { kayma: 1.6 }); ton(880, 0.1, { gecikme: 0.06, guc: 0.1 }); },
     sihir: () => [0, 1, 2, 3, 4].forEach((i) => ton(880 * 1.19 ** i, 0.18, { gecikme: i * 0.05, guc: 0.06, tur: 'triangle' })),
-    yanlis: () => { ton(300, 0.16, { tur: 'square', guc: 0.07, kayma: 0.8 }); ton(220, 0.28, { tur: 'square', guc: 0.07, gecikme: 0.16, kayma: 0.7 }); },
+    yanlis: () => {
+      ton(300, 0.16, { tur: 'square', guc: 0.07, kayma: 0.8 }); ton(220, 0.28, { tur: 'square', guc: 0.07, gecikme: 0.16, kayma: 0.7 });
+      document.dispatchEvent(new CustomEvent('yanlis-cevap')); // tahmin freni (app.js)
+    },
     tikSesi: () => { ton(784, 0.14, { tur: 'triangle', guc: 0.12 }); ton(1175, 0.3, { tur: 'triangle', guc: 0.12, gecikme: 0.12 }); },
     kalp: () => ton(1046, 0.12, { tur: 'triangle', guc: 0.06, kayma: 1.25 }),
     tac: () => [523, 659, 784, 1047, 1319].forEach((f, i) => ton(f, 0.32, { gecikme: i * 0.11, guc: 0.12, tur: 'triangle' })),
