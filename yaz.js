@@ -149,7 +149,9 @@ window.Yaz = (() => {
   const SESSIZLIK_MS = 1300;
   const EN_UZUN_DINLEME_MS = 8000;
   const HATA_METNI = {
-    'not-allowed': 'Mikrofon izni verilmedi', 'service-not-allowed': 'Bu cihazda ses tanıma kapalı',
+    'not-allowed': 'Mikrofon izni verilmedi',
+    'service-not-allowed': 'Ses tanıma kapalı: Ayarlar › Genel › Klavye › Dikte açık olmalı; Ekran Süresi kısıtlamasında Siri ve Dikte izinli olmalı',
+    'language-not-supported': 'Türkçe dikte yok: Ayarlar › Genel › Klavye › Klavyeler › Türkçe klavye ekleyin',
     'no-speech': 'Ses duyulmadı', 'audio-capture': 'Mikrofon bulunamadı', network: 'Ses tanıma için internet gerekiyor',
     aborted: 'Dinleme durdu',
   };
@@ -206,10 +208,13 @@ window.Yaz = (() => {
       if (benim !== oturum) return;
       bitti = bitti || !son.length;
       const metin = HATA_METNI[e.error] || `Ses tanıma çalışmadı (${e.error})`;
+      window.Efekt.dinlemeModu(false);
       durum(`${metin} — resimden seçebilir ya da ⌨️ ile yazabilirsin`);
-      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') window.Konus.soyle('Mikrofon çalışmadı. Bir resim seçebilirsin.');
+      if (e.error === 'no-speech') window.Konus.soyle('Seni duyamadım. Mikrofona dokun ve yüksek sesle söyle.');
+      else if (e.error !== 'aborted') window.Konus.soyle('Mikrofon çalışmadı. Bir resim seçebilirsin. Büyüklerine ekrandaki yazıyı göster.');
     };
     r.onend = () => {
+      window.Efekt.dinlemeModu(false);
       dinleyici = null;
       mik.classList.remove('dinliyor');
       clearTimeout(sessizlik); clearTimeout(uzun);
@@ -217,9 +222,12 @@ window.Yaz = (() => {
       if (son.length) { sonlandir(); return; }
       if (!bitti) { bitti = true; durum('Dokun ve söyle'); window.Konus.soyle('Duyamadım. Mikrofona dokun ve tekrar söyle.'); }
     };
+    window.Efekt.dinlemeModu(true);
     try { r.start(); } catch (hata) {
+      window.Efekt.dinlemeModu(false);
       dinleyici = null; mik.classList.remove('dinliyor'); clearTimeout(uzun);
       durum(`Mikrofon açılamadı (${hata.name || hata}) — resimden seç ya da ⌨️ ile yaz`);
+      window.Konus.soyle('Mikrofon açılamadı. Bir resim seçebilirsin.');
     }
   }
 

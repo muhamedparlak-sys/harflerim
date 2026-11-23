@@ -493,3 +493,27 @@
 #yy-kilit-ac.basili { opacity: 1; }
 #yy-kilit-ac.basili i { animation: yy-dolum 2s linear forwards; }
 @keyframes yy-dolum { to { clip-path: inset(0 0 0 0); } }
+
+/* yıldız çizmeyi öğren */
+.yy-ogren-kart { outline: 5px solid #FFB703 !important; background: #FFF8DC; }
+.yy-cizim .yy-silik { stroke-dasharray: 2 14; }
+.yy-cizim .yy-nokta { fill: #111; }
+.yy-cizim .yy-sayi { fill: #111; stroke: none; font-size: 34px; font-weight: 900; font-family: sans-serif; }
+.yy-ogren { position: fixed; inset: 0; z-index: 61; background: #FFFDF5; display: flex; flex-direction: column; }
+.yy-ogren[hidden] { display: none; }
+.yy-ogren-alan { width: 100%; height: 100%; touch-action: none; }
+.yy-ogren-alan .yy-dolgu { fill: #FFD23F; opacity: 0; transition: opacity .8s; }
+.yy-ogren-alan.tamam .yy-dolgu { opacity: 1; }
+.yy-ogren-alan .yy-hayalet { fill: none; stroke: #C9C2B8; stroke-width: 4; stroke-dasharray: 3 12; stroke-linecap: round; }
+.yy-ogren-alan .yy-cizgiler line { stroke: #E63946; stroke-width: 10; stroke-linecap: round; }
+.yy-ogren-alan .yy-cizgiler line.gosterim { stroke: #1D63D8; }
+.yy-ogren-alan .yy-canli { stroke: #E63946; stroke-width: 10; stroke-linecap: round; opacity: 0; }
+.yy-ogren-alan .yy-canli.gorunur { opacity: .7; }
+.yy-ogren-alan .yy-hedef circle { fill: #fff; stroke: #3B2C2A; stroke-width: 4; }
+.yy-ogren-alan .yy-hedef text { font-size: 26px; font-weight: 900; fill: #3B2C2A; font-family: sans-serif; pointer-events: none; }
+.yy-ogren-alan .yy-hedef.yy-bas circle { fill: #63D2C6; animation: yy-nabiz 1s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.yy-ogren-alan .yy-hedef.yy-hedefte circle { fill: #FFD23F; }
+.yy-ogren-alan .yy-hedef.yy-gecildi circle { stroke: #2D9A4E; }
+.yy-ogren-alan .yy-kalem circle { fill: #1D63D8; stroke: #fff; stroke-width: 4; }
+@keyframes yy-nabiz { 50% { transform: scale(1.3); } }
+.yy-cubuk button.secili { background: #FFD23F; }

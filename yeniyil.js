@@ -7,7 +7,9 @@
  *   Kilit       kâğıt ya da el ekrana değince bir şey olmasın diye bütün dokunuşlar kapanır; kilide 2 saniye basılı tutunca açılır.
  *   Ekran       açık kaldıkça kararmaz (Wake Lock, destekleyen tarayıcılarda); tam ekran olur (destekliyorsa).
  *   Çizgi       kalın / ince, düz / noktalı (noktalı: noktaları birleştirme gibi).
+ *   Yıldız      "Yıldız çizmeyi öğren": beş noktayı parmakla sırayla birleştirir (3 seviye, önce gösterim), sonra kâğıtta dener.
  *
+ * Okuma bilmeyen çocuk için: resim adları, düğmeler ve uyarılar sesli söylenir.
  * Çizimler 400 × 500 birimlik düzlemde, yalnızca çizgi (dolgu yok); kalınlık ekrandaki piksel cinsindendir.
  */
 window.YeniYil = (() => {
@@ -28,6 +30,24 @@ window.YeniYil = (() => {
       n.push(`${(x + rr * Math.cos(a)).toFixed(1)} ${(y + rr * Math.sin(a)).toFixed(1)}`);
     }
     return `M${n.join(' L')}Z`;
+  };
+
+  /* Yıldız çizmeyi öğren: tek çizgiyle beş köşeli yıldız. Köşeler: T tepe, US üst sağ, AS alt sağ, AL alt sol, UL üst sol.
+     Sıra: tepe → alt sol → üst sağ → üst sol → alt sağ → tepe (5 çizgi). */
+  const YM = { x: 200, y: 222, R: 168 };
+  const kose = (aci) => [YM.x + YM.R * Math.cos((aci * Math.PI) / 180), YM.y + YM.R * Math.sin((aci * Math.PI) / 180)];
+  const NOKTALAR = [kose(-90), kose(126), kose(-18), kose(198), kose(54)]; // 1..5 çizim sırasıyla
+  const ADIMLAR = [
+    'Bir numaralı noktadan, tepeden başla. Kaydırak gibi aşağı sola in, iki numaraya.',
+    'Şimdi yukarı sağa çık, üç numaraya.',
+    'Dümdüz sola git, dört numaraya.',
+    'Aşağı sağa in, beş numaraya.',
+    'Ve tepeye, bir numaraya geri dön!',
+  ];
+  const noktaliYildiz = () => {
+    const yol = [...NOKTALAR, NOKTALAR[0]].map(([x, y]) => `${x.toFixed(1)} ${y.toFixed(1)}`).join(' L');
+    return `<path d="M${yol}" class="yy-silik"/>`
+      + NOKTALAR.map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="9" class="yy-nokta"/><text x="${x + (i === 0 ? 0 : x < 200 ? -30 : 30)}" y="${y + (i === 0 ? -26 : 34)}" class="yy-sayi" text-anchor="middle">${i + 1}</text>`).join('');
   };
 
   const RESIMLER = [
@@ -66,6 +86,7 @@ window.YeniYil = (() => {
         <path d="M200 168 C250 96 308 112 288 150 C274 176 224 172 200 168 Z"/>
         <path d="M120 300 l12 -12 l12 12 l-12 12 Z M250 380 l12 -12 l12 12 l-12 12 Z"/>`,
     },
+    { ad: 'Yıldız adımları', kod: 'yildiz-adim', ciz: noktaliYildiz },
     {
       ad: 'Yıldız', kod: 'yildiz',
       ciz: () => `
@@ -201,15 +222,181 @@ window.YeniYil = (() => {
     const sahne = $('#yeniyil-sahne');
     sahne.replaceChildren(
       H().el('p', { className: 'yy-ipucu', textContent: '☀️ Ekran parlaklığını sonuna kadar aç. Bir resim seç, kâğıdını ekranın üstüne koy, çizgilerin üstünden geç.' }),
-      H().el('div', { className: 'yy-galeri' }, liste.map((sayfa, i) => {
+      H().el('div', { className: 'yy-galeri' }, [ogrenKarti(), ...liste.map((sayfa, i) => {
         const b = H().el('button', { className: 'yy-kucuk', type: 'button', ariaLabel: sayfa.ad }, [svgYap(sayfa, true), H().el('span', { className: 'yy-ad', textContent: sayfa.ad })]);
         b.addEventListener('click', () => goster(i));
         return b;
-      })),
+      })]),
     );
     $('#yeniyil-tekrar').onclick = () => { window.Konus.sustur(); window.Konus.soyle('Yeni yıl geliyor! Bir resim seç, kâğıdını ekrana koy ve çizgilerin üstünden geç.'); };
     window.Konus.sustur();
-    window.Konus.soyle('Yeni yıl geliyor! Bir resim seç, kâğıdını ekrana koy ve çizgilerin üstünden geç.');
+    window.Konus.soyle('Yeni yıl geliyor! Bir resim seç, kâğıdını ekrana koy ve çizgilerin üstünden geç. Büyüklerin ekranın ışığını sonuna kadar açsın.');
+  }
+
+  /* ---------- yıldız çizmeyi öğren (parmakla) ----------
+     Seviye 1: silik yol + numaralar + önce gösterim; 2: yalnızca numaralı noktalar; 3: numarasız noktalar.
+     Çocuk sıradaki noktadan başlayıp parmağını hedef noktaya kaydırır; doğruysa çizgi kalır, ses bir sonraki adımı söyler. */
+  const YAKIN = 46; // nokta yakalama yarıçapı (çizim birimi)
+  const ogr = { seviye: 1, adim: 0, kilit: false };
+
+  function ogrenKarti() {
+    const s0 = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s0.setAttribute('viewBox', '0 0 400 420');
+    s0.setAttribute('class', 'yy-cizim kucuk');
+    s0.innerHTML = noktaliYildiz();
+    const b = H().el('button', { className: 'yy-kucuk yy-ogren-kart', type: 'button', ariaLabel: 'Yıldız çizmeyi öğren' }, [
+      s0, H().el('span', { className: 'yy-ad', textContent: '⭐ Yıldız çizmeyi öğren' })]);
+    b.addEventListener('click', () => ogrenAc(1));
+    return b;
+  }
+
+  function ogrenAc(seviye) {
+    ogr.seviye = seviye; ogr.adim = 0; ogr.kilit = false;
+    let kap = $('#yy-ogren');
+    if (!kap) {
+      kap = H().el('div', { id: 'yy-ogren', className: 'yy-ogren' });
+      document.body.append(kap);
+    }
+    kap.hidden = false;
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 400 420');
+    svg.setAttribute('class', 'yy-ogren-alan');
+    const yol = [...NOKTALAR, NOKTALAR[0]].map(([x, y]) => `${x.toFixed(1)} ${y.toFixed(1)}`).join(' L');
+    svg.innerHTML = `<path class="yy-dolgu" d="M${yol}Z"/>
+      ${ogr.seviye === 1 ? `<path class="yy-hayalet" d="M${yol}"/>` : ''}
+      <g class="yy-cizgiler"></g><line class="yy-canli" x1="0" y1="0" x2="0" y2="0"/>
+      ${NOKTALAR.map(([x, y], i) => `<g class="yy-hedef" data-i="${i}"><circle cx="${x}" cy="${y}" r="22"/>
+        ${ogr.seviye < 3 ? `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central">${i + 1}</text>` : ''}</g>`).join('')}
+      <g class="yy-kalem" opacity="0"><circle r="12"/></g>`;
+    const cubuk = H().el('div', { className: 'yy-cubuk' }, [
+      H().el('button', { type: 'button', textContent: '✕', onclick: () => { kap.hidden = true; window.Konus.sustur(); } }),
+      H().el('button', { type: 'button', textContent: '👀 Göster', onclick: () => goster5(svg) }),
+      ...[1, 2, 3].map((n) => H().el('button', { type: 'button', className: n === ogr.seviye ? 'secili' : '', textContent: '⭐'.repeat(n), onclick: () => ogrenAc(n) })),
+      H().el('button', { type: 'button', textContent: '📄 Kâğıtta dene', onclick: () => { kap.hidden = true; goster(liste.findIndex((p) => p.kod === 'yildiz-adim')); } }),
+    ]);
+    kap.replaceChildren(H().el('div', { className: 'yy-kagit' }, [svg]), cubuk);
+    isaretle(svg);
+    parmakKur(svg);
+    window.Konus.sustur();
+    if (ogr.seviye === 1) {
+      window.Konus.soyle('Yıldız çizmeyi öğrenelim! Önce ben göstereyim, sonra sen çiz.').then(() => goster5(svg));
+    } else {
+      window.Konus.soyle(ogr.seviye === 2 ? 'Şimdi sen çiz! Noktaları sırayla birleştir.' : 'Şimdi numaralar yok! Tepeden başla.').then(() => window.Konus.soyle(ADIMLAR[0]));
+    }
+  }
+
+  /** Sıradaki başlangıç ve hedef noktayı parlatır. */
+  function isaretle(svg) {
+    svg.querySelectorAll('.yy-hedef').forEach((g) => {
+      const i = Number(g.dataset.i);
+      g.classList.toggle('yy-bas', i === ogr.adim % 5 && ogr.adim < 5);
+      g.classList.toggle('yy-hedefte', i === (ogr.adim + 1) % 5 && ogr.adim < 5);
+      g.classList.toggle('yy-gecildi', i <= ogr.adim && ogr.adim > 0);
+    });
+  }
+
+  const svgNokta = (svg, e) => {
+    const p = svg.createSVGPoint();
+    p.x = e.clientX; p.y = e.clientY;
+    const q = p.matrixTransform(svg.getScreenCTM().inverse());
+    return [q.x, q.y];
+  };
+  const uzak = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+
+  function parmakKur(svg) {
+    const canli = svg.querySelector('.yy-canli');
+    let ciziyor = false;
+    svg.addEventListener('pointerdown', (e) => {
+      if (ogr.kilit || ogr.adim >= 5) return;
+      const n = svgNokta(svg, e);
+      if (uzak(n, NOKTALAR[ogr.adim]) > YAKIN) {
+        window.Konus.sustur();
+        window.Konus.soyle(ogr.seviye < 3 ? `${ogr.adim + 1} numaralı noktadan başla. Parlayan noktadan.` : 'Parlayan noktadan başla.');
+        return;
+      }
+      ciziyor = true;
+      svg.setPointerCapture(e.pointerId);
+      const [x, y] = NOKTALAR[ogr.adim];
+      canli.setAttribute('x1', x); canli.setAttribute('y1', y); canli.setAttribute('x2', x); canli.setAttribute('y2', y);
+      canli.classList.add('gorunur');
+    });
+    svg.addEventListener('pointermove', (e) => {
+      if (!ciziyor) return;
+      const [x, y] = svgNokta(svg, e);
+      canli.setAttribute('x2', x); canli.setAttribute('y2', y);
+    });
+    const birak = async (e) => {
+      if (!ciziyor) return;
+      ciziyor = false;
+      canli.classList.remove('gorunur');
+      const hedef = NOKTALAR[(ogr.adim + 1) % 5];
+      if (uzak(svgNokta(svg, e), hedef) > YAKIN) {
+        window.Efekt.yanlis();
+        window.Konus.sustur();
+        window.Konus.soyle(`Neredeyse! ${ADIMLAR[ogr.adim]}`);
+        return;
+      }
+      await cizgiEkle(svg, ogr.adim);
+    };
+    svg.addEventListener('pointerup', birak);
+    svg.addEventListener('pointercancel', () => { ciziyor = false; canli.classList.remove('gorunur'); });
+  }
+
+  async function cizgiEkle(svg, i) {
+    const [a, b] = [NOKTALAR[i], NOKTALAR[(i + 1) % 5]];
+    const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    l.setAttribute('x1', a[0]); l.setAttribute('y1', a[1]); l.setAttribute('x2', b[0]); l.setAttribute('y2', b[1]);
+    svg.querySelector('.yy-cizgiler').append(l);
+    ogr.adim = i + 1;
+    isaretle(svg);
+    window.Efekt.karakter('cin');
+    window.Konus.sustur();
+    if (ogr.adim < 5) { window.Konus.soyle(`Aferin! ${ADIMLAR[ogr.adim]}`); return; }
+    svg.classList.add('tamam');
+    window.Gorsel.konfeti();
+    window.Efekt.tac();
+    await window.Konus.soyle(ogr.seviye < 3 ? 'Yıldız oldu! Harika çizdin! Şimdi daha zor bir yıldız deneyelim mi? Üstte üç yıldızlı düğme var.' : 'Kendi başına yıldız çizdin! Şimdi kâğıtta dene!');
+  }
+
+  /** Gösterim: kalem beş çizgiyi sırayla çizer, her adım sesli anlatılır; sonra sıra çocukta. */
+  async function goster5(svg) {
+    if (ogr.kilit) return;
+    ogr.kilit = true;
+    const kalem = svg.querySelector('.yy-kalem');
+    const cizgiler = svg.querySelector('.yy-cizgiler');
+    cizgiler.replaceChildren();
+    svg.classList.remove('tamam');
+    ogr.adim = 0; isaretle(svg);
+    kalem.setAttribute('opacity', '1');
+    for (let i = 0; i < 5 && !$('#yy-ogren').hidden; i += 1) {
+      const [a, b] = [NOKTALAR[i], NOKTALAR[(i + 1) % 5]];
+      window.Konus.sustur();
+      const konusma = window.Konus.soyle(ADIMLAR[i]);
+      const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      l.setAttribute('class', 'gosterim');
+      l.setAttribute('x1', a[0]); l.setAttribute('y1', a[1]); l.setAttribute('x2', a[0]); l.setAttribute('y2', a[1]);
+      cizgiler.append(l);
+      const sure = 1400;
+      const t0 = performance.now();
+      await new Promise((bitti) => {
+        const kare = (t) => {
+          const k = Math.min(1, (t - t0) / sure);
+          const x = a[0] + (b[0] - a[0]) * k; const y = a[1] + (b[1] - a[1]) * k;
+          l.setAttribute('x2', x); l.setAttribute('y2', y);
+          kalem.setAttribute('transform', `translate(${x} ${y})`);
+          if (k < 1) requestAnimationFrame(kare); else bitti();
+        };
+        requestAnimationFrame(kare);
+      });
+      await konusma;
+    }
+    kalem.setAttribute('opacity', '0');
+    await H().bekle(400);
+    cizgiler.replaceChildren();
+    ogr.adim = 0; ogr.kilit = false; isaretle(svg);
+    window.Konus.sustur();
+    await window.Konus.soyle('Şimdi sıra sende! Parmağınla parlayan noktadan başla.');
+    window.Konus.soyle(ADIMLAR[0]);
   }
 
   /* ---------- kopyalama ekranı ---------- */
@@ -254,8 +441,13 @@ window.YeniYil = (() => {
       $('#yy-kapat').addEventListener('click', kapat);
       $('#yy-onceki').addEventListener('click', () => goster(sira - 1));
       $('#yy-sonraki').addEventListener('click', () => goster(sira + 1));
-      $('#yy-kalin').addEventListener('click', () => { ayar.kalin = !ayar.kalin; cizimGuncelle(); });
-      $('#yy-noktali').addEventListener('click', () => { ayar.noktali = !ayar.noktali; cizimGuncelle(); });
+      const soyle = (t) => { window.Konus.sustur(); window.Konus.soyle(t); };
+      $('#yy-kalin').addEventListener('click', () => { ayar.kalin = !ayar.kalin; cizimGuncelle(); soyle(ayar.kalin ? 'Kalın çizgi' : 'İnce çizgi'); });
+      $('#yy-noktali').addEventListener('click', () => {
+        ayar.noktali = !ayar.noktali; cizimGuncelle();
+        soyle(ayar.noktali ? 'Noktalı çizgi. Noktaları birleştir.' : 'Düz çizgi');
+      });
+      $('#yy-kapat').addEventListener('pointerdown', () => soyle('Resimlere dön'));
       $('#yy-kilitle').addEventListener('click', kilitle);
       kilitAcmaKur();
     }

@@ -331,8 +331,18 @@ window.Efekt = (() => {
     nal: () => [0, 0.12, 0.36, 0.48, 0.72, 0.84, 1.08, 1.2, 1.44, 1.56].forEach((g) => gurultu(0.05, { frekans: 1700, q: 3, guc: 0.2, gecikme: g })),
   };
 
+  /* Mikrofon: iPad'de "playback" ses oturumu mikrofonu kapatır (izin verilse de ses gelmez). Dinlerken oturum
+     "play-and-record" olur ve efekt sesi duraklar; bitince eski hâline döner. */
+  function dinlemeModu(acik) {
+    try {
+      if (navigator.audioSession) navigator.audioSession.type = acik ? 'play-and-record' : 'playback';
+      if (ctx) { if (acik) ctx.suspend(); else ctx.resume(); }
+    } catch { /* desteklemeyen tarayıcı */ }
+  }
+
   return Object.freeze({
     ac,
+    dinlemeModu,
     karakter: (ad) => { if (KARAKTER[ad]) KARAKTER[ad](); },
     // Sentez fonemleri hoparlörde çok kısık/belirsiz kaldı (kullanıcı testi 2026-11-15): harf sesi
     // şimdilik cihaz sesiyle kısa hece ("mı", "kı") okunur. Klon kaydı (sesler.json) hep önceliklidir.
